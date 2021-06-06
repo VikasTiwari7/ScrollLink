@@ -1,0 +1,173 @@
+import React from 'react';
+import { useState,useEffect } from 'react';
+import { Image, ScrollView, Text,View } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+  } from '../../../utility/index';
+  import * as Utility from '../../../utility/index';
+  import {
+    launchCamera,
+    launchImageLibrary
+  } from 'react-native-image-picker'
+  import TabViewExample from './tab';
+  import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+const ProfileActivity=({navigation})=>{
+    const [userName,setUserName]=useState();
+    const [email,setEMail]=useState();
+    const [filePath, setFilePath] = useState();
+    const [coverFilepath,setCoverfilepath] =useState();
+
+
+    useEffect(() => {
+ 
+        retrieveData();
+    
+    },[]);
+    const retrieveData = async () => {
+      let username = await Utility.getFromLocalStorge("fullName")
+      setUserName(username);
+      let email =await Utility.getFromLocalStorge('email');
+      setEMail(email);
+    };
+    const openGenralSettingPage=()=>{
+        navigation.navigate('ProfileGeneralSetting')
+    }
+    const showActivity=()=>{
+        navigation.navigate('ProfileActivity')
+    }
+    const chooseFile1 = (type) => {
+        let options = {
+          mediaType: type,
+          maxWidth: 300,
+          maxHeight: 550,
+          quality: 1,
+        };
+        launchImageLibrary(options, (response) => {
+          console.log('Response = ', response);
+    
+          if (response.didCancel) {
+            alert('User cancelled camera picker');
+            return;
+          } else if (response.errorCode == 'camera_unavailable') {
+            alert('Camera not available on device');
+            return;
+          } else if (response.errorCode == 'permission') {
+            alert('Permission not satisfied');
+            return;
+          } else if (response.errorCode == 'others') {
+            alert(response.errorMessage);
+            return;
+          }
+          console.log('base64 -> ', response.base64);
+          console.log('uri -> ', response.uri);
+          console.log('width -> ', response.width);
+          console.log('height -> ', response.height);
+          console.log('fileSize -> ', response.fileSize);
+          console.log('type -> ', response.type);
+          console.log('fileName -> ', response.fileName);
+          setCoverfilepath(response);
+        });
+      };
+      const chooseFile = (type) => {
+        let options = {
+          mediaType: type,
+          maxWidth: 300,
+          maxHeight: 550,
+          quality: 1,
+        };
+        launchImageLibrary(options, (response) => {
+          console.log('Response = ', response);
+    
+          if (response.didCancel) {
+            alert('User cancelled camera picker');
+            return;
+          } else if (response.errorCode == 'camera_unavailable') {
+            alert('Camera not available on device');
+            return;
+          } else if (response.errorCode == 'permission') {
+            alert('Permission not satisfied');
+            return;
+          } else if (response.errorCode == 'others') {
+            alert(response.errorMessage);
+            return;
+          }
+          console.log('base64 -> ', response.base64);
+          console.log('uri -> ', response.uri);
+          console.log('width -> ', response.width);
+          console.log('height -> ', response.height);
+          console.log('fileSize -> ', response.fileSize);
+          console.log('type -> ', response.type);
+          console.log('fileName -> ', response.fileName);
+          setFilePath(response);
+        });
+      };
+      const backarrow=()=>{
+        navigation.navigate('Profile_cover')
+      }
+    return(
+    <View>
+      <ScrollView>
+     
+       <View>
+       <View style={{flexDirection:'row',width:wp('100%'),justifyContent:'space-evenly',backgroundColor:'#a19495'}}>
+                    <TouchableOpacity onPress={()=>backarrow()}>
+                  <MaterialCommunityIcons name="keyboard-backspace" size={35} color={'white'}
+                   />
+                   </TouchableOpacity>
+            <Text style={{fontSize:22,fontWeight:'bold'}}>Profile Activity Screen</Text>
+            </View>
+           {coverFilepath?
+           <Image source={coverFilepath} style={{width:wp('100%'),height:hp('20%')}} ></Image>:
+           <Image source={require('../../../images/d-cover.jpg')} style={{width:wp('100%'),height:hp('20%')}}  ></Image>}
+       </View>
+     
+       <View style={{alignSelf:'flex-end',backgroundColor:'gray',padding:8,marginRight:wp('5%'),width:wp('20%'),borderRadius:10,marginTop:hp('-10%')}}>
+           <TouchableOpacity onPress={() => chooseFile1('photo')}>
+               <Text style={{color:'white',alignSelf:'center'}}>Cover</Text>
+               </TouchableOpacity>
+           </View>
+
+       <View style={{marginLeft:wp('4%'),flexDirection:'row',width:wp('35%'),alignItems:'center',borderColor:'white',borderWidth:5,borderRadius:50}}>
+           {filePath ?
+           <Image source={filePath} style={{height:100,width:100,borderRadius:50}}></Image>:
+           <Image source={require('../../../images/splashlogo.png')} style={{height:100,width:100}}></Image>}
+         <TouchableOpacity onPress={() => chooseFile('photo')}>
+                    <MaterialCommunityIcons name="camera" size={25} color={'green'} style={{marginTop:hp('8%')}}/>
+                    </TouchableOpacity>
+                  
+
+       </View>
+       <View style={{margin:wp('4%')}}>
+       <View>
+           <Text style={{fontSize:20,fontWeight:'bold'}}>{userName}</Text>
+       </View>
+       <View>
+           <Text style={{fontSize:15,fontWeight:'bold'}}>{email}</Text>
+
+       </View>
+       </View>
+       <View style={{margin:wp('5%'),flexDirection:'row',width:wp('70%'),justifyContent:'space-evenly'}}>
+           <TouchableOpacity onPress={()=>openGenralSettingPage()}>
+           <View style={{padding:10,backgroundColor:'gray',width:wp('30%'),borderRadius:10}}>
+           <Text style={{alignSelf:'center',color:'white'}}>Edit</Text>
+           </View>
+           </TouchableOpacity>
+           <TouchableOpacity onPress={()=>showActivity()}>
+           <View style={{padding:10,backgroundColor:'gray',width:wp('30%'),borderRadius:10}}>
+           <Text style={{alignSelf:'center',color:'white'}}>Activity</Text>
+           </View>
+           </TouchableOpacity>
+       </View>
+       <View style={{height:hp('50%')}}>
+        
+       <TabViewExample/>
+       </View>
+       </ScrollView>
+     
+    </View>
+    )
+
+}
+export default ProfileActivity;
