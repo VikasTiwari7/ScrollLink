@@ -62,9 +62,9 @@ return (
 
         <Stack.Screen name ="Popularpost" component ={Popularpost} options={{headerShown:false}}/>
 
-        <Stack.Screen name ="Mypages " component ={Mypages} options={{headerShown:false}}/>
+        <Stack.Screen name ="Mypages" component ={Mypages} options={{headerShown:false}}/>
 
-        <Stack.Screen name =" Savedpost" component ={Savedpost} options={{headerShown:false}}/>
+        <Stack.Screen name ="Savedpost" component ={Savedpost} options={{headerShown:false}}/>
       </Stack.Navigator>
   );
 }

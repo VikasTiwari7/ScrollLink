@@ -29,7 +29,7 @@ const Notification_Screen = () => {
             <View>
                 <View style={{flexDirection:'row',marginTop:hp('5%'),justifyContent:'space-between'}}>
                     <View style={{width:wp('20%')}}>
-                        <Image source={require('../../../images/splashlogo.png')} ></Image>
+                        <Image source={require('../../../images/splashlogo.png')} style={{height:50,width:50}} ></Image>
                     </View>
                     <View style={{width:wp('50%'),marginTop:hp('3%')}}>
                     <View  style={{flexDirection:'row'}}>
@@ -44,7 +44,7 @@ const Notification_Screen = () => {
                 </View>
                 <View style={{flexDirection:'row',marginTop:hp('5%'),justifyContent:'space-between'}}>
                     <View style={{width:wp('20%')}}>
-                        <Image source={require('../../../images/splashlogo.png')} ></Image>
+                        <Image source={require('../../../images/splashlogo.png')}  style={{height:50,width:50}}></Image>
                     </View>
                     <View style={{width:wp('50%'),marginTop:hp('3%')}}>
                     <View  style={{flexDirection:'row'}}>

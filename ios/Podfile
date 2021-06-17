@@ -16,6 +16,8 @@ target 'scroll_link' do
 
   pod 'RNImageFilter', :path => '../node_modules/react-native-image-filter'
 
+  pod 'RNImageCropPicker', :path => '../node_modules/react-native-image-crop-picker'
+
   target 'scroll_linkTests' do
     inherit! :complete
     # Pods for testing

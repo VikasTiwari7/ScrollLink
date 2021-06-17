@@ -15,7 +15,7 @@ const Splash =({navigation})=>{
       const retrieveData = async () => {
         let userId = await Utility.getFromLocalStorge("userId")
         if (userId !== null) {
-          return                             navigation.navigate('drawer')
+          return    navigation.navigate('drawer')
 
         }
         else {

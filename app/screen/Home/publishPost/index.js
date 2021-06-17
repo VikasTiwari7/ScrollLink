@@ -1,30 +1,24 @@
 import React,{useState,useEffect} from 'react';
 
-import { View,Text ,TextInput, Alert} from 'react-native';
+import { View,Text ,TextInput, Alert,Image} from 'react-native';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from '../../../utility/index';
-import {
-    launchCamera,
-    launchImageLibrary
-  } from 'react-native-image-picker';
-  import * as Utility from '../../../utility/index';
-  // import RNImageFilter from "react-native-image-filter";
 
-// import { TextInput} from 'react-native-paper';
-// const userId =0;
-// const token=0;
+import ImagePicker from 'react-native-image-crop-picker';
+  import * as Utility from '../../../utility/index';
+import * as api from '../../../api/url';
+
 const publishPost=({navigation})=>{
     const [Status,setStatus]=useState();
     const [filePath, setFilePath] = useState();
     const [imageName,setImageName]=useState();
     const backHome=()=>{
-        navigation.navigate('Bottom');
+        navigation.navigate('drawer');
     }
- 
     useEffect(() => {
       // retriveData();
         const timeoutHandle = setTimeout(() => {
@@ -38,61 +32,30 @@ const publishPost=({navigation})=>{
      
     }
       const chooseFile = (type) => {
-        let options = {
-          mediaType: type,
-          maxWidth: 300,
-          maxHeight: 550,
-          quality: 1,
-        };
-        launchImageLibrary(options, (response) => {
-          console.log('Response = ', response);
-    
-          if (response.didCancel) {
-            alert('User cancelled camera picker');
-            return;
-          } else if (response.errorCode == 'camera_unavailable') {
-            alert('Camera not available on device');
-            return;
-          } else if (response.errorCode == 'permission') {
-            alert('Permission not satisfied');
-            return;
-          } else if (response.errorCode == 'others') {
-            alert(response.errorMessage);
-            return;
-          }
-          console.log('base64 -> ', response.base64);
-          console.log('uri -> ', response.uri);
-          console.log('width -> ', response.width);
-          console.log('height -> ', response.height);
-          console.log('fileSize -> ', response.fileSize);
-          console.log('type -> ', response.type);
-          console.log('fileName -> ', response.fileName);
-          setFilePath(response);
-          setImageName(response.fileName);
-
-        });
-      };
-      // RNImageFilter.getSourceImage(
-      //   {
-      //     imageSource: {imageName},
-      //     dataType: "Path",
-      //     filterType: 1,
-      //   },
-      //   (source) => {
-      //     setNewImage((source.base64));
-      //     console.log("SOURCE", source);
-      //     // source returns the height, width and the Base64 string of the image.
-      //   }
-      // );
+     
+      ImagePicker.openPicker({
+        width: 300,
+        height: 400,
+        cropping: true
+      }).then(image => {
+        setFilePath(image.path)
+        console.log(image.path);
+      })
+    }
       const publishPost= async()=>{
         let userId = await Utility.getFromLocalStorge("userId");
         let  token=await Utility.getFromLocalStorge("JWT");
+        let name =await Utility .getFromLocalStorge("fullName");
          console.log(userId);
          console.log("token=" +token)
-        Alert.alert("its working");
+        // Alert.alert("its working");
         console.log(userId);
+        if(Utility.isFieldEmpty(filePath)){
+        Alert.alert("Please Choose any post ")
+        }
+        else{
         let response = await fetch(
-          `https://f1c963a86254.ngrok.io/users/${userId}/createpost`,
+          `http://192.168.43.39:4000/users/${userId}/createpost`,
           {
             method: 'POST',
             headers: {
@@ -101,20 +64,29 @@ const publishPost=({navigation})=>{
               Authorization: 'Bearer '+token
             },
             body: JSON.stringify({
-              user_id:"60b51caebcd8083b2474ac0a",
-              username:"vikas123",
+              user_id:userId,
+              username:name,
               post_type:"image",
               file_name:"abc4.png",
-              post_upload_url:"/temp",
-              caption:"Something better",
+              post_upload_url:"C:\\Users\\RD\\AppData\\Local\\Temp",
+              caption:Status,
               tag_people:"abc",
               location:"delhi"
             }),
           },
         );
-        console.log(response.json())
+        // console.log(response.status)
+        if(response.status==200){
+          Alert.alert("Success Fully Uploaded ");
+          navigation.navigate('drawer');
+        }
+        else{
+          Alert.alert("failed");
+        }
+        
 
       }
+    }
     return(
         <View>
             <ScrollView>
@@ -145,8 +117,14 @@ const publishPost=({navigation})=>{
             underlineColorAndroid='transparent'
     />
                 </View>
+                <View style={{height:hp('60%'),backgroundColor:'white',borderRadius:10,padding:10,margin:wp('5%')}}>
+                  <View>
+                  <Image source={{uri:filePath}} style={{height:100,width:100,borderRadius:10}}></Image>
+                  
+                  </View>
+                </View>
 
-                <View style={{flexDirection:'row',justifyContent:'space-evenly',marginTop:hp('62%')}}>
+                <View style={{flexDirection:'row',justifyContent:'space-evenly'}}>
                     <View>
                     <MaterialCommunityIcons name="disc" size={35} color={'pink'} />
                     </View>
@@ -169,29 +147,3 @@ const publishPost=({navigation})=>{
     )
 }
 export default publishPost;
-
-// import React, { useState } from 'react';
-// import { Text,View } from 'react-native';
-// import RNImageFilter from "react-native-image-filter";
-// const publishPost=()=>{
-//   const [newImage,setNewImage]=useState();
-
-//   RNImageFilter.getSourceImage(
-//     {
-//       imageSource: "C:\\Users\\RD\\Desktop\\scroll_link\\app\\images\\d-cover.jpg",
-//       dataType: "Path",
-//       filterType: 1,
-//     },
-//     (source) => {
-//       setNewImage((source.base64));
-//       console.log("SOURCE", source);
-//       // source returns the height, width and the Base64 string of the image.
-//     }
-//   );
-//   return(
-//     <View>
-//       <Text>Image</Text>
-//       </View>
-//   )
-// }
-// export default publishPost;

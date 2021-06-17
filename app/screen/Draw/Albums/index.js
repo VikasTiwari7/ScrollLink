@@ -6,9 +6,11 @@ import {
 } from '../../../utility/index';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import Header from '../../../components/header';
 const Albums =({navigation})=>{
     return(
 <View>
+    <Header navigation={navigation}/>
     <ScrollView>
     <View style={{margin:wp('5%'),width:wp('50%'),justifyContent:'space-evenly',flexDirection:'row'}}>
         <TouchableOpacity onPress={()=>navigation.navigate('drawer')}>

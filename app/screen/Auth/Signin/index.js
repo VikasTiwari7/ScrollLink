@@ -51,7 +51,8 @@ const Signin =({navigation})=>{
                             await Utility.setInLocalStorge("fullName", json.fullname)
                             await Utility.setInLocalStorge("JWT",json.jwtToken)
                             navigation.navigate('drawer')
-                        }else{
+                        }
+                        else{
                             Alert.alert("Something went Wrong");
                         }
 

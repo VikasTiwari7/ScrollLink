@@ -7,10 +7,7 @@ import {
     heightPercentageToDP as hp,
   } from '../../../utility/index';
   import * as Utility from '../../../utility/index';
-  import {
-    launchCamera,
-    launchImageLibrary
-  } from 'react-native-image-picker'
+  import ImagePicker from 'react-native-image-crop-picker';
   import TabViewExample from './tab';
   import * as api from '../../../api/url';
   import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -32,25 +29,27 @@ const ProfileCover=({navigation})=>{
     const retrieveData = async () => {
       let userId = await Utility.getFromLocalStorge("userId");
       let token=await Utility.getFromLocalStorge("JWT");
-      console.log(userId);
+      // console.log(userId);
       console.log("token=" +token)
       try {
-          // console.log(`http://192.168.43.39:4000/users/${userId}/getprofiledata`);
           let response = await fetch(
-            `${api.BaseUrl}users/${userId}/getprofiledata`,
+            `http://192.168.43.39:4000/users/${userId}/getProfilePic`, // getCoverPic
             {
               method: "GET",
              headers: { 
-              Authorization: 'Bearer '+token} 
-      } );
-          
-          let json = await response.json();
+              Authorization: 'Bearer '+token,
+              // 'Accept': 'application/json',
+              // 'Content-Type':'application/json'
+            } 
+      }
+      )
+      // var imageStr = this.arrayBufferToBase64(data.img.data.data);
+          let json = await response;
           console.log(json)
-        //   await Utility.setInLocalStorge('songs', json.item);
-        setUserName(json.user_info.username);
-        setEMail(json.user_info.email);
-         await setCoverfilepath(json.user_profile.cover_pic_upload_url);
-        console.log("just for check ",coverFilepath);
+          console.log(json._bodyBlob._data.__collector)
+
+
+        //   await Utility.setInLocalStorge('songs', json.item)
       
         } catch (error) {
           console.error(error);
@@ -63,70 +62,26 @@ const ProfileCover=({navigation})=>{
         navigation.navigate('ProfileActivity')
     }
     const chooseFile1 = (type) => {
-        let options = {
-          mediaType: type,
-          maxWidth: 300,
-          maxHeight: 550,
-          quality: 1,
-        };
-        launchImageLibrary(options, (response) => {
-          console.log('Response = ', response);
-    
-          if (response.didCancel) {
-            alert('User cancelled camera picker');
-            return;
-          } else if (response.errorCode == 'camera_unavailable') {
-            alert('Camera not available on device');
-            return;
-          } else if (response.errorCode == 'permission') {
-            alert('Permission not satisfied');
-            return;
-          } else if (response.errorCode == 'others') {
-            alert(response.errorMessage);
-            return;
-          }
-          console.log('base64 -> ', response.base64);
-          console.log('uri -> ', response.uri);
-          console.log('width -> ', response.width);
-          console.log('height -> ', response.height);
-          console.log('fileSize -> ', response.fileSize);
-          console.log('type -> ', response.type);
-          console.log('fileName -> ', response.fileName);
-          setCoverfilepath(response);
-        });
+      ImagePicker.openPicker({
+        width: 300,
+        height: 400,
+        cropping: true
+      }).then(image => {
+        setCoverfilepath(image.path);
+        console.log(image.path);
+      })
+      
       };
       const chooseFile = (type) => {
-        let options = {
-          mediaType: type,
-          maxWidth: 300,
-          maxHeight: 550,
-          quality: 1,
-        };
-        launchImageLibrary(options, (response) => {
-          console.log('Response = ', response);
-    
-          if (response.didCancel) {
-            alert('User cancelled camera picker');
-            return;
-          } else if (response.errorCode == 'camera_unavailable') {
-            alert('Camera not available on device');
-            return;
-          } else if (response.errorCode == 'permission') {
-            alert('Permission not satisfied');
-            return;
-          } else if (response.errorCode == 'others') {
-            alert(response.errorMessage);
-            return;
-          }
-          console.log('base64 -> ', response.base64);
-          console.log('uri -> ', response.uri);
-          console.log('width -> ', response.width);
-          console.log('height -> ', response.height);
-          console.log('fileSize -> ', response.fileSize);
-          console.log('type -> ', response.type);
-          console.log('fileName -> ', response.fileName);
-          setFilePath(response);
-        });
+        ImagePicker.openPicker({
+          width: 300,
+          height: 400,
+          cropping: true
+        }).then(image => {
+          setFilePath(image.path);
+          console.log(image.path);
+        })
+      
       };
       const backarrow=()=>{
         navigation.navigate('Bottom')
@@ -144,7 +99,7 @@ const ProfileCover=({navigation})=>{
             <Text style={{fontSize:22,fontWeight:'bold'}}>Profile Cover Screen</Text>
             </View>
            {coverFilepath?
-           <Image source={{uri:RNFS.DocumentDirectoryPath+"C:\\Users\\RD\\AppData\\Local\\Temp\\Rohan\\profilepics\\10th.jpg"}} style={{width:wp('100%'),height:hp('20%')}} ></Image>:
+           <Image source={{uri:coverFilepath}} style={{width:wp('100%'),height:hp('20%')}} ></Image>:
            <Image source={require('../../../images/d-cover.jpg')} style={{width:wp('100%'),height:hp('20%')}}  ></Image>}
        </View>
       
@@ -157,7 +112,7 @@ const ProfileCover=({navigation})=>{
 
        <View style={{marginLeft:wp('4%'),flexDirection:'row',width:wp('35%'),alignItems:'center',borderColor:'white',borderWidth:5,borderRadius:50}}>
            {filePath ?
-           <Image source={filePath} style={{height:100,width:100,borderRadius:50}}></Image>:
+           <Image source={{uri:filePath}} style={{height:100,width:100,borderRadius:50}}></Image>:
            <Image source={require('../../../images/splashlogo.png')} style={{height:100,width:100}}></Image>}
          <TouchableOpacity onPress={() => chooseFile('photo')}>
                     <MaterialCommunityIcons name="camera" size={25} color={'green'} style={{marginTop:hp('8%')}}/>
