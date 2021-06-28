@@ -31,7 +31,7 @@ const openLogin=()=>{
               }  else {
                 setLoader(true);
                 let response = await fetch(
-                  BaseUrl+'users/register',
+                  BaseUrl+'/users/register',
                   {
                     method: 'POST',
                     headers: {

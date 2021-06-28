@@ -6,6 +6,7 @@ import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
   } from '../../../utility/index';
+  import * as api from '../../../api/url';
   import * as Utility from '../../../utility/index';
   import {
     launchCamera,
@@ -22,15 +23,88 @@ const ProfileActivity=({navigation})=>{
 
     useEffect(() => {
  
-        retrieveData();
+      retrieveProfile();
+      retrieveCover();
+
+  
+  },[]);
+  const retrieveProfile = async () => {
+    var userId = await Utility.getFromLocalStorge("userId");
+    var username=await Utility.getFromLocalStorge("fullName");
+    setUserName(username);
+    var email=await Utility.getFromLocalStorge("email");
+    setEMail(email);
+
+    var token=await Utility.getFromLocalStorge("JWT");
+    // console.log(userId);
+    console.log("token=" +token)
+    try {
+        let response = await fetch(
+          // 192.168.0.101:4000/users/60cb6255633ed91264de3cc3/getProfilePicUrl
+          `http://79.133.41.198:4000/users/${userId}/getProfilePicUrl`, // getCoverPic
+          {
+            method: "GET",
+           headers: { 
+            Authorization: 'Bearer '+token,
+            // 'Accept': 'application/json',
+            // 'Content-Type':'application/json'
+          } 
+    }
+    )
+    // var imageStr = this.arrayBufferToBase64(data.img.data.data);
+        let json = await response.text();
+        // console.log(json);
+        let abc=json;
+        // console.log("new abc",abc)
+
+        let def=api.BaseUrl+abc;
+        // console.log("new url",def);
+        setFilePath(def);
+       
+       
+
+      //   await Utility.setInLocalStorge('songs', json.item)
     
-    },[]);
-    const retrieveData = async () => {
-      let username = await Utility.getFromLocalStorge("fullName")
-      setUserName(username);
-      let email =await Utility.getFromLocalStorge('email');
-      setEMail(email);
-    };
+      } catch (error) {
+        console.error(error);
+      }
+  };
+
+  const retrieveCover=async()=>{
+    var userId = await Utility.getFromLocalStorge("userId");
+    var token=await Utility.getFromLocalStorge("JWT");
+    try {
+      let response = await fetch(
+        // 192.168.0.101:4000/users/60cb6255633ed91264de3cc3/getProfilePicUrl
+        `http://79.133.41.198:4000/users/${userId}/getCoverPicUrl`, // getCoverPic
+        {
+          method: "GET",
+         headers: { 
+          Authorization: 'Bearer '+token,
+          // 'Accept': 'application/json',
+          // 'Content-Type':'application/json'
+        } 
+  }
+  )
+  // var imageStr = this.arrayBufferToBase64(data.img.data.data);
+      let json = await response.text();
+      // console.log(json);
+      let abc=json;
+      // console.log("new abc",abc)
+
+      let def=api.BaseUrl+abc;
+      // console.log("new url",def);
+      setCoverfilepath(def);
+     
+     
+
+    //   await Utility.setInLocalStorge('songs', json.item)
+  
+    } catch (error) {
+      console.error(error);
+    }
+
+  }
     const openGenralSettingPage=()=>{
         navigation.navigate('ProfileGeneralSetting')
     }
@@ -119,7 +193,7 @@ const ProfileActivity=({navigation})=>{
             <Text style={{fontSize:22,fontWeight:'bold'}}>Profile Activity Screen</Text>
             </View>
            {coverFilepath?
-           <Image source={coverFilepath} style={{width:wp('100%'),height:hp('20%')}} ></Image>:
+           <Image source={{uri:coverFilepath}} style={{width:wp('100%'),height:hp('20%')}} ></Image>:
            <Image source={require('../../../images/d-cover.jpg')} style={{width:wp('100%'),height:hp('20%')}}  ></Image>}
        </View>
      
@@ -131,7 +205,7 @@ const ProfileActivity=({navigation})=>{
 
        <View style={{marginLeft:wp('4%'),flexDirection:'row',width:wp('35%'),alignItems:'center',borderColor:'white',borderWidth:5,borderRadius:50}}>
            {filePath ?
-           <Image source={filePath} style={{height:100,width:100,borderRadius:50}}></Image>:
+           <Image source={{uri:filePath}} style={{height:100,width:100,borderRadius:50}}></Image>:
            <Image source={require('../../../images/splashlogo.png')} style={{height:100,width:100}}></Image>}
          <TouchableOpacity onPress={() => chooseFile('photo')}>
                     <MaterialCommunityIcons name="camera" size={25} color={'green'} style={{marginTop:hp('8%')}}/>

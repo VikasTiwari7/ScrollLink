@@ -1,2 +1,2 @@
-export const BaseUrl='http://192.168.43.39:4000/';
+export const BaseUrl='http://79.133.41.198:4000';
 // export const ngrokUrl=''

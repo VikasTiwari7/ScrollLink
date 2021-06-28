@@ -28,7 +28,7 @@ const Signin =({navigation})=>{
                 // navigation.navigate('Bottom')
                 setLoader(true);
                 let response = await fetch(
-                  api.BaseUrl+'users/authenticate',
+                  api.BaseUrl+'/users/authenticate',
                   {
                     method: 'POST',
                     headers: {
