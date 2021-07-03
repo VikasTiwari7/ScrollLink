@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState,useEffect } from 'react';
-import { Image, ScrollView, Text,View } from 'react-native';
+import { Image, ScrollView, Text,View ,ActivityIndicator} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import {
     widthPercentageToDP as wp,
@@ -13,12 +13,14 @@ import {
     launchImageLibrary
   } from 'react-native-image-picker'
   import TabViewExample from './tab';
+  import ImagePicker from 'react-native-image-crop-picker';
   import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 const ProfileActivity=({navigation})=>{
     const [userName,setUserName]=useState();
     const [email,setEMail]=useState();
     const [filePath, setFilePath] = useState();
     const [coverFilepath,setCoverfilepath] =useState();
+    const [loader,setLoader]=useState(false)
 
 
     useEffect(() => {
@@ -29,6 +31,7 @@ const ProfileActivity=({navigation})=>{
   
   },[]);
   const retrieveProfile = async () => {
+    setLoader(true)
     var userId = await Utility.getFromLocalStorge("userId");
     var username=await Utility.getFromLocalStorge("fullName");
     setUserName(username);
@@ -60,6 +63,7 @@ const ProfileActivity=({navigation})=>{
         let def=api.BaseUrl+abc;
         // console.log("new url",def);
         setFilePath(def);
+        setLoader(false)
        
        
 
@@ -111,78 +115,39 @@ const ProfileActivity=({navigation})=>{
     const showActivity=()=>{
         navigation.navigate('ProfileActivity')
     }
+
     const chooseFile1 = (type) => {
-        let options = {
-          mediaType: type,
-          maxWidth: 300,
-          maxHeight: 550,
-          quality: 1,
-        };
-        launchImageLibrary(options, (response) => {
-          console.log('Response = ', response);
-    
-          if (response.didCancel) {
-            alert('User cancelled camera picker');
-            return;
-          } else if (response.errorCode == 'camera_unavailable') {
-            alert('Camera not available on device');
-            return;
-          } else if (response.errorCode == 'permission') {
-            alert('Permission not satisfied');
-            return;
-          } else if (response.errorCode == 'others') {
-            alert(response.errorMessage);
-            return;
-          }
-          console.log('base64 -> ', response.base64);
-          console.log('uri -> ', response.uri);
-          console.log('width -> ', response.width);
-          console.log('height -> ', response.height);
-          console.log('fileSize -> ', response.fileSize);
-          console.log('type -> ', response.type);
-          console.log('fileName -> ', response.fileName);
-          setCoverfilepath(response);
-        });
-      };
-      const chooseFile = (type) => {
-        let options = {
-          mediaType: type,
-          maxWidth: 300,
-          maxHeight: 550,
-          quality: 1,
-        };
-        launchImageLibrary(options, (response) => {
-          console.log('Response = ', response);
-    
-          if (response.didCancel) {
-            alert('User cancelled camera picker');
-            return;
-          } else if (response.errorCode == 'camera_unavailable') {
-            alert('Camera not available on device');
-            return;
-          } else if (response.errorCode == 'permission') {
-            alert('Permission not satisfied');
-            return;
-          } else if (response.errorCode == 'others') {
-            alert(response.errorMessage);
-            return;
-          }
-          console.log('base64 -> ', response.base64);
-          console.log('uri -> ', response.uri);
-          console.log('width -> ', response.width);
-          console.log('height -> ', response.height);
-          console.log('fileSize -> ', response.fileSize);
-          console.log('type -> ', response.type);
-          console.log('fileName -> ', response.fileName);
-          setFilePath(response);
-        });
-      };
+      ImagePicker.openPicker({
+        width: 300,
+        height: 400,
+        cropping: true
+      }).then(image => {
+        // setCoverfilepath(image.path);
+        console.log(image.path);
+      })
+      // uploadCoverPic
+  
+    };
+  
+    const chooseFile = async(type) => {
+      ImagePicker.openPicker({
+        width: 300,
+        height: 400,
+        cropping: true
+      }).then(image => {
+        // setFilePath(image.path);
+        console.log(image.path);
+  
+      })
+    };
+ 
       const backarrow=()=>{
         navigation.navigate('Profile_cover')
       }
     return(
     <View>
       <ScrollView>
+     
      
        <View>
        <View style={{flexDirection:'row',width:wp('100%'),justifyContent:'space-evenly',backgroundColor:'#a19495'}}>
@@ -192,10 +157,14 @@ const ProfileActivity=({navigation})=>{
                    </TouchableOpacity>
             <Text style={{fontSize:22,fontWeight:'bold'}}>Profile Activity Screen</Text>
             </View>
+            {loader == true ? (
+          <ActivityIndicator style={{marginTop: 10}} size="large" color="red" />
+        ) : null}
            {coverFilepath?
            <Image source={{uri:coverFilepath}} style={{width:wp('100%'),height:hp('20%')}} ></Image>:
            <Image source={require('../../../images/d-cover.jpg')} style={{width:wp('100%'),height:hp('20%')}}  ></Image>}
        </View>
+      
      
        <View style={{alignSelf:'flex-end',backgroundColor:'gray',padding:8,marginRight:wp('5%'),width:wp('20%'),borderRadius:10,marginTop:hp('-10%')}}>
            <TouchableOpacity onPress={() => chooseFile1('photo')}>

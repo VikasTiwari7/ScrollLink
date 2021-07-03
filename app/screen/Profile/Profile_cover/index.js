@@ -121,10 +121,50 @@ const ProfileCover = ({ navigation }) => {
     }).then(image => {
       setCoverfilepath(image.path);
       console.log(image.path);
+      console.log("vikjvjjj");
+      Imageupload(image); 
     })
-    uploadCoverPic
 
   };
+  const Imageupload= async(photo)=>{
+    console.log("vikkkkkassss");
+    const data = new FormData();
+
+    data.append("profileImage", {
+      name: photo.fileName,
+      type: photo.type,
+      uri:
+        Platform.OS === "android" ? photo.uri : photo.uri.replace("file://", "")
+    });
+    console.log("api structire data is ",data);
+    // return data;
+    var userId = await Utility.getFromLocalStorge("userId");
+    // userId=userId;
+    var token = await Utility.getFromLocalStorge("JWT");
+   
+    console.log("token=" + token)
+    try {
+      let response = await fetch(
+        // 192.168.0.101:4000/users/60cb6255633ed91264de3cc3/getProfilePicUrl
+        `http://79.133.41.198:4000/users/${userId}/uploadProfilePic`, // getCoverPic
+        {
+          method: "POST",
+          headers: {
+            Authorization: 'Bearer ' + token,
+            // 'Accept': 'application/json',
+            // 'Content-Type':'application/json'
+          },
+          body:data
+        }
+      )
+      // var imageStr = this.arrayBufferToBase64(data.img.data.data);
+      let json = await response;
+      console.log(json);
+
+      }catch(error){
+        console.log(error);
+      }
+    }
 
   const chooseFile = async(type) => {
     ImagePicker.openPicker({
@@ -133,35 +173,14 @@ const ProfileCover = ({ navigation }) => {
       cropping: true
     }).then(image => {
       setFilePath(image.path);
-      console.log(image.path);
+      console.log(image);
+      console.log("vikjvjjj");
+      Imageupload(image);
 
     })
 
     // upload image to server 
-    if (filePath != null) {
-      var userId = await Utility.getFromLocalStorge("userId");
-      var token = await Utility.getFromLocalStorge("JWT");
-      //If file selected then create FormData
-      const fileToUpload = filePath;
-      const data = new FormData();
-      data.append('name', 'Image Upload');
-      data.append('profileImage', fileToUpload);
-      let res = await fetch(
-        `http://79.133.41.198:4000/users/${userId}/uploadProfilePic`,
-        {
-          method: 'post',
-          body: data,
-          headers: {
-            Authorization: 'Bearer ' + token,
-            'Content-Type': 'multipart/form-data; ',
-          },
-        }
-      );
-     console.log(res);
-    } else {
-      //if no file selected the show alert
-      alert('Please Select File first');
-    }
+  
 
 
   };

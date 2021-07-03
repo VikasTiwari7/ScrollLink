@@ -16,6 +16,8 @@ import {
     launchImageLibrary
 } from 'react-native-image-picker';
 import Header from '../../../components/header';
+import * as Utility from '../../../utility/index';
+import * as api from '../../../api/url';
 
 const HomePage = ({ navigation }) => {
     const [condition, setCondition] = useState(false);
@@ -25,7 +27,52 @@ const HomePage = ({ navigation }) => {
     const [hidewish,setHidewish]=useState(true);
     useEffect(()=>{
         getDate1();
+        retrieveProfile();
+        
     })
+    const retrieveProfile = async () => {
+        var userId = await Utility.getFromLocalStorge("userId");
+        // userId=userId;
+        var token = await Utility.getFromLocalStorge("JWT");
+        // token=token;
+        var username = await Utility.getFromLocalStorge("fullName");
+        // setUserName(username);
+        var email = await Utility.getFromLocalStorge("email");
+        // setEMail(email);
+        // console.log(userId);
+        console.log("token=" + token)
+        try {
+          let response = await fetch(
+            // 192.168.0.101:4000/users/60cb6255633ed91264de3cc3/getProfilePicUrl
+            `http://79.133.41.198:4000/users/${userId}/getProfilePicUrl`, // getCoverPic
+            {
+              method: "GET",
+              headers: {
+                Authorization: 'Bearer ' + token,
+                // 'Accept': 'application/json',
+                // 'Content-Type':'application/json'
+              }
+            }
+          )
+          // var imageStr = this.arrayBufferToBase64(data.img.data.data);
+          let json = await response.text();
+          // console.log(json);
+          let abc = json;
+          // console.log("new abc",abc)
+    
+          let def = api.BaseUrl + abc;
+          await Utility.setInLocalStorge("imageUrl",def)
+          // console.log("new url",def);
+        //   setFilePath(def);
+    
+    
+    
+          //   await Utility.setInLocalStorge('songs', json.item)
+    
+        } catch (error) {
+          console.error(error);
+        }
+      };
     const getDate1=()=>{
         var hours = new Date().getHours();
         console.log(hours);

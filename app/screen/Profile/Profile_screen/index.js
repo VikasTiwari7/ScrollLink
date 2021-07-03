@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, ScrollView, Text, View,Alert } from 'react-native';
+import { Image, ScrollView, Text, View,Alert,ActivityIndicator } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import {
     widthPercentageToDP as wp,
@@ -13,18 +13,20 @@ import { EventRegister } from 'react-native-event-listeners';
 const Profile_screen=({navigation})=>{
 const [userName,setuserName]=useState();
 const [dark,setDark]=useState(false);
-
+const [imagefilePath,setImagefilepath]=useState();
+const [loader,setLoader]=useState(false)
 useEffect(() => {
- 
       retrieveData();
-  
   },[]);
   const retrieveData = async () => {
-    let username = await Utility.getFromLocalStorge("fullName")
+    setLoader(true);
+    let username = await Utility.getFromLocalStorge("fullName");
+    let imageUrl=await Utility.getFromLocalStorge("imageUrl");
+    setImagefilepath(imageUrl);
+    console.log(imagefilePath);
     setuserName(username);
+    setLoader(false)
   };
-
-
     const openCoverProfile=()=>{
     navigation.navigate('Profile_cover')
     }
@@ -72,14 +74,19 @@ useEffect(() => {
     return(
         <View>
             <ScrollView>
+            {loader == true ? (
+          <ActivityIndicator style={{marginTop: 10}} size="large" color="red" />
+        ) : null}
                 <View style={{margin:wp('3%')}}>
                     <Text style={{fontSize:20,fontWeight:'bold'}}>{userName}</Text>
                 </View>
                 <View style={{flexDirection:'row',margin:wp('5%')}}>
                     <TouchableOpacity onPress={()=>openCoverProfile()}>
                     <View>
+                        {imagefilePath?
+                         <Image source={{uri:imagefilePath}} style={{height:40,width:40,borderRadius:50}}></Image>:
                     <Image source={require('../../../images/splashlogo.png')} style={{height:40,width:40,borderRadius:50}}>
-                    </Image>
+                    </Image>}
                     </View>
                     </TouchableOpacity>
                     <View style={{marginLeft:wp('5%')}}>
