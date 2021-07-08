@@ -50,6 +50,7 @@ useEffect(() => {
         await Utility.removeAuthKey('userId')
         await Utility.removeAuthKey('email')
         await Utility.removeAuthKey('fullName')
+        await Utility.removeAuthKey('imageUrl')
         navigation.navigate('Signin');
     }
     const  cancelbutto=()=>{

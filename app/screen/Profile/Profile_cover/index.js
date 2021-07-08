@@ -10,6 +10,7 @@ import * as Utility from '../../../utility/index';
 import ImagePicker from 'react-native-image-crop-picker';
 import TabViewExample from './tab';
 import * as api from '../../../api/url';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 var RNFS = require('react-native-fs');
 
@@ -20,7 +21,6 @@ const ProfileCover = ({ navigation }) => {
   const [coverFilepath, setCoverfilepath] = useState();
   const [coverurl, setCoverUrl] = useState();
   const [profileurl, setProfileUrl] = useState();
-
 
   useEffect(() => {
 
@@ -132,9 +132,8 @@ const ProfileCover = ({ navigation }) => {
 
     data.append("profileImage", {
       name: photo.fileName,
-      type: photo.type,
-      uri:
-        Platform.OS === "android" ? photo.uri : photo.uri.replace("file://", "")
+      type: "image/jpeg",
+      uri:coverFilepath
     });
     console.log("api structire data is ",data);
     // return data;
@@ -143,7 +142,7 @@ const ProfileCover = ({ navigation }) => {
     var token = await Utility.getFromLocalStorge("JWT");
    
     console.log("token=" + token)
-    try {
+    try { 
       let response = await fetch(
         // 192.168.0.101:4000/users/60cb6255633ed91264de3cc3/getProfilePicUrl
         `http://79.133.41.198:4000/users/${userId}/uploadProfilePic`, // getCoverPic
@@ -165,6 +164,33 @@ const ProfileCover = ({ navigation }) => {
         console.log(error);
       }
     }
+    const launchImageLibrarys = () => {
+      let options = {
+          storageOptions: {
+              skipBackup: true,
+              path: 'images',
+          },
+      };
+      launchImageLibrary(options,async (response) => {
+          console.log('Response = ', response);
+
+          if (response.didCancel) {
+              console.log('User cancelled image picker');
+          } else if (response.error) {
+              console.log('ImagePicker Error: ', response.error);
+          } else if (response.customButton) {
+              console.log('User tapped custom button: ', response.customButton);
+              alert(response.customButton);
+          } else {
+            await  console.log("check response uri", response)
+              setCoverfilepath(response.uri)
+              // setSelectedImage(response.uri)
+              // setIsVisible(false)
+              Imageupload(response)
+          }
+      });
+
+  }
 
   const chooseFile = async(type) => {
     ImagePicker.openPicker({
@@ -206,7 +232,7 @@ const ProfileCover = ({ navigation }) => {
 
 
         <View style={{ alignSelf: 'flex-end', backgroundColor: 'gray', padding: 8, marginRight: wp('5%'), width: wp('20%'), borderRadius: 10, marginTop: hp('-10%') }}>
-          <TouchableOpacity onPress={() => chooseFile1('photo')}>
+          <TouchableOpacity onPress={() => launchImageLibrarys('')}>
             <Text style={{ color: 'white', alignSelf: 'center' }}>Cover</Text>
           </TouchableOpacity>
         </View>
