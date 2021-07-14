@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useEffect, useState} from 'react';
 import {View,Text, Alert} from 'react-native';
 import {
     widthPercentageToDP as wp,
@@ -15,6 +15,51 @@ import {
 const CreateStatus=()=>{
     const [Status,setStatus]=useState();
     const [filePath, setFilePath] = useState();
+
+    // useEffect(()=>{
+    //   getLocaldata()
+
+    // },[])
+
+    const Imageupload= async(photo)=>{
+      console.log("vikkkkkassss");
+      const data = new FormData();
+  
+      data.append("profileImage", {
+        name: photo.fileName,
+        type: "image/jpeg",
+        uri:coverFilepath
+      });
+      console.log("api structire data is ",data);
+      // return data;
+      var userId = await Utility.getFromLocalStorge("userId");
+      // userId=userId;
+      var token = await Utility.getFromLocalStorge("JWT");
+     
+      console.log("token=" + token)
+      try { 
+        let response = await fetch(
+          // 192.168.0.101:4000/users/60cb6255633ed91264de3cc3/getProfilePicUrl
+          `http://79.133.41.198:4000/users/${userId}/uploadProfilePic`, // getCoverPic
+          {
+            method: "POST",
+            headers: {
+              Authorization: 'Bearer ' + token,
+              // 'Accept': 'application/json',
+              // 'Content-Type':'application/json'
+            },
+            body:data
+          }
+        )
+        // var imageStr = this.arrayBufferToBase64(data.img.data.data);
+        let json = await response;
+        console.log(json);
+  
+        }catch(error){
+          console.log(error);
+        }
+      }
+
     const chooseFile = (type) => {
         let options = {
           mediaType: type,
@@ -45,7 +90,8 @@ const CreateStatus=()=>{
           console.log('fileSize -> ', response.fileSize);
           console.log('type -> ', response.type);
           console.log('fileName -> ', response.fileName);
-          setFilePath(response);
+          setFilePath(response.uri);
+          Imageupload(response)
         });
       };
       const onCreate1=()=>{

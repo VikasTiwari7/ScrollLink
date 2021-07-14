@@ -28,6 +28,9 @@ import Mygroups from '../screen/Draw/Mygroups';
 import Mypages from '../screen/Draw/Mypages';
 import Popularpost from '../screen/Draw/Popularpost';
 import Savedpost from '../screen/Draw/Savedpost';
+import NewPost from '../screen/Home/publishPost/newPost';
+import Newpost from '../screen/Home/publishPost/newPost';
+
 
 const Stack = createStackNavigator();
 const Stacks=()=>{
@@ -65,6 +68,7 @@ return (
         <Stack.Screen name ="Mypages" component ={Mypages} options={{headerShown:false}}/>
 
         <Stack.Screen name ="Savedpost" component ={Savedpost} options={{headerShown:false}}/>
+        <Stack.Screen name ="Newpost" component={Newpost} options={{headerShown:false}}/>
       </Stack.Navigator>
   );
 }

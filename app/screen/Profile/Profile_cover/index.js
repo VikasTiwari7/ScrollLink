@@ -23,11 +23,8 @@ const ProfileCover = ({ navigation }) => {
   const [profileurl, setProfileUrl] = useState();
 
   useEffect(() => {
-
     retrieveProfile();
     retrieveCover();
-
-
   }, []);
   const retrieveProfile = async () => {
     var userId = await Utility.getFromLocalStorge("userId");
@@ -38,64 +35,43 @@ const ProfileCover = ({ navigation }) => {
     setUserName(username);
     var email = await Utility.getFromLocalStorge("email");
     setEMail(email);
-    // console.log(userId);
     console.log("token=" + token)
     try {
       let response = await fetch(
-        // 192.168.0.101:4000/users/60cb6255633ed91264de3cc3/getProfilePicUrl
         `http://79.133.41.198:4000/users/${userId}/getProfilePicUrl`, // getCoverPic
         {
           method: "GET",
           headers: {
             Authorization: 'Bearer ' + token,
-            // 'Accept': 'application/json',
-            // 'Content-Type':'application/json'
           }
         }
       )
-      // var imageStr = this.arrayBufferToBase64(data.img.data.data);
       let json = await response.text();
-      // console.log(json);
       let abc = json;
-      // console.log("new abc",abc)
 
       let def = api.BaseUrl + abc;
-      // console.log("new url",def);
       setFilePath(def);
-
-
-
-      //   await Utility.setInLocalStorge('songs', json.item)
-
     } catch (error) {
       console.error(error);
     }
-  };
-
+  }
   const retrieveCover = async () => {
     var userId = await Utility.getFromLocalStorge("userId");
     var token = await Utility.getFromLocalStorge("JWT");
     try {
       let response = await fetch(
-        // 192.168.0.101:4000/users/60cb6255633ed91264de3cc3/getProfilePicUrl
         `http://79.133.41.198:4000/users/${userId}/getCoverPicUrl`, // getCoverPic
         {
           method: "GET",
           headers: {
             Authorization: 'Bearer ' + token,
-            // 'Accept': 'application/json',
-            // 'Content-Type':'application/json'
           }
         }
       )
-      // var imageStr = this.arrayBufferToBase64(data.img.data.data);
       let json = await response.text();
-      // console.log(json);
       let abc = json;
-      // console.log("new abc",abc)
 
       let def = api.BaseUrl + abc;
-      // console.log("new url",def);
       setCoverfilepath(def);
 
 
@@ -107,26 +83,114 @@ const ProfileCover = ({ navigation }) => {
     }
 
   }
+
   const openGenralSettingPage = () => {
     navigation.navigate('ProfileGeneralSetting')
   }
   const showActivity = () => {
     navigation.navigate('ProfileActivity')
   }
-  const chooseFile1 = (type) => {
-    ImagePicker.openPicker({
-      width: 300,
-      height: 400,
-      cropping: true
-    }).then(image => {
-      setCoverfilepath(image.path);
-      console.log(image.path);
-      console.log("vikjvjjj");
-      Imageupload(image); 
-    })
-
-  };
+ 
   const Imageupload= async(photo)=>{
+    console.log("vikkkkkassss");
+    const data = new FormData();
+
+    data.append("coverImage", {
+      name: photo.fileName,
+      type: "image/jpeg",
+      uri:coverFilepath
+    });
+    var userId = await Utility.getFromLocalStorge("userId");
+    var token = await Utility.getFromLocalStorge("JWT");
+   
+    console.log("token=" + token)
+    try { 
+      let response = await fetch(
+        `http://79.133.41.198:4000/users/${userId}/uploadCoverPic`, // getCoverPic
+        {
+          method: "POST",
+          headers: {
+            Authorization: 'Bearer ' + token,
+      
+          },
+          body:data
+        }
+      )
+      let json = await response;
+      console.log(json);
+
+      }catch(error){
+        console.log(error);
+      }
+    }
+
+    const launchImageLibrarys = () => {
+      let options = {
+          storageOptions: {
+              skipBackup: true,
+              path: 'images',
+          },
+      };
+      launchImageLibrary(options,async (response) => {
+          console.log('Response = ', response);
+
+          if (response.didCancel) {
+              console.log('User cancelled image picker');
+          } else if (response.error) {
+              console.log('ImagePicker Error: ', response.error);
+          } else if (response.customButton) {
+              console.log('User tapped custom button: ', response.customButton);
+              alert(response.customButton);
+          } else {
+            await  console.log("check response uri", response)
+              setCoverfilepath(response.uri)
+              // setSelectedImage(response.uri)
+              // setIsVisible(false)
+              Imageupload(response)
+          }
+      });
+
+  }
+
+  const chooseFile = async(type) => {
+  
+    let options = {
+      mediaType: type,
+      maxWidth: 300,
+      maxHeight: 550,
+      quality: 1,
+    };
+    launchImageLibrary(options, (response) => {
+      console.log('Response = ', response);
+
+      if (response.didCancel) {
+        alert('User cancelled camera picker');
+        return;
+      } else if (response.errorCode == 'camera_unavailable') {
+        alert('Camera not available on device');
+        return;
+      } else if (response.errorCode == 'permission') {
+        alert('Permission not satisfied');
+        return;
+      } else if (response.errorCode == 'others') {
+        alert(response.errorMessage);
+        return;
+      }
+      console.log('base64 -> ', response.base64);
+      console.log('uri -> ', response.uri);
+      console.log('width -> ', response.width);
+      console.log('height -> ', response.height);
+      console.log('fileSize -> ', response.fileSize);
+      console.log('type -> ', response.type);
+      console.log('fileName -> ', response.fileName);
+      setFilePath(response.uri);
+      Imageuploadfile(response)
+    });
+
+
+  }
+
+  const Imageuploadfile= async(photo)=>{
     console.log("vikkkkkassss");
     const data = new FormData();
 
@@ -164,52 +228,7 @@ const ProfileCover = ({ navigation }) => {
         console.log(error);
       }
     }
-    const launchImageLibrarys = () => {
-      let options = {
-          storageOptions: {
-              skipBackup: true,
-              path: 'images',
-          },
-      };
-      launchImageLibrary(options,async (response) => {
-          console.log('Response = ', response);
 
-          if (response.didCancel) {
-              console.log('User cancelled image picker');
-          } else if (response.error) {
-              console.log('ImagePicker Error: ', response.error);
-          } else if (response.customButton) {
-              console.log('User tapped custom button: ', response.customButton);
-              alert(response.customButton);
-          } else {
-            await  console.log("check response uri", response)
-              setCoverfilepath(response.uri)
-              // setSelectedImage(response.uri)
-              // setIsVisible(false)
-              Imageupload(response)
-          }
-      });
-
-  }
-
-  const chooseFile = async(type) => {
-    ImagePicker.openPicker({
-      width: 300,
-      height: 400,
-      cropping: true
-    }).then(image => {
-      setFilePath(image.path);
-      console.log(image);
-      console.log("vikjvjjj");
-      Imageupload(image);
-
-    })
-
-    // upload image to server 
-  
-
-
-  };
   const backarrow = () => {
     navigation.navigate('Bottom')
   }

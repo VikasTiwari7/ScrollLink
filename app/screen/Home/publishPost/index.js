@@ -7,10 +7,14 @@ import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from '../../../utility/index';
-
-import ImagePicker from 'react-native-image-crop-picker';
+import {
+  launchCamera,
+  launchImageLibrary
+} from 'react-native-image-picker'
+// import ImagePicker from 'react-native-image-crop-picker';
   import * as Utility from '../../../utility/index';
 import * as api from '../../../api/url';
+var postId
 
 const publishPost=({navigation})=>{
     const [Status,setStatus]=useState();
@@ -20,7 +24,9 @@ const publishPost=({navigation})=>{
         navigation.navigate('drawer');
     }
     useEffect(() => {
-      // retriveData();
+      if(!postId){
+      retriveData();
+      }
         const timeoutHandle = setTimeout(() => {
           if(!filePath){
             chooseFile('photo');
@@ -30,19 +36,73 @@ const publishPost=({navigation})=>{
       });
     const retriveData= async()=>{
      
+      var userId = await Utility.getFromLocalStorge("userId");
+      var token = await Utility.getFromLocalStorge("JWT");
+      try {
+        let response = await fetch(
+          `http://79.133.41.198:4000/users/${userId}/createpost`, // getCoverPic
+          {
+            method: "GET",
+            headers: {
+              Authorization: 'Bearer ' + token,
+            }
+          }
+        )
+        let json = await response.json();
+        console.log(json);
+        postId=json.post_id;
+        console.log("new post id",postId)
+        // let abc = json;   
     }
+    catch(error){
+      console.log(error);
+    }
+  }
       const chooseFile = (type) => {
-     
-      ImagePicker.openPicker({
-        width: 300,
-        height: 400,
-        cropping: true
-      }).then(image => {
-        setFilePath(image.path)
-        console.log(image.path);
-      })
+        let options = {
+          mediaType: type,
+          maxWidth: 300,
+          maxHeight: 550,
+          quality: 1,
+        };
+        launchImageLibrary(options, (response) => {
+          console.log('Response = ', response);
+    
+          if (response.didCancel) {
+            alert('User cancelled camera picker');
+            return;
+          } else if (response.errorCode == 'camera_unavailable') {
+            alert('Camera not available on device');
+            return;
+          } else if (response.errorCode == 'permission') {
+            alert('Permission not satisfied');
+            return;
+          } else if (response.errorCode == 'others') {
+            alert(response.errorMessage);
+            return;
+          }
+          console.log('base64 -> ', response.base64);
+          console.log('uri -> ', response.uri);
+          console.log('width -> ', response.width);
+          console.log('height -> ', response.height);
+          console.log('fileSize -> ', response.fileSize);
+          console.log('type -> ', response.type);
+          console.log('fileName -> ', response.fileName);
+          setFilePath(response.uri);
+          Imageupload(response)
+        });
+    
     }
-      const publishPost= async()=>{
+      const Imageupload= async(photo)=>{
+        // navigation.navigate('Newpost');
+        console.log("vikkkkkassss");
+        const data = new FormData();
+    
+        data.append("postData", {
+          name: "abc",
+          type: "image/jpeg",
+          uri:filePath
+        });
         let userId = await Utility.getFromLocalStorge("userId");
         let  token=await Utility.getFromLocalStorge("JWT");
         let name =await Utility .getFromLocalStorge("fullName");
@@ -54,8 +114,13 @@ const publishPost=({navigation})=>{
         Alert.alert("Please Choose any post ")
         }
         else{
+          console.log( `http://79.133.41.198:4000/users/${userId}/updatepost/${postId}/updatePostMedia`);
+
+          try{
+
         let response = await fetch(
-          `http://192.168.43.39:4000/users/${userId}/createpost`,
+          // http://79.133.41.198:4000/users/60d97dd575d2e590a94188a5/createpost
+          `http://79.133.41.198:4000/users/${userId}/updatepost/${postId}/updatePostMedia`,
           {
             method: 'POST',
             headers: {
@@ -63,27 +128,23 @@ const publishPost=({navigation})=>{
               'Content-Type': 'application/json',
               Authorization: 'Bearer '+token
             },
-            body: JSON.stringify({
-              user_id:userId,
-              username:name,
-              post_type:"image",
-              file_name:"abc4.png",
-              post_upload_url:"C:\\Users\\RD\\AppData\\Local\\Temp",
-              caption:Status,
-              tag_people:"abc",
-              location:"delhi"
-            }),
+            body: data
           },
         );
-        // console.log(response.status)
-        if(response.status==200){
-          Alert.alert("Success Fully Uploaded ");
-          navigation.navigate('drawer');
-        }
-        else{
-          Alert.alert("failed");
-        }
-        
+        console.log("after Image upload",response);
+        // const json=response.json();
+        // console.log("Post id is ",json)
+        // if(response.status==200){
+        //   Alert.alert("Success Fully Uploaded ");
+         
+        // }
+        // else{
+        //   Alert.alert("failed");
+        // }
+          }catch(error){
+            console.log(error);
+
+          }
 
       }
     }
@@ -96,7 +157,7 @@ const publishPost=({navigation})=>{
                     <MaterialCommunityIcons name="bolnisi-cross" size={25} color={'#b9424d'} />
                     </View>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={()=>publishPost()}>
+                    <TouchableOpacity onPress={()=>Imageupload('photo')}>
                     <View style={{backgroundColor:'#b9424d',padding:10,borderRadius:5}}>
                         <Text style={{color:'white',}}>Publish</Text>
                     </View>
