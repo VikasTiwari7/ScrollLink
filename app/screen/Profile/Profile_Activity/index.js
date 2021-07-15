@@ -13,7 +13,6 @@ import {
     launchImageLibrary
   } from 'react-native-image-picker'
   import TabViewExample from './tab';
-  import ImagePicker from 'react-native-image-crop-picker';
   import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 const ProfileActivity=({navigation})=>{
     const [userName,setUserName]=useState();
@@ -116,30 +115,30 @@ const ProfileActivity=({navigation})=>{
         navigation.navigate('ProfileActivity')
     }
 
-    const chooseFile1 = (type) => {
-      ImagePicker.openPicker({
-        width: 300,
-        height: 400,
-        cropping: true
-      }).then(image => {
-        // setCoverfilepath(image.path);
-        console.log(image.path);
-      })
-      // uploadCoverPic
+    // const chooseFile1 = (type) => {
+    //   ImagePicker.openPicker({
+    //     width: 300,
+    //     height: 400,
+    //     cropping: true
+    //   }).then(image => {
+    //     // setCoverfilepath(image.path);
+    //     console.log(image.path);
+    //   })
+    //   // uploadCoverPic
   
-    };
+    // };
   
-    const chooseFile = async(type) => {
-      ImagePicker.openPicker({
-        width: 300,
-        height: 400,
-        cropping: true
-      }).then(image => {
-        // setFilePath(image.path);
-        console.log(image.path);
+    // const chooseFile = async(type) => {
+    //   ImagePicker.openPicker({
+    //     width: 300,
+    //     height: 400,
+    //     cropping: true
+    //   }).then(image => {
+    //     // setFilePath(image.path);
+    //     console.log(image.path);
   
-      })
-    };
+    //   })
+    // };
  
       const backarrow=()=>{
         navigation.navigate('Profile_cover')

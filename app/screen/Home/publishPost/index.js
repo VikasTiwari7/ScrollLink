@@ -19,7 +19,7 @@ var postId
 const publishPost=({navigation})=>{
     const [Status,setStatus]=useState();
     const [filePath, setFilePath] = useState();
-    const [imageName,setImageName]=useState();
+    // const [imageName,setImageName]=useState();
     const backHome=()=>{
         navigation.navigate('drawer');
     }
@@ -52,6 +52,7 @@ const publishPost=({navigation})=>{
         console.log(json);
         postId=json.post_id;
         console.log("new post id",postId)
+        await Utility.setInLocalStorge('postId',postId);
         // let abc = json;   
     }
     catch(error){
@@ -88,8 +89,8 @@ const publishPost=({navigation})=>{
           console.log('fileSize -> ', response.fileSize);
           console.log('type -> ', response.type);
           console.log('fileName -> ', response.fileName);
-          setFilePath(response.uri);
-          Imageupload(response)
+          setFilePath(response.assets[0].uri);
+          Imageupload(response.assets[0])
         });
     
     }
@@ -99,9 +100,9 @@ const publishPost=({navigation})=>{
         const data = new FormData();
     
         data.append("postData", {
-          name: "abc",
+          name: photo.fileName,
           type: "image/jpeg",
-          uri:filePath
+          uri:photo.uri
         });
         let userId = await Utility.getFromLocalStorge("userId");
         let  token=await Utility.getFromLocalStorge("JWT");
@@ -124,23 +125,24 @@ const publishPost=({navigation})=>{
           {
             method: 'POST',
             headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
+          
               Authorization: 'Bearer '+token
             },
             body: data
           },
         );
-        console.log("after Image upload",response);
+        let json = await response;
+      console.log(json);
         // const json=response.json();
         // console.log("Post id is ",json)
-        // if(response.status==200){
-        //   Alert.alert("Success Fully Uploaded ");
+        if(json.status==200){
+          navigation.navigate('Newpost');
+          // Alert.alert("Success Fully Uploaded ");
          
-        // }
-        // else{
-        //   Alert.alert("failed");
-        // }
+        }
+        else{
+          Alert.alert("failed");
+        }
           }catch(error){
             console.log(error);
 

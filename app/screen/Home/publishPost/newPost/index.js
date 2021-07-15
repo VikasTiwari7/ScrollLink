@@ -1,70 +1,63 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Switch, Image, TouchableOpacity } from 'react-native';
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from '../../../../utility/index';
+import * as Utility from '../../../../utility/index';
 const Newpost = () => {
     const [isEnabled, setIsEnabled] = useState(false);
     const [isEnabled1, setIsEnabled1] = useState(false);
     const [isEnabled2, setIsEnabled2] = useState(false);
     const [isEnabled3, setIsEnabled3] = useState(false);
+    useEffect(()=>{
+        // retrivedata()
+
+    },[])
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
     const toggleSwitch1 = () => setIsEnabled1(previousState => !previousState);
     const toggleSwitch2 = () => setIsEnabled2(previousState => !previousState);
     const toggleSwitch3 = () => setIsEnabled3(previousState => !previousState);
-
-
-          //   console.log("vikkkkkassss");
-      //   const data = new FormData();
+const Finalpost= async()=>{
+    let userId = await Utility.getFromLocalStorge("userId");
+    let  token=await Utility.getFromLocalStorge("JWT");
+    let name =await Utility .getFromLocalStorge("fullName");
+    let postId=await Utility.getFromLocalStorge('postId');
+     console.log(userId);
+     console.log("token=" +token)
+    console.log(userId);
     
-      //   data.append("file_name", {
-      //     name: "abc",
-      //     type: "image/jpeg",
-      //     uri:filePath
-      //   });
-      //   let userId = await Utility.getFromLocalStorge("userId");
-      //   let  token=await Utility.getFromLocalStorge("JWT");
-      //   let name =await Utility .getFromLocalStorge("fullName");
-      //    console.log(userId);
-      //    console.log("token=" +token)
-      //   // Alert.alert("its working");
-      //   console.log(userId);
-      //   if(Utility.isFieldEmpty(filePath)){
-      //   Alert.alert("Please Choose any post ")
-      //   }
-      //   else{
-      //   let response = await fetch(
-      //     // http://79.133.41.198:4000/users/60d97dd575d2e590a94188a5/createpost
-      //     `http://79.133.41.198:4000/users/${userId}/createpost`,
-      //     {
-      //       method: 'POST',
-      //       headers: {
-      //         Accept: 'application/json',
-      //         'Content-Type': 'application/json',
-      //         Authorization: 'Bearer '+token
-      //       },
-      //       body: {
-      //         id:userId,
-      //         username:name,
-      //         post_type:"image",
-      //         file_name:data,
-      //         post_upload_image:"/temp",
-      //       },
-      //     },
-      //   );
-      //   console.log(response);
-      //   const json=response.json();
-      //   console.log("Post id is ",json)
-      //   if(response.status==200){
-      //     Alert.alert("Success Fully Uploaded ");
-         
-      //   }
-      //   else{
-      //     Alert.alert("failed");
-      //   }
-        
+    
+      console.log( `http://79.133.41.198:4000/users/${userId}/updatepost/${postId}/updatePostInfo`);
 
+      try{
+    let response = await fetch(
+      // http://79.133.41.198:4000/users/60d97dd575d2e590a94188a5/createpost
+      `http://79.133.41.198:4000/users/${userId}/updatepost/${postId}/updatePostInfo`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer '+token
+        },
+        body: {
+            user_id:"60d97dd575d2e590a94188a5",
+            username:"Rohan",
+            post_type:"image",
+            tag_people:"Something is better then people",
+            location:"delhi",
+            description:"bla bla"
+         }
+      },
+    );
+    let json = await response;
+  console.log(json);
+
+}catch(error){
+    console.log(error);
+}
+    
+     
+    }
     return (
         <View>
             <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', margin: wp('5%') }}>
@@ -78,7 +71,7 @@ const Newpost = () => {
                         <Text>New Post</Text>
                     </View>
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={()=>Finalpost()}>
                     <View>
                         <Text>Right</Text>
                     </View>

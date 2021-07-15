@@ -7,7 +7,6 @@ import {
   heightPercentageToDP as hp,
 } from '../../../utility/index';
 import * as Utility from '../../../utility/index';
-import ImagePicker from 'react-native-image-crop-picker';
 import TabViewExample from './tab';
 import * as api from '../../../api/url';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
