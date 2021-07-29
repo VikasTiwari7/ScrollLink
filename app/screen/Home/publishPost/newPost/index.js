@@ -5,7 +5,7 @@ import {
     heightPercentageToDP as hp,
 } from '../../../../utility/index';
 import * as Utility from '../../../../utility/index';
-const Newpost = () => {
+const Newpost = ({navigation}) => {
     const [isEnabled, setIsEnabled] = useState(false);
     const [isEnabled1, setIsEnabled1] = useState(false);
     const [isEnabled2, setIsEnabled2] = useState(false);
@@ -26,8 +26,6 @@ const Finalpost= async()=>{
      console.log(userId);
      console.log("token=" +token)
     console.log(userId);
-    
-    
       console.log( `http://79.133.41.198:4000/users/${userId}/updatepost/${postId}/updatePostInfo`);
 
       try{
@@ -51,6 +49,15 @@ const Finalpost= async()=>{
     );
     let json = await response;
   console.log(json);
+  if(json.status==200){
+    navigation.navigate('drawer');
+    // Alert.alert("Success Fully Uploaded ");
+   
+  }
+  else{
+    Alert.alert("failed");
+  }
+
 
 }catch(error){
     console.log(error);

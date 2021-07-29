@@ -116,6 +116,8 @@ const publishPost=({navigation})=>{
         }
         else{
           console.log( `http://79.133.41.198:4000/users/${userId}/updatepost/${postId}/updatePostMedia`);
+console.log("fprm data result",data);
+
 
           try{
 

@@ -115,31 +115,7 @@ const ProfileActivity=({navigation})=>{
         navigation.navigate('ProfileActivity')
     }
 
-    // const chooseFile1 = (type) => {
-    //   ImagePicker.openPicker({
-    //     width: 300,
-    //     height: 400,
-    //     cropping: true
-    //   }).then(image => {
-    //     // setCoverfilepath(image.path);
-    //     console.log(image.path);
-    //   })
-    //   // uploadCoverPic
-  
-    // };
-  
-    // const chooseFile = async(type) => {
-    //   ImagePicker.openPicker({
-    //     width: 300,
-    //     height: 400,
-    //     cropping: true
-    //   }).then(image => {
-    //     // setFilePath(image.path);
-    //     console.log(image.path);
-  
-    //   })
-    // };
- 
+   
       const backarrow=()=>{
         navigation.navigate('Profile_cover')
       }

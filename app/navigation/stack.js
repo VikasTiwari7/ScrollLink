@@ -28,10 +28,11 @@ import Mygroups from '../screen/Draw/Mygroups';
 import Mypages from '../screen/Draw/Mypages';
 import Popularpost from '../screen/Draw/Popularpost';
 import Savedpost from '../screen/Draw/Savedpost';
-import NewPost from '../screen/Home/publishPost/newPost';
 import Newpost from '../screen/Home/publishPost/newPost';
-
-
+import createPage from '../screen/Draw/Mypages/Createpage';
+import updatePagemedia from '../screen/Draw/Mypages/UpdatepageImage';
+import showpagedetails from '../screen/Draw/Mypages/showpage/index';
+import Pagepost from '../screen/Draw/Mypages/Pagepost/index';
 const Stack = createStackNavigator();
 const Stacks=()=>{
 return (
@@ -69,6 +70,10 @@ return (
 
         <Stack.Screen name ="Savedpost" component ={Savedpost} options={{headerShown:false}}/>
         <Stack.Screen name ="Newpost" component={Newpost} options={{headerShown:false}}/>
+        <Stack.Screen name ="createPage" component={createPage} options={{headerShown:false}}/>
+        <Stack.Screen name="updatepagemedia" component={updatePagemedia} options={{headerShown:false}}/>
+        <Stack.Screen name="showpagedetails" component={showpagedetails} options={{headerShown:false}}/>
+        <Stack.Screen name="pagepost" component={Pagepost} options={{headerShown:false}}/>
       </Stack.Navigator>
   );
 }

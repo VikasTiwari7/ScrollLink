@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
     Image, ScrollView, Text, View, Button, TextInput, Platform,
-    PermissionsAndroid,
+    PermissionsAndroid,FlatList
 } from 'react-native';
 import {
     widthPercentageToDP as wp,
@@ -18,16 +18,19 @@ import {
 import Header from '../../../components/header';
 import * as Utility from '../../../utility/index';
 import * as api from '../../../api/url';
-
+// var timeline=[];
 const HomePage = ({ navigation }) => {
     const [condition, setCondition] = useState(false);
     const [chatcondition, setChatcondition] = useState(false);
     const [filePath, setFilePath] = useState({});
     const [wish,setWish]=useState('');
     const [hidewish,setHidewish]=useState(true);
+    const [timeline,setTimeline]=useState([]);
+    var vikas=[];
     useEffect(()=>{
         getDate1();
         retrieveProfile();
+        getTimeline();
         
     })
     const retrieveProfile = async () => {
@@ -73,7 +76,57 @@ const HomePage = ({ navigation }) => {
             setWish("Good Night")
         }
     }
-
+    const getTimeline = async () => {
+        var userId = await Utility.getFromLocalStorge("userId");
+        var token = await Utility.getFromLocalStorge("JWT");
+        var username = await Utility.getFromLocalStorge("fullName");
+        var email = await Utility.getFromLocalStorge("email");
+        console.log("token=123" + token)
+        try {
+          let response = await fetch(
+            `http://79.133.41.198:4000/users/${userId}/timelinefeed`, // getCoverPic
+            {
+              method: "GET",
+              headers: {
+                Authorization: 'Bearer ' + token,
+               
+            }
+            }
+          )
+          let json = await response.json();
+        console.log("timeline post ",json[0]._id);
+        if(json.length>1){
+            for(let i=0;i<json.length;i++){
+                let post_id=json[i].post_id;
+                var userId = await Utility.getFromLocalStorge("userId");
+        var token = await Utility.getFromLocalStorge("JWT");
+        var username = await Utility.getFromLocalStorge("fullName");
+        var email = await Utility.getFromLocalStorge("email");
+        console.log("token=123" + token)
+                try{
+                    let response = await fetch(`http://79.133.41.198:4000/users/${userId}/getpostid/${post_id}`,
+                    {
+                        method: "GET",
+                        headers: {
+                          Authorization: 'Bearer ' + token,
+                        }
+                      }
+                    )
+                let json = await response.json();
+                console.log("find post details",json);
+                // setTimeline(json);
+                vikas.push(json);
+                console.log("vikas array length =:",vikas.length);
+                }catch(error){
+                    console.log(error);
+                }
+            }
+        }
+        // setTimeline(json);
+        } catch (error) {
+          console.error(error);
+        }
+      };
     const requestCameraPermission = async () => {
         if (Platform.OS === 'android') {
             try {
@@ -92,7 +145,6 @@ const HomePage = ({ navigation }) => {
             }
         } else return true;
     };
-
     const requestExternalWritePermission = async () => {
         if (Platform.OS === 'android') {
             try {
@@ -326,6 +378,17 @@ const HomePage = ({ navigation }) => {
                         </View>
                     </TouchableOpacity>
                 </View>
+                {/* <ScrollView> */}
+                <FlatList
+            data={vikas}
+            // numColumns={2}
+            renderItem={({item, index}) => (
+              <View key={index}>
+                  <Text>{item.post_id}</Text>
+              </View>
+            )}
+          />
+          {/* </ScrollView> */}
                 <View style={{ padding: 5, margin: wp('4%'), backgroundColor: 'white', borderRadius: 10, elevation: 10, opacity: 10 }}>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', padding: 10 }}>
                         <TouchableOpacity onPress={() => openProfileCover()}>
@@ -340,8 +403,6 @@ const HomePage = ({ navigation }) => {
                                     <Text style={{ fontSize: 12 }}>6 hours ago.</Text>
                                     <Text style={{ fontSize: 10 }}>Translate</Text>
                                 </View>
-
-
                             </View>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => setCondition(true)}>
@@ -349,9 +410,6 @@ const HomePage = ({ navigation }) => {
                                 <MaterialCommunityIcons name="menu-down" size={35} />
                             </View>
                         </TouchableOpacity>
-
-
-
                     </View>
                     <View style={{ margin: wp('4%') }}>
                         <Text>Real test here </Text>
@@ -403,9 +461,8 @@ const HomePage = ({ navigation }) => {
 
                         </View>
                     </View>
-
-
                 </View>
+            
                 {chatcondition == true ?
                     <View style={{ flexDirection: 'row', margin: wp('5%'), justifyContent: 'space-evenly', alignItems: 'center' }}>
                         <TouchableOpacity onPress={() => openProfileCover()}>
@@ -422,222 +479,6 @@ const HomePage = ({ navigation }) => {
                             </View>
                         </TouchableOpacity>
                     </View> : null}
-
-
-
-                <View style={{ padding: 5, margin: wp('4%'), backgroundColor: 'white', borderRadius: 10, elevation: 10, opacity: 10 }}>
-
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}>
-                        <View>
-                            <Image source={require('../../../images/splashlogo.png')} style={{ height: 40, width: 40, borderRadius: 50 }}></Image>
-                        </View>
-                        <View>
-                            <Text>Vikas Tiwari</Text>
-                            <View style={{ flexDirection: 'row' }}>
-                                <Text style={{ fontSize: 12 }}>6 hours ago .</Text>
-                                <Text style={{ fontSize: 10 }}>Translate</Text>
-                            </View>
-
-                        </View>
-                        <View>
-                            <MaterialCommunityIcons name="menu-down" size={35} />
-                        </View>
-
-                    </View>
-                    <View style={{ margin: wp('5%') }} >
-                        <Text>Real test here jhfsjfjfjf
-                        dsggjdgjg
-                        sdghgdfjg
-                        sjhgjfj
-                        dvjfdjsfjrfjhf
-                        vbjhfjsgfhgvkasgkgrgkf
-                        erkgjkgkjgkjgkjgsd
-                        gvfvgj
-                        fvvfvvshahfvkhfvkaghkfsdfgvka
-                        smvfjvnsavnmgfhvmnafvcjfhdhsvavds
-                        dvmnavjfdhakjwegvhgjnadkjgfkjggkakflegakhgf
-                        ane ghjkegbavvfjghfjnkjguaeljcgacnbklhwe
-                        wdgkjgdbwkho
-                   </Text>
-                        <Image source={require('../../../images/d-cover.jpg')} style={{ width: wp('80%'), borderRadius: 10 }}></Image>
-                    </View>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                        <View>
-                            <MaterialCommunityIcons name="hand-heart" size={25} />
-                        </View>
-                        <View>
-                            <MaterialCommunityIcons name="message" size={25} />
-
-                        </View>
-                        <View>
-                            <MaterialCommunityIcons name="share" size={25} />
-
-                        </View>
-                    </View>
-
-
-
-                </View>
-                <View style={{ padding: 5, margin: wp('4%'), backgroundColor: 'white', borderRadius: 10, elevation: 10, opacity: 10 }}>
-
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}>
-                        <View>
-                            <Image source={require('../../../images/splashlogo.png')} style={{ height: 40, width: 40, borderRadius: 50 }}></Image>
-                        </View>
-                        <View>
-                            <Text>Vikas Tiwari</Text>
-                            <View style={{ flexDirection: 'row' }}>
-                                <Text style={{ fontSize: 12 }}>6 hours ago .</Text>
-                                <Text style={{ fontSize: 10 }}>Translate</Text>
-                            </View>
-
-                        </View>
-                        <View>
-                            <MaterialCommunityIcons name="menu-down" size={35} />
-                        </View>
-
-                    </View>
-                    <View style={{ margin: wp('5%') }} >
-                        <Text>Real test here jhfsjfjfjf
-                        dsggjdgjg
-                        sdghgdfjg
-                        sjhgjfj
-                        dvjfdjsfjrfjhf
-                        vbjhfjsgfhgvkasgkgrgkf
-                        erkgjkgkjgkjgkjgsd
-                        gvfvgj
-                        fvvfvvshahfvkhfvkaghkfsdfgvka
-                        smvfjvnsavnmgfhvmnafvcjfhdhsvavds
-                        dvmnavjfdhakjwegvhgjnadkjgfkjggkakflegakhgf
-                        ane ghjkegbavvfjghfjnkjguaeljcgacnbklhwe
-                        wdgkjgdbwkho
-                   </Text>
-                        <Image source={require('../../../images/d-cover.jpg')} style={{ width: wp('80%'), borderRadius: 10 }}></Image>
-                    </View>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                        <View>
-                            <MaterialCommunityIcons name="hand-heart" size={25} />
-                        </View>
-                        <View>
-                            <MaterialCommunityIcons name="message" size={25} />
-
-                        </View>
-                        <View>
-                            <MaterialCommunityIcons name="share" size={25} />
-
-                        </View>
-                    </View>
-
-
-
-                </View>
-
-                <View style={{ padding: 5, margin: wp('4%'), backgroundColor: 'white', borderRadius: 10, elevation: 10, opacity: 10 }}>
-
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}>
-                        <View>
-                            <Image source={require('../../../images/splashlogo.png')} style={{ height: 40, width: 40, borderRadius: 50 }}></Image>
-                        </View>
-                        <View>
-                            <Text>Vikas Tiwari</Text>
-                            <View style={{ flexDirection: 'row' }}>
-                                <Text style={{ fontSize: 12 }}>6 hours ago .</Text>
-                                <Text style={{ fontSize: 10 }}>Translate</Text>
-                            </View>
-
-                        </View>
-                        <View>
-                            <MaterialCommunityIcons name="menu-down" size={35} />
-                        </View>
-
-                    </View>
-                    <View style={{ margin: wp('5%') }} >
-                        <Text>Real test here jhfsjfjfjf
-                        dsggjdgjg
-                        sdghgdfjg
-                        sjhgjfj
-                        dvjfdjsfjrfjhf
-                        vbjhfjsgfhgvkasgkgrgkf
-                        erkgjkgkjgkjgkjgsd
-                        gvfvgj
-                        fvvfvvshahfvkhfvkaghkfsdfgvka
-                        smvfjvnsavnmgfhvmnafvcjfhdhsvavds
-                        dvmnavjfdhakjwegvhgjnadkjgfkjggkakflegakhgf
-                        ane ghjkegbavvfjghfjnkjguaeljcgacnbklhwe
-                        wdgkjgdbwkho
-                   </Text>
-                        <Image source={require('../../../images/d-cover.jpg')} style={{ width: wp('80%'), borderRadius: 10 }}></Image>
-                    </View>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                        <View>
-                            <MaterialCommunityIcons name="hand-heart" size={25} />
-                        </View>
-                        <View>
-                            <MaterialCommunityIcons name="message" size={25} />
-
-                        </View>
-                        <View>
-                            <MaterialCommunityIcons name="share" size={25} />
-
-                        </View>
-                    </View>
-
-
-
-                </View>
-                <View style={{ padding: 5, margin: wp('4%'), backgroundColor: 'white', borderRadius: 10, elevation: 10, opacity: 10 }}>
-
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}>
-                        <View>
-                            <Image source={require('../../../images/splashlogo.png')} style={{ height: 40, width: 40, borderRadius: 50 }}></Image>
-                        </View>
-                        <View>
-                            <Text>Vikas Tiwari</Text>
-                            <View style={{ flexDirection: 'row' }}>
-                                <Text style={{ fontSize: 12 }}>6 hours ago .</Text>
-                                <Text style={{ fontSize: 10 }}>Translate</Text>
-                            </View>
-
-                        </View>
-                        <View>
-                            <MaterialCommunityIcons name="menu-down" size={35} />
-                        </View>
-
-                    </View>
-                    <View style={{ margin: wp('5%') }} >
-                        <Text>Real test here jhfsjfjfjf
-                        dsggjdgjg
-                        sdghgdfjg
-                        sjhgjfj
-                        dvjfdjsfjrfjhf
-                        vbjhfjsgfhgvkasgkgrgkf
-                        erkgjkgkjgkjgkjgsd
-                        gvfvgj
-                        fvvfvvshahfvkhfvkaghkfsdfgvka
-                        smvfjvnsavnmgfhvmnafvcjfhdhsvavds
-                        dvmnavjfdhakjwegvhgjnadkjgfkjggkakflegakhgf
-                        ane ghjkegbavvfjghfjnkjguaeljcgacnbklhwe
-                        wdgkjgdbwkho
-                   </Text>
-                        <Image source={require('../../../images/d-cover.jpg')} style={{ width: wp('80%'), borderRadius: 10 }}></Image>
-                    </View>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                        <View>
-                            <MaterialCommunityIcons name="hand-heart" size={25} />
-                        </View>
-                        <View>
-                            <MaterialCommunityIcons name="message" size={25} />
-
-                        </View>
-                        <View>
-                            <MaterialCommunityIcons name="share" size={25} />
-
-                        </View>
-                    </View>
-
-
-
-                </View>
 
             </ScrollView>
         </View>
