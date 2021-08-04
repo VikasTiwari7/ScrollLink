@@ -1,5 +1,5 @@
 import React,{useState} from 'react';
-import {View,Text,Image, TouchableOpacity} from 'react-native';
+import {View,Text,Image, TouchableOpacity, Alert} from 'react-native';
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
@@ -32,22 +32,23 @@ const CreatePage=({navigation})=>{
             headers: {
               Authorization: 'Bearer '+token
             },
-            body:JSON.stringify({
+            // it is the body  i used the proper format like postman but also it show the error  that's why i use the little format 
+            body:{
                 username:"Rohan",
                 pagename:"Rohanpage",
                 page_url:"rohan vikas page link",
-                info:{
-                    bio:"blahh blahh",
-                    category:"vikas",
-                    upload_post_path:"somehing",
-                    privacy_status:"public",
-                    description:"chal bhai"
-                }
-          }),
+               
+          },
         }
         )
         let json = await response;
       console.log(json);
+      if(json.status==200){
+          navigation.navigate('drawer');
+      }
+      else {
+          Alert.alert("Something wrong")
+      }
     
     }catch(error){
         console.log(error);

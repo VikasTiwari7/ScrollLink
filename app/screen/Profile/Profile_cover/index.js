@@ -9,7 +9,7 @@ import {
 import * as Utility from '../../../utility/index';
 import TabViewExample from './tab';
 import * as api from '../../../api/url';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import DocumentPicker from 'react-native-document-picker';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 var RNFS = require('react-native-fs');
 
@@ -18,8 +18,8 @@ const ProfileCover = ({ navigation }) => {
   const [email, setEMail] = useState();
   const [filePath, setFilePath] = useState();
   const [coverFilepath, setCoverfilepath] = useState();
-  const [coverurl, setCoverUrl] = useState();
-  const [profileurl, setProfileUrl] = useState();
+  // const [coverurl, setCoverUrl] = useState();
+  // const [profileurl, setProfileUrl] = useState();
 
   useEffect(() => {
     retrieveProfile();
@@ -45,11 +45,10 @@ const ProfileCover = ({ navigation }) => {
           }
         }
       )
-      let json = await response.text();
-      let abc = json;
-
-      let def = api.BaseUrl + abc;
-      setFilePath(def);
+      let json = await response;
+      console.log("profile cover details",json.url);
+      setFilePath(json.url);
+      
     } catch (error) {
       console.error(error);
     }
@@ -67,14 +66,9 @@ const ProfileCover = ({ navigation }) => {
           }
         }
       )
-      let json = await response.text();
-      let abc = json;
-
-      let def = api.BaseUrl + abc;
-      setCoverfilepath(def);
-
-
-
+      let json = await response;
+      console.log("cover details",json.url)
+    setCoverfilepath(json.url);
       //   await Utility.setInLocalStorge('songs', json.item)
 
     } catch (error) {
@@ -95,9 +89,9 @@ const ProfileCover = ({ navigation }) => {
     const data = new FormData();
 
     data.append("coverImage", {
-      name: photo.fileName,
+      name: photo.name,
       type: "image/jpeg",
-      uri:coverFilepath
+      uri:photo.uri
     });
     var userId = await Utility.getFromLocalStorge("userId");
     var token = await Utility.getFromLocalStorge("JWT");
@@ -123,68 +117,41 @@ const ProfileCover = ({ navigation }) => {
       }
     }
 
-    const launchImageLibrarys = () => {
-      let options = {
-          storageOptions: {
-              skipBackup: true,
-              path: 'images',
-          },
-      };
-      launchImageLibrary(options,async (response) => {
-          console.log('Response = ', response);
-
-          if (response.didCancel) {
-              console.log('User cancelled image picker');
-          } else if (response.error) {
-              console.log('ImagePicker Error: ', response.error);
-          } else if (response.customButton) {
-              console.log('User tapped custom button: ', response.customButton);
-              alert(response.customButton);
-          } else {
-            await  console.log("check response uri", response)
-              setCoverfilepath(response.uri)
-              // setSelectedImage(response.uri)
-              // setIsVisible(false)
-              Imageupload(response)
-          }
-      });
-
+    const launchImageLibrarys =async()=> {
+      try {
+        const res = await DocumentPicker.pick({
+          type: [DocumentPicker.types.images],
+        });
+        console.log(res
+        );
+        setFilePath(res.uri);
+        Imageuploadfile(res)
+      } catch (err) {
+        if (DocumentPicker.isCancel(err)) {
+          // User cancelled the picker, exit any dialogs or menus and move on
+        } else {
+          throw err;
+        }
+      }
   }
 
   const chooseFile = async(type) => {
   
-    let options = {
-      mediaType: type,
-      maxWidth: 300,
-      maxHeight: 550,
-      quality: 1,
-    };
-    launchImageLibrary(options, (response) => {
-      console.log('Response = ', response);
-
-      if (response.didCancel) {
-        alert('User cancelled camera picker');
-        return;
-      } else if (response.errorCode == 'camera_unavailable') {
-        alert('Camera not available on device');
-        return;
-      } else if (response.errorCode == 'permission') {
-        alert('Permission not satisfied');
-        return;
-      } else if (response.errorCode == 'others') {
-        alert(response.errorMessage);
-        return;
+    try {
+      const res = await DocumentPicker.pick({
+        type: [DocumentPicker.types.images],
+      });
+      console.log(res
+      );
+      setCoverfilepath(res.uri);
+      Imageupload(res)
+    } catch (err) {
+      if (DocumentPicker.isCancel(err)) {
+        // User cancelled the picker, exit any dialogs or menus and move on
+      } else {
+        throw err;
       }
-      console.log('base64 -> ', response.base64);
-      console.log('uri -> ', response.uri);
-      console.log('width -> ', response.width);
-      console.log('height -> ', response.height);
-      console.log('fileSize -> ', response.fileSize);
-      console.log('type -> ', response.type);
-      console.log('fileName -> ', response.fileName);
-      setFilePath(response.uri);
-      Imageuploadfile(response)
-    });
+    }
 
 
   }
@@ -194,9 +161,9 @@ const ProfileCover = ({ navigation }) => {
     const data = new FormData();
 
     data.append("profileImage", {
-      name: photo.fileName,
+      name: photo.name,
       type: "image/jpeg",
-      uri:coverFilepath
+      uri:photo.uri
     });
     console.log("api structire data is ",data);
     // return data;

@@ -9,6 +9,7 @@ import {
 } from '../../../utility/index';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { FAB, Portal, Provider } from 'react-native-paper';
 import { } from '@react-navigation/drawer'
 import {
     launchCamera,
@@ -17,6 +18,7 @@ import {
 import Header from '../../../components/header';
 import * as Utility from '../../../utility/index';
 import * as api from '../../../api/url';
+// import {d}/
 // var timeline=[];
 const HomePage = ({ navigation }) => {
     const [condition, setCondition] = useState(false);
@@ -25,14 +27,41 @@ const HomePage = ({ navigation }) => {
     const [wish, setWish] = useState('');
     const [hidewish, setHidewish] = useState(true);
     const [timeline, setTimeline] = useState([]);
+    const [statusdata,setStatusData]=useState([]);
     const [msg,setMsg]=useState();
     var vikas = [];
     useEffect(() => {
         getDate1();
         retrieveProfile();
         getTimeline();
+        getStatus();
 
     }, [])
+    
+    const getStatus = async () => {
+        var userId = await Utility.getFromLocalStorge("userId");
+        var token = await Utility.getFromLocalStorge("JWT");
+        var username = await Utility.getFromLocalStorge("fullName");
+        var email = await Utility.getFromLocalStorge("email");
+        console.log("token=123" + token)
+        try {
+            let response = await fetch(
+                `http://79.133.41.198:4000/users/${userId}/getstatus`, // getCoverPic
+                {
+                    method: "GET",
+                    headers: {
+                        Authorization: 'Bearer ' + token,
+
+                    }
+                }
+            )
+            let json = await response.json();
+            console.log("status records:-",json);
+            setStatusData(json);
+        } catch (error) {
+            console.error(error);
+        }
+    };
     const retrieveProfile = async () => {
         var userId = await Utility.getFromLocalStorge("userId");
         var token = await Utility.getFromLocalStorge("JWT");
@@ -297,9 +326,16 @@ const HomePage = ({ navigation }) => {
             console.error(error);
         }
     }
+    const [state, setState] = useState({ open: false });
+
+    const onStateChange = ({ open }) => setState({ open });
+  
+    const { open } = state;
     return (
         <View>
-
+            {/* <View style={{margin:1}}> */}
+            
+    {/* </View> */}
             <Header navigation={navigation} />
             {hidewish ?
                 <View style={{ flexDirection: "row", justifyContent: 'space-evenly' }}>
@@ -316,99 +352,21 @@ const HomePage = ({ navigation }) => {
                 <View style={{ margin: hp('1%') }}>
                     <ScrollView horizontal={true}>
                         <View style={{ flexDirection: 'row' }}>
+                            {statusdata.length>0? statusdata.map((item,index)=>(
                             <View>
                                 <View style={{ width: wp('30%'), margin: wp('2%'), elevation: 10, borderRadius: 10 }}>
                                     <TouchableOpacity>
-                                        <Image source={require('../../../images/d-avatar.jpg')} style={{ height: 100, width: 100 }}></Image>
+                                        <Image source={{uri:item.status_url}} style={{ height: 100, width: 100 }}></Image>
                                     </TouchableOpacity>
                                     <TouchableOpacity onPress={() => openStatus()}>
-
                                         <View style={{ alignSelf: 'center', backgroundColor: 'white', borderRadius: 20 }} >
                                             <MaterialCommunityIcons name="plus" size={35} />
                                         </View>
-
-
                                     </TouchableOpacity>
-
                                 </View>
                                 <Text style={{ alignSelf: 'center' }}>Create you post</Text>
                             </View>
-                            <View>
-                                <View style={{ width: wp('30%'), margin: wp('2%'), elevation: 10, borderRadius: 10 }}>
-                                    <TouchableOpacity>
-                                        <Image source={require('../../../images/d-avatar.jpg')} style={{ height: 100, width: 100 }}></Image>
-                               </TouchableOpacity>
-                                    <TouchableOpacity>
-                                        <View style={{ alignSelf: 'center', backgroundColor: 'white', borderRadius: 20 }} >
-                                            <MaterialCommunityIcons name="plus" size={35} />
-                                        </View>
-
-                                    </TouchableOpacity>
-
-                                </View>
-                                <Text style={{ alignSelf: 'center' }}>Create you post</Text>
-                            </View>
-                            <View>
-                                <View style={{ width: wp('30%'), margin: wp('2%'), elevation: 10, borderRadius: 10 }}>
-                                    <TouchableOpacity>
-                                        <Image source={require('../../../images/d-avatar.jpg')} style={{ height: 100, width: 100 }}></Image>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity>
-                                        <View style={{ alignSelf: 'center', backgroundColor: 'white', borderRadius: 20 }} >
-                                            <MaterialCommunityIcons name="plus" size={35} />
-                                        </View>
-
-                                    </TouchableOpacity>
-
-                                </View>
-                                <Text style={{ alignSelf: 'center' }}>Create you post</Text>
-                            </View>
-                            <View>
-                                <View style={{ width: wp('30%'), margin: wp('2%'), elevation: 10, borderRadius: 10 }}>
-                                    <TouchableOpacity>
-                                        <Image source={require('../../../images/d-avatar.jpg')} style={{ height: 100, width: 100 }}></Image>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity>
-                                        <View style={{ alignSelf: 'center', backgroundColor: 'white', borderRadius: 20 }} >
-                                            <MaterialCommunityIcons name="plus" size={35} />
-                                        </View>
-
-                                    </TouchableOpacity>
-
-                                </View>
-                                <Text style={{ alignSelf: 'center' }}>Create you post</Text>
-                            </View>
-                            <View>
-                                <View style={{ width: wp('30%'), margin: wp('2%'), elevation: 10, borderRadius: 10 }}>
-                                    <TouchableOpacity>
-                                        <Image source={require('../../../images/d-avatar.jpg')} style={{ height: 100, width: 100 }}></Image>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity>
-                                        <View style={{ alignSelf: 'center', backgroundColor: 'white', borderRadius: 20 }} >
-                                            <MaterialCommunityIcons name="plus" size={35} />
-                                        </View>
-
-                                    </TouchableOpacity>
-
-                                </View>
-                                <Text style={{ alignSelf: 'center' }}>Create you post</Text>
-                            </View>
-                            <View>
-                                <View style={{ width: wp('30%'), margin: wp('2%'), elevation: 10, borderRadius: 10 }}>
-                                    <TouchableOpacity>
-                                        <Image source={require('../../../images/d-avatar.jpg')} style={{ height: 100, width: 100 }}></Image>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity>
-                                        <View style={{ alignSelf: 'center', backgroundColor: 'white', borderRadius: 20 }} >
-                                            <MaterialCommunityIcons name="plus" size={35} />
-                                        </View>
-
-                                    </TouchableOpacity>
-
-                                </View>
-                                <Text style={{ alignSelf: 'center' }}>Create you post</Text>
-                            </View>
-
+                            )):null}
                         </View>
                     </ScrollView>
 
@@ -469,7 +427,40 @@ const HomePage = ({ navigation }) => {
                         </View>
                     </TouchableOpacity>
                 </View>
-                {timeline.map((item, index) => (
+                {/* <View> */}
+                <Provider   >
+      <Portal >
+        <FAB.Group
+        fabStyle={{position:'absolute',bottom:5,margin:0}}
+        
+          open={open}
+          icon={open ? 'plus' : 'plus'}
+          actions={[
+            { icon: 'plus', 
+            label:'Status',
+            onPress: () => openStatus() },
+            {
+                icon:'plus',
+                label:'Post',
+                onPress:()=>openPublishPost()            },
+            {
+                icon:'plus',
+                // label:'Post',
+                onPress:()=>console.log("Pressed post")
+            }
+          ]}
+          onStateChange={onStateChange}
+          onPress={() => {
+            if (open) {
+              // do something if the speed dial is open
+            }
+          }}
+        />
+      </Portal>
+    </Provider>
+    {/* </View> */}
+                {timeline.length > 0?
+                timeline.map((item, index) => (
 
                     <View style={{ padding: 5, margin: wp('4%'), backgroundColor: 'white', borderRadius: 10, elevation: 10, opacity: 10, marginBottom: hp('5%') }} key={index}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', padding: 10 }}>
@@ -579,8 +570,13 @@ const HomePage = ({ navigation }) => {
                             
                             : null}
                     </View>
-                ))}
+                )):null}
+
+
+               
+
             </ScrollView>
+        
         </View>
 
     )

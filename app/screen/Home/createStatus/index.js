@@ -4,15 +4,16 @@ import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from '../../../utility/index';
+import * as Utility from '../../../utility/index';
 import { TextInput} from 'react-native-paper';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {
-    launchCamera,
-    launchImageLibrary
-  } from 'react-native-image-picker'
-
-const CreateStatus=()=>{
+// import {
+//     launchCamera,
+//     launchImageLibrary
+//   } from 'react-native-image-picker'
+  import DocumentPicker from 'react-native-document-picker';
+const CreateStatus=({navigation})=>{
     const [Status,setStatus]=useState();
     const [filePath, setFilePath] = useState();
 
@@ -25,10 +26,10 @@ const CreateStatus=()=>{
       console.log("vikkkkkassss");
       const data = new FormData();
   
-      data.append("profileImage", {
-        name: photo.fileName,
+      data.append("statusData", {
+        name: photo.name,
         type: "image/jpeg",
-        uri:coverFilepath
+        uri:photo.uri
       });
       console.log("api structire data is ",data);
       // return data;
@@ -40,7 +41,7 @@ const CreateStatus=()=>{
       try { 
         let response = await fetch(
           // 192.168.0.101:4000/users/60cb6255633ed91264de3cc3/getProfilePicUrl
-          `http://79.133.41.198:4000/users/${userId}/uploadProfilePic`, // getCoverPic
+          `http://79.133.41.198:4000/users/${userId}/createstatus`, // getCoverPic
           {
             method: "POST",
             headers: {
@@ -54,45 +55,36 @@ const CreateStatus=()=>{
         // var imageStr = this.arrayBufferToBase64(data.img.data.data);
         let json = await response;
         console.log(json);
+        if(json.status==200){
+          Alert.alert("Status Update");
+        navigation.navigate('drawer');
+
+        }
+        else{
+          Alert.alert("Something wrong happen!")
+        }
   
         }catch(error){
           console.log(error);
         }
       }
 
-    const chooseFile = (type) => {
-        let options = {
-          mediaType: type,
-          maxWidth: 300,
-          maxHeight: 550,
-          quality: 1,
-        };
-        launchImageLibrary(options, (response) => {
-          console.log('Response = ', response);
-    
-          if (response.didCancel) {
-            alert('User cancelled camera picker');
-            return;
-          } else if (response.errorCode == 'camera_unavailable') {
-            alert('Camera not available on device');
-            return;
-          } else if (response.errorCode == 'permission') {
-            alert('Permission not satisfied');
-            return;
-          } else if (response.errorCode == 'others') {
-            alert(response.errorMessage);
-            return;
-          }
-          console.log('base64 -> ', response.base64);
-          console.log('uri -> ', response.uri);
-          console.log('width -> ', response.width);
-          console.log('height -> ', response.height);
-          console.log('fileSize -> ', response.fileSize);
-          console.log('type -> ', response.type);
-          console.log('fileName -> ', response.fileName);
-          setFilePath(response.uri);
-          Imageupload(response)
-        });
+    const chooseFile = async(type) => {
+      try {
+      const res = await DocumentPicker.pick({
+        type: [DocumentPicker.types.images],
+      });
+      console.log(res
+      );
+      setFilePath(res.uri) 
+      Imageupload(res)
+    } catch (err) {
+      if (DocumentPicker.isCancel(err)) {
+        // User cancelled the picker, exit any dialogs or menus and move on
+      } else {
+        throw err;
+      }
+    }
       };
       const onCreate1=()=>{
           if(filePath){

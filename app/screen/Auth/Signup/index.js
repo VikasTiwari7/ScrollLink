@@ -28,7 +28,11 @@ const openLogin=()=>{
         try{
             if (Utility.isFieldEmpty(username && email && password && confirmPassword && Gender )) {
                 Alert.alert('Please Fill the all field');
-              }  else {
+              } else if(Utility.isValidEmail(email))
+            {
+                Alert.alert("Email is not valid");
+            }  
+              else {
                 setLoader(true);
                 let response = await fetch(
                   BaseUrl+'/users/register',
@@ -108,6 +112,7 @@ const openLogin=()=>{
                 <TextInput
                 label="Password"
                 value={password}
+                secureTextEntry={true}
                 onChangeText={text => setPassword(text)}
                 />
                 </View>
@@ -115,6 +120,7 @@ const openLogin=()=>{
                 <TextInput
                 label="Confirm Password"
                 value={confirmPassword}
+                secureTextEntry={true}
                 onChangeText={text => setconfirmPassword(text)}
                 />
                 </View>
@@ -124,8 +130,6 @@ const openLogin=()=>{
                 <Text style={{alignSelf:'center',color:'white',fontSize:18}}>Let's Go !</Text>
                 </View>
                 </TouchableOpacity>
-              
-                
            </View>
            <View style={{flexDirection:'row',justifyContent:'center'}}>
                <View>
