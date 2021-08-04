@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React,{useEffect} from 'react';
 import { View, useWindowDimensions ,Text, TextInput,Image} from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { TabView, SceneMap } from 'react-native-tab-view';
@@ -7,8 +7,10 @@ import {
   heightPercentageToDP as hp,
 } from '../../../utility/index';
 import * as Utility from '../../../utility/index';
+import { useState } from 'react/cjs/react.development';
 
 const FirstRoute = () => (
+
   <View style={{ flex: 1}} >
     <ScrollView>
       <View style={{margin:wp('4%'),backgroundColor:"white",padding:10,borderRadius:10,elevation:10,opacity:10,marginBottom:hp('5%')}}>
@@ -90,12 +92,44 @@ const SecondRoute = () => (
 export default function TabViewExample() {
   const layout = useWindowDimensions();
 
-  const [index, setIndex] = React.useState(0);
+  const [index, setIndex] = React.useState(0); 
+  const [activity,setActivity]=useState([]);
+
   const [routes] = React.useState([
     { key: 'first', title: 'Activities' },
     { key: 'second', title: 'Gallary' },
    
   ]);
+
+  useEffect(()=>{
+    getallpost();
+
+  },[])
+  const getallpost= async()=>{
+    var userId = await Utility.getFromLocalStorge("userId");
+    var token = await Utility.getFromLocalStorge("JWT");
+    var username = await Utility.getFromLocalStorge("fullName");
+    var email = await Utility.getFromLocalStorge("email");
+    console.log("token=123" + token)
+    try {
+        let response = await fetch(
+            `http://79.133.41.198:4000/users/${userId}/getallpost`, // getCoverPic
+            {
+                method: "GET",
+                headers: {
+                    Authorization: 'Bearer ' + token,
+
+                }
+            }
+        )
+        let json = await response.json();
+        console.log("post details",json);
+        setActivity(json);
+    } catch (error) {
+        console.error(error);
+    }
+
+  }
 
   const renderScene = SceneMap({
     first: FirstRoute,

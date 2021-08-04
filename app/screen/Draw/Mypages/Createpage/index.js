@@ -32,10 +32,10 @@ const CreatePage=({navigation})=>{
             headers: {
               Authorization: 'Bearer '+token
             },
-            body: {
+            body:JSON.stringify({
                 username:"Rohan",
                 pagename:"Rohanpage",
-                // page_url:"rohan vikas page link",
+                page_url:"rohan vikas page link",
                 info:{
                     bio:"blahh blahh",
                     category:"vikas",
@@ -43,9 +43,9 @@ const CreatePage=({navigation})=>{
                     privacy_status:"public",
                     description:"chal bhai"
                 }
-          },
+          }),
         }
-        );
+        )
         let json = await response;
       console.log(json);
     

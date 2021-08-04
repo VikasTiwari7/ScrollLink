@@ -8,10 +8,7 @@ import {
   } from '../../../utility/index';
   import * as api from '../../../api/url';
   import * as Utility from '../../../utility/index';
-  import {
-    launchCamera,
-    launchImageLibrary
-  } from 'react-native-image-picker'
+
   import TabViewExample from './tab';
   import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 const ProfileActivity=({navigation})=>{
