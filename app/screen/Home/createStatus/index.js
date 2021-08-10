@@ -8,6 +8,8 @@ import * as Utility from '../../../utility/index';
 import { TextInput} from 'react-native-paper';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import * as api from '../../../api/url';
+
 // import {
 //     launchCamera,
 //     launchImageLibrary
@@ -23,12 +25,12 @@ const CreateStatus=({navigation})=>{
     // },[])
 
     const Imageupload= async(photo)=>{
-      console.log("vikkkkkassss");
+      console.log("Going to image upload for status");
       const data = new FormData();
   
       data.append("statusData", {
         name: photo.name,
-        type: "image/jpeg",
+        type: "image/jpeg",                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
         uri:photo.uri
       });
       console.log("api structire data is ",data);
@@ -50,7 +52,7 @@ const CreateStatus=({navigation})=>{
               // 'Content-Type':'application/json'
             },
             body:data
-          }
+          }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
         )
         // var imageStr = this.arrayBufferToBase64(data.img.data.data);
         let json = await response;
