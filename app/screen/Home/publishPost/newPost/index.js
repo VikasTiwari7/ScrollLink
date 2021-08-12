@@ -6,12 +6,15 @@ import {
   Switch,
   Image,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from '../../../../utility/index';
 import * as Utility from '../../../../utility/index';
+import GetLocation from 'react-native-get-location'
+var myApiKey='AIzaSyBt3pAWHuJgxo-_7Gc6QQHZK_Z1vZFLmCM';
 const Newpost = ({navigation}) => {
   const [isEnabled, setIsEnabled] = useState(false);
   const [isEnabled1, setIsEnabled1] = useState(false);
@@ -44,19 +47,20 @@ const Newpost = ({navigation}) => {
           method: 'POST',
           headers: {
             Authorization: 'Bearer ' + token,
+            "Content-Type" : 'application/json',
           },
-          body: {
+          body: JSON.stringify({
             user_id: userId,
             username: name,
             post_type: 'image',
             tag_people: 'Something is better then people',
             location: 'delhi',
             description: 'bla bla',
-          },
+          }),
         },
       );
       let json = await response;
-      console.log(json.json());
+      console.log(json);
       if (json.status == 200) {
         navigation.navigate('drawer');
         // Alert.alert("Success Fully Uploaded ");
@@ -67,8 +71,28 @@ const Newpost = ({navigation}) => {
       console.log(error);
     }
   };
+  const findLocation=()=>{
+    GetLocation.getCurrentPosition({
+      enableHighAccuracy: true,
+      timeout: 15000,
+  })
+  .then(location => {
+      console.log(location);
+      fetch('https://maps.googleapis.com/maps/api/geocode/json?address=' + location.latitude + ',' + location.longitude + '&key=' + myApiKey)
+        .then((response) => response.json())
+        .then((responseJson) => {
+            console.log('ADDRESS GEOCODE is BACK!! => ' + JSON.stringify(responseJson));
+})
+  })
+  .catch(error => {
+      const { code, message } = error;
+      console.warn(code, message);
+  })
+
+  }
   return (
     <View>
+      <ScrollView>
       <View
         style={{
           flexDirection: 'row',
@@ -77,17 +101,17 @@ const Newpost = ({navigation}) => {
         }}>
         <TouchableOpacity>
           <View>
-            <Text>Back arrow</Text>
+           <Image source={require('../../../../images/png/close.png')} style={{height:50,width:50}}></Image>
           </View>
         </TouchableOpacity>
         <TouchableOpacity>
           <View>
-            <Text>New Post</Text>
+          <Image source={require('../../../../images/png/add-3.png')} style={{height:50,width:50}}></Image>
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => Finalpost()}>
           <View>
-            <Text>Right</Text>
+          <Image source={require('../../../../images/png/checked.png')} style={{height:50,width:50}}></Image>
           </View>
         </TouchableOpacity>
       </View>
@@ -120,7 +144,7 @@ const Newpost = ({navigation}) => {
           }}
         />
       </TouchableOpacity>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={()=>findLocation()}>
         <View style={{padding: 10}}>
           <Text style={{fontSize: 18}}>Add Location</Text>
         </View>
@@ -201,7 +225,9 @@ const Newpost = ({navigation}) => {
           <Text style={{color: 'gray'}}>Advanced settings</Text>
         </View>
       </TouchableOpacity>
+      </ScrollView>
     </View>
+    
   );
 };
 export default Newpost;

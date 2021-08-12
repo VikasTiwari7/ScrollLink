@@ -15,7 +15,8 @@ const showPage = ({navigation}) => {
   const [profileImage,setProfileImage]=useState();
   const [name,setName]=useState();
   useEffect(()=>{
-    getpageinfo()
+    getpageinfo();
+    getPostinfo();
   },[])
   const getpageinfo=async()=>{
     var userId = await Utility.getFromLocalStorge('userId');
@@ -39,6 +40,30 @@ const showPage = ({navigation}) => {
     } catch (error) {
       console.log(error);
     }
+  }
+  const getPostinfo=async()=>{
+    var userId = await Utility.getFromLocalStorge('userId');
+    var token = await Utility.getFromLocalStorge('JWT');
+    let pageId = await Utility.getFromLocalStorge('getpageid');
+    try {
+      let response = await fetch(
+        `http://79.133.41.198:4000/users/${userId}/getpageid/${pageId}`, // getCoverPic
+        {
+          method: 'GET',
+          headers: {
+            Authorization: 'Bearer ' + token,
+          },
+        },
+      );
+      let json = await response.json();
+      console.log(json);
+      setCoverImage(json.page_cover_pic_url)
+      setProfileImage(json.page_profile_pic_url)
+      setName(json.pagename)
+    } catch (error) {
+      console.log(error);
+    }
+
   }
   const openpagepost = async () => {
    
@@ -69,7 +94,7 @@ const showPage = ({navigation}) => {
   };
 
   return (
-    <View>
+    <View style={{height:'80%'}}>
       <Text style={{fontSize:25,fontWeight:'bold'}}> {name}</Text>
       <View style={{flexDirection: 'row', justifyContent: 'space-evenly'}}>
         <View style={{backgroundColor: 'white'}}>
@@ -84,7 +109,7 @@ const showPage = ({navigation}) => {
           <Text>Overview</Text>
         </View>
       </View>
-      <ScrollView>
+      {/* <ScrollView> */}
         <View>
           <View>
             <Image
@@ -109,19 +134,26 @@ const showPage = ({navigation}) => {
             <Text>Create page @ {name}</Text>
           </View>
         </View>
-      </ScrollView>
+      {/* </ScrollView> */}
       <TouchableOpacity onPress={() => openpagepost()}>
         <View
           style={{
-            padding: 20,
+            padding: 10,
             backgroundColor: 'blue',
-            margin: wp('5%'),
+            margin: wp('4%'),
             alignSelf: 'center',
-            borderRadius:20
+            borderRadius:10
           }}>
           <Text style={{color: 'white', alignSelf: 'center'}}>Create Post</Text>
         </View>
       </TouchableOpacity>
+
+      <View style={{alignSelf:'center'}}>
+        <Text style={{fontWeight:'bold',fontSize:20}}> Show Page Post</Text>
+       <ScrollView>
+         
+       </ScrollView>
+      </View>
     </View>
   );
 };

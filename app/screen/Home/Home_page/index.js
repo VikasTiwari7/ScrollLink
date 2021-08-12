@@ -29,6 +29,7 @@ const HomePage = ({ navigation }) => {
     const [timeline, setTimeline] = useState([]);
     const [statusdata,setStatusData]=useState([]);
     const [msg,setMsg]=useState();
+    // const [allcomment,setComment]
     var vikas = [];
     useEffect(() => {
         getDate1();
@@ -474,7 +475,7 @@ const HomePage = ({ navigation }) => {
                             </TouchableOpacity>
                             <TouchableOpacity onPress={() => openProfileCover()}>
                                 <View>
-                                    <Text>Vikas Tiwari</Text>
+                                    <Text>{item.username }</Text>
                                     <View style={{ flexDirection: 'row' }}>
                                         <Text style={{ fontSize: 12 }}>6 hours ago.</Text>
                                         <Text style={{ fontSize: 10 }}>Translate</Text>

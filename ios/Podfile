@@ -22,6 +22,8 @@ target 'scroll_link' do
 
   pod 'react-native-document-picker', :path => '../node_modules/react-native-document-picker'
 
+  pod 'ReactNativeGetLocation', :path => '../node_modules/react-native-get-location'
+
   target 'scroll_linkTests' do
     inherit! :complete
     # Pods for testing

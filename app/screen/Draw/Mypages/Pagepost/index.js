@@ -49,18 +49,20 @@ const Pagepost = ({navigation}) => {
     let token = await Utility.getFromLocalStorge('JWT');
     let name = await Utility.getFromLocalStorge('fullName');
     let pageId = await Utility.getFromLocalStorge('pageId');
+    let pagepostId=await Utility.getFromLocalStorge('pagepostId');
 
     console.log(
-      `http://79.133.41.198:4000/users/${userId}/updatepage/${pageId}/updatePageInfo`,
+      `http://79.133.41.198:4000/users/${userId}/${pageId}/uppdatepost/${pagepostId}/updatePostInfo`,
     );
-
+    http://localhost:4000/users/60ca30e507b36fd953c418be/60eff4eaf994f420ca513ed5/updatepost/60f54fcde45d50e5f1d2cee0/updatePostInfo
     try {
       let response = await fetch(
-        `http://79.133.41.198:4000/users/${userId}/updatepage/${pageId}/updatePageInfo`,
+        `http://79.133.41.198:4000/users/${userId}/${pageId}/updatepost/${pagepostId}/updatePostInfo`,
         {
           method: 'POST',
           headers: {
             Authorization: 'Bearer ' + token,
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             user_id: userId,
@@ -75,10 +77,16 @@ const Pagepost = ({navigation}) => {
       );
       let json = await response;
       console.log(json);
+      if(json.status==200){
+        navigation.navigate('showpagedetails');
+      }
+      else{
+        alert("Something wrong")
+      }
     } catch (error) {
       console.log(error);
     }
-    navigation.navigate('drawer');
+    //
   };
   const chooseFile = async photo => {
     try {
@@ -161,7 +169,7 @@ const Pagepost = ({navigation}) => {
               width: 100,
               borderRadius: 50,
               alignSelf: 'center',
-            }}></Image>
+            }} onError={()=>setFilepath('https://picsum.photos/seed/picsum/200/300')}></Image>
         ) : (
           <Image
             source={require('../../../../images/splashlogo.png')}
@@ -227,6 +235,7 @@ const Pagepost = ({navigation}) => {
           </View>
         </TouchableOpacity>
       </View>
+     
     </View>
   );
 };

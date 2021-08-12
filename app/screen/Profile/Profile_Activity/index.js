@@ -138,17 +138,13 @@ const ProfileActivity=({navigation})=>{
       
      
        <View style={{alignSelf:'flex-end',backgroundColor:'gray',padding:8,marginRight:wp('5%'),width:wp('20%'),borderRadius:10,marginTop:hp('-10%')}}>
-           <TouchableOpacity onPress={() => chooseFile1('photo')}>
-               <Text style={{color:'white',alignSelf:'center'}}>Cover</Text>
-               </TouchableOpacity>
+          
            </View>
 
        <View style={{marginLeft:wp('4%'),flexDirection:'row',width:wp('35%'),alignItems:'center',borderColor:'white',borderWidth:5,borderRadius:50}}>
            {filePath ?
            <Image source={{uri:filePath}} style={{height:100,width:100,borderRadius:50}} onError={()=>setFilePath('https://picsum.photos/seed/picsum/200/300')}></Image >:null}
-         <TouchableOpacity onPress={() => chooseFile('photo')}>
-                    <MaterialCommunityIcons name="camera" size={25} color={'green'} style={{marginTop:hp('8%')}}/>
-                    </TouchableOpacity>
+         
                   
 
        </View>
