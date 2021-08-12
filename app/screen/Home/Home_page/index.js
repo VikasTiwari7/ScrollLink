@@ -332,7 +332,8 @@ const HomePage = ({ navigation }) => {
   
     const { open } = state;
     return (
-        <View>
+        <View style={{flex:1}}>
+      
             {/* <View style={{margin:1}}> */}
             
     {/* </View> */}
@@ -353,8 +354,8 @@ const HomePage = ({ navigation }) => {
                     <ScrollView horizontal={true}>
                         <View style={{ flexDirection: 'row' }}>
                             {statusdata.length>0? statusdata.map((item,index)=>(
-                            <View>
-                                <View style={{ width: wp('30%'), margin: wp('2%'), elevation: 10, borderRadius: 10 }}>
+                            <View key={index}>
+                                <View style={{ width: wp('30%'), margin: wp('2%'), elevation: 10, borderRadius: 10 }} >
                                     <TouchableOpacity>
                                         <Image source={{uri:item.status_url}} style={{ height: 100, width: 100 }}></Image>
                                     </TouchableOpacity>
@@ -407,27 +408,6 @@ const HomePage = ({ navigation }) => {
 
                     </ScrollView>
                 </View>
-                <View style={{ flexDirection: 'row', margin: wp('5%'), borderRadius: 10, padding: 10, justifyContent: 'space-evenly', alignItems: 'center' }}>
-                    <TouchableOpacity onPress={() => openProfileCover()}>
-                        <View >
-                            <Image source={require('../../../images/splashlogo.png')} style={{ height: 50, width: 50 }}></Image>
-                        </View>
-                    </TouchableOpacity>
-                    <View style={{ backgroundColor: 'white', padding: 10, borderRadius: 10, width: wp('50%') }}>
-                        <Text style={{ alignSelf: 'center', color: 'red' }}>What's going on ?</Text>
-                    </View>
-                    <TouchableOpacity>
-                        <View >
-                            <MaterialCommunityIcons name="video" size={25} color={'#b9424d'} />
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => openPublishPost()}>
-                        <View >
-                            <MaterialCommunityIcons name="camera" size={25} color={'#b9424d'} />
-                        </View>
-                    </TouchableOpacity>
-                </View>
-                {/* <View> */}
                 <Provider   >
       <Portal >
         <FAB.Group
@@ -458,7 +438,30 @@ const HomePage = ({ navigation }) => {
         />
       </Portal>
     </Provider>
+                <View style={{ flexDirection: 'row', margin: wp('5%'), borderRadius: 10, padding: 10, justifyContent: 'space-evenly', alignItems: 'center' }}>
+                    <TouchableOpacity onPress={() => openProfileCover()}>
+                        <View >
+                            <Image source={require('../../../images/splashlogo.png')} style={{ height: 50, width: 50 }}></Image>
+                        </View>
+                    </TouchableOpacity>
+                    <View style={{ backgroundColor: 'white', padding: 10, borderRadius: 10, width: wp('50%') }}>
+                        <Text style={{ alignSelf: 'center', color: 'red' }}>What's going on ?</Text>
+                    </View>
+                    <TouchableOpacity>
+                        <View >
+                            <MaterialCommunityIcons name="video" size={25} color={'#b9424d'} />
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => openPublishPost()}>
+                        <View >
+                            <MaterialCommunityIcons name="camera" size={25} color={'#b9424d'} />
+                        </View>
+                    </TouchableOpacity>
+                </View>
+                {/* <View> */}
+              
     {/* </View> */}
+   
                 {timeline.length > 0?
                 timeline.map((item, index) => (
 
@@ -572,12 +575,11 @@ const HomePage = ({ navigation }) => {
                     </View>
                 )):null}
 
-
                
 
             </ScrollView>
         
-        </View>
+       </View>
 
     )
 }

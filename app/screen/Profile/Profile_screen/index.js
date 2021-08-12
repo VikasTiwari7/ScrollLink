@@ -22,6 +22,7 @@ useEffect(() => {
     setLoader(true);
     let username = await Utility.getFromLocalStorge("fullName");
     let imageUrl=await Utility.getFromLocalStorge("imageUrl");
+    console.log("error wala image",imageUrl);
     setImagefilepath(imageUrl);
     console.log(imagefilePath);
     setuserName(username);
@@ -85,9 +86,7 @@ useEffect(() => {
                     <TouchableOpacity onPress={()=>openCoverProfile()}>
                     <View>
                         {imagefilePath?
-                         <Image source={{uri:imagefilePath}} style={{height:40,width:40,borderRadius:50}}></Image>:
-                    <Image source={require('../../../images/splashlogo.png')} style={{height:40,width:40,borderRadius:50}}>
-                    </Image>}
+                         <Image source={{uri:imagefilePath}} style={{height:40,width:40,borderRadius:50}} onError={()=>setImagefilepath('https://picsum.photos/seed/picsum/200/300')}></Image>:null}
                     </View>
                     </TouchableOpacity>
                     <View style={{marginLeft:wp('5%')}}>

@@ -42,7 +42,7 @@ const CreatePage = ({navigation}) => {
           body: JSON.stringify({
                 value :pagename,
                 username: "a",
-            pagename: 'Rohanpage',
+            pagename:pagename ,
             page_url: 'rohan vikas page link',
             info: {
               bio: pagebio,
@@ -67,10 +67,12 @@ const CreatePage = ({navigation}) => {
   };
   return (
     <View>
+      <View>
       <Text style={{fontSize: 20, fontWeight: 'bold', margin: wp('5%')}}>
         Page
       </Text>
-      <View>
+      </View>
+      {/* <View> */}
         <ScrollView>
           <View
             style={{
@@ -154,7 +156,7 @@ const CreatePage = ({navigation}) => {
           </View>
         </ScrollView>
       </View>
-    </View>
+    // </View>
   );
 };
 export default CreatePage;

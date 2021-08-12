@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect,useState } from 'react';
 import { Text, View, TouchableOpacity, Image } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import {
@@ -6,8 +6,7 @@ import {
     heightPercentageToDP as hp,
 } from '../../../utility/index';
 import * as Utility from '../../../utility/index';
-import * as api from '../../../api/url';
-import { useState } from 'react/cjs/react.development';
+
 const Mypages = ({navigation}) => {
     const [pagelist,setPagelist]=useState([]);
     useEffect(()=>{
@@ -56,11 +55,18 @@ const Mypages = ({navigation}) => {
                   )
                   let json = await response.json();
                   setPagelist(json);
-                //   console.log(json);
+                  console.log(json);
                 }catch(error){
                     console.log(error);
                 }
-            }   
+            }  
+            const sowpageinfo= async(item)=>{
+                console.log("page id is :-",item.page_id);
+                await Utility.setInLocalStorge("getpageid",item.page_id)
+                
+                navigation.navigate('showpagedetails')
+                
+            } 
     return (
         <View>
             <ScrollView>
@@ -101,12 +107,12 @@ const Mypages = ({navigation}) => {
                 </View>
                 {pagelist.length>1?
                 <View style={{alignSelf:'center',margin:wp('5%')}}>
-                    <Text>Page list </Text>
+                    <Text style={{fontWeight:'bold',fontSize:22}}>Page list </Text>
                     {pagelist.map((item,index)=>(
-                        <TouchableOpacity onPress={()=>navigation.navigate('showpagedetails')} key={index}>
+                        <TouchableOpacity onPress={()=>sowpageinfo(item)} key={index}>
                     <View >
                         {/* <Text>{item.page_id}</Text> */}
-                        <Text>vikkkkkassss</Text>
+                        <Text style={{fontSize:18,fontWeight:'bold'}}>{item.page_name }</Text>
                         {/* <Text>{item.}</Text> */}
 
                     </View>

@@ -211,8 +211,7 @@ const ProfileCover = ({ navigation }) => {
             <Text style={{ fontSize: 22, fontWeight: 'bold' }}>Profile Cover Screen</Text>
           </View>
           {coverFilepath ?
-            <Image source={{ uri: coverFilepath }} style={{ width: wp('100%'), height: hp('20%') }} ></Image> :
-            <Image source={require('../../../images/d-cover.jpg')} style={{ width: wp('100%'), height: hp('20%') }}  ></Image>}
+            <Image source={{ uri: coverFilepath }} style={{ width: wp('100%'), height: hp('20%') }}  onError={()=>setCoverfilepath('https://picsum.photos/seed/picsum/200/300')}></Image> :null}
         </View>
 
 
@@ -224,8 +223,8 @@ const ProfileCover = ({ navigation }) => {
 
         <View style={{ marginLeft: wp('4%'), flexDirection: 'row', width: wp('35%'), alignItems: 'center', borderColor: 'white', borderWidth: 5, borderRadius: 50 }}>
           {filePath ?
-            <Image source={{ uri: filePath }} style={{ height: 100, width: 100, borderRadius: 50 }}></Image> :
-            <Image source={require('../../../images/splashlogo.png')} style={{ height: 100, width: 100 }}></Image>}
+            <Image source={{ uri: filePath }} style={{ height: 100, width: 100, borderRadius: 50 }} onError={()=>setFilePath('https://picsum.photos/seed/picsum/200/300')}></Image> :
+            null}
           <TouchableOpacity onPress={() => chooseFile('photo')}>
             <MaterialCommunityIcons name="camera" size={25} color={'green'} style={{ marginTop: hp('8%') }} />
           </TouchableOpacity>

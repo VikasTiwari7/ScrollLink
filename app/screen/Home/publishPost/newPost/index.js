@@ -46,8 +46,8 @@ const Newpost = ({navigation}) => {
             Authorization: 'Bearer ' + token,
           },
           body: {
-            user_id: '60d97dd575d2e590a94188a5',
-            username: 'Rohan',
+            user_id: userId,
+            username: name,
             post_type: 'image',
             tag_people: 'Something is better then people',
             location: 'delhi',
@@ -56,7 +56,7 @@ const Newpost = ({navigation}) => {
         },
       );
       let json = await response;
-      console.log(json);
+      console.log(json.json());
       if (json.status == 200) {
         navigation.navigate('drawer');
         // Alert.alert("Success Fully Uploaded ");

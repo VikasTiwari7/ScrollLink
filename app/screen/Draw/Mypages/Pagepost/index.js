@@ -17,7 +17,33 @@ const Pagepost = ({navigation}) => {
   const [caption, setCaption] = useState();
   const [pagename, setPagename] = useState();
   const [pageurl, setDescription] = useState();
-
+  const [pageProfile,setProfileImage]=useState();
+  useEffect(()=>{
+    getpageinfo()
+  },[])
+  const getpageinfo=async()=>{
+    var userId = await Utility.getFromLocalStorge('userId');
+    var token = await Utility.getFromLocalStorge('JWT');
+    let pageId = await Utility.getFromLocalStorge('getpageid');
+    try {
+      let response = await fetch(
+        `http://79.133.41.198:4000/users/${userId}/getpageid/${pageId}`, // getCoverPic
+        {
+          method: 'GET',
+          headers: {
+            Authorization: 'Bearer ' + token,
+          },
+        },
+      );
+      let json = await response.json();
+      console.log(json);
+      // setCoverImage(json.page_cover_pic_url)
+      setProfileImage(json.page_profile_pic_url)
+      setPagename(json.pagename)
+    } catch (error) {
+      console.log(error);
+    }
+  }
   const uploadPost = async () => {
     let userId = await Utility.getFromLocalStorge('userId');
     let token = await Utility.getFromLocalStorge('JWT');
@@ -109,17 +135,13 @@ const Pagepost = ({navigation}) => {
 
   return (
     <View>
-      <Text>Page post </Text>
+      <Text style={{fontWeight:'bold',fontSize:20,alignSelf:'center',margin:10}}>Page post </Text>
 
-      <View style={{flexDirection: 'row', justifyContent: 'space-evenly'}}>
-        <View>
+      <View style={{flexDirection: 'row',alignItems:'center',alignSelf:'center'}}>
           <Image
-            source={require('../../../../images/png/albums.png')}
-            style={{height: 50, width: 50}}></Image>
-        </View>
-        <View style={{alignSelf: 'center'}}>
-          <Text>Vikas Tiwari</Text>
-        </View>
+            source={{uri:pageProfile}}
+            style={{height: 50, width: 50,borderRadius:20}}></Image>
+          <Text style={{marginLeft:10,fontSize:18,fontWeight:'bold'}}>{pagename}</Text>
       </View>
 
       <View

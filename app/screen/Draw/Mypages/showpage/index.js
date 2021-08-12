@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Text, View, Image, TouchableOpacity} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {heightPercentageToDP} from '../../../../utility';
@@ -11,7 +11,37 @@ const showPage = ({navigation}) => {
   // const [postid,setPostid]=useState();
 
   const [pagepostfile, setPagepostfile] = useState();
+  const [coverimage,setCoverImage]=useState();
+  const [profileImage,setProfileImage]=useState();
+  const [name,setName]=useState();
+  useEffect(()=>{
+    getpageinfo()
+  },[])
+  const getpageinfo=async()=>{
+    var userId = await Utility.getFromLocalStorge('userId');
+    var token = await Utility.getFromLocalStorge('JWT');
+    let pageId = await Utility.getFromLocalStorge('getpageid');
+    try {
+      let response = await fetch(
+        `http://79.133.41.198:4000/users/${userId}/getpageid/${pageId}`, // getCoverPic
+        {
+          method: 'GET',
+          headers: {
+            Authorization: 'Bearer ' + token,
+          },
+        },
+      );
+      let json = await response.json();
+      console.log(json);
+      setCoverImage(json.page_cover_pic_url)
+      setProfileImage(json.page_profile_pic_url)
+      setName(json.pagename)
+    } catch (error) {
+      console.log(error);
+    }
+  }
   const openpagepost = async () => {
+   
     var userId = await Utility.getFromLocalStorge('userId');
     var token = await Utility.getFromLocalStorge('JWT');
     let pageId = await Utility.getFromLocalStorge('pageId');
@@ -40,7 +70,7 @@ const showPage = ({navigation}) => {
 
   return (
     <View>
-      <Text> Vikas </Text>
+      <Text style={{fontSize:25,fontWeight:'bold'}}> {name}</Text>
       <View style={{flexDirection: 'row', justifyContent: 'space-evenly'}}>
         <View style={{backgroundColor: 'white'}}>
           <Text>Overvieww</Text>
@@ -58,34 +88,36 @@ const showPage = ({navigation}) => {
         <View>
           <View>
             <Image
-              source={require('../../../../images/png/albums.png')}
+              source={{uri:coverimage}}
               style={{
                 height: hp('25%'),
                 width: wp('90%'),
                 alignSelf: 'center',
                 margin: wp('5%'),
-              }}></Image>
+                borderRadius:20
+              }} onError={()=>setCoverImage('https://picsum.photos/seed/picsum/200/300')}></Image>
           </View>
         </View>
-        <View style={{flexDirection: 'row'}}>
+        <View style={{flexDirection: 'row',justifyContent:'space-evenly'}}>
           <View>
             <Image
-              source={require('../../../../images/png/albums.png')}
-              style={{borderRadius: 50, height: 50, width: 50}}></Image>
+              source={{uri:profileImage}}
+              style={{borderRadius: 50, height: 50, width: 50}} onError={()=>setProfileImage('https://picsum.photos/seed/picsum/200/300')}></Image>
           </View>
           <View>
-            <Text>Vikas himanshu</Text>
-            <Text>Create page @username</Text>
+            <Text style={{fontWeight:'bold',fontSize:18}}>{name}</Text>
+            <Text>Create page @ {name}</Text>
           </View>
         </View>
       </ScrollView>
       <TouchableOpacity onPress={() => openpagepost()}>
         <View
           style={{
-            padding: 10,
+            padding: 20,
             backgroundColor: 'blue',
             margin: wp('5%'),
             alignSelf: 'center',
+            borderRadius:20
           }}>
           <Text style={{color: 'white', alignSelf: 'center'}}>Create Post</Text>
         </View>

@@ -33,6 +33,7 @@ import createPage from '../screen/Draw/Mypages/Createpage';
 import updatePagemedia from '../screen/Draw/Mypages/UpdatepageImage';
 import showpagedetails from '../screen/Draw/Mypages/showpage/index';
 import Pagepost from '../screen/Draw/Mypages/Pagepost/index';
+import pageList from '../screen/Draw/Mypages/pageList';
 const Stack = createStackNavigator();
 const Stacks=()=>{
 return (
@@ -74,6 +75,7 @@ return (
         <Stack.Screen name="updatepagemedia" component={updatePagemedia} options={{headerShown:false}}/>
         <Stack.Screen name="showpagedetails" component={showpagedetails} options={{headerShown:false}}/>
         <Stack.Screen name="pagepost" component={Pagepost} options={{headerShown:false}}/>
+        <Stack.Screen name ="pageList" component={pageList} options={{headerStatusBarHeight:false}}/>
       </Stack.Navigator>
   );
 }

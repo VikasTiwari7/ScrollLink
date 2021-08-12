@@ -106,7 +106,7 @@ const publishPost = ({navigation}) => {
             body: data,
           },
         );
-        let json = await response.text();
+        let json = await response;
         console.log(json);
         // const json=response.json();
         // console.log("Post id is ",json)
