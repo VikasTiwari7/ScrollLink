@@ -60,13 +60,12 @@ const Mypages = ({navigation}) => {
                     console.log(error);
                 }
             }  
-            const sowpageinfo= async(item)=>{
-                console.log("page id is :-",item.page_id);
-                await Utility.setInLocalStorge("getpageid",item.page_id)
-                
-                navigation.navigate('showpagedetails')
-                
-            } 
+          
+
+            const openMypageList=()=>{
+                navigation.navigate('pagelist');
+                // console.log("vikas ist fine ")
+            }
     return (
         <View>
             <ScrollView>
@@ -74,7 +73,7 @@ const Mypages = ({navigation}) => {
                     <Text style={{ fontWeight: 'bold', fontSize: 22 }}>My Page</Text>
                 </View>
                 <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={()=>openMypageList()}>
                         <View style={{ margin: wp('2%'), backgroundColor: '#b9424d', padding: 10, borderRadius: 10 }}>
                             <Text style={{ color: 'white' }}>My Pages</Text>
                         </View>
@@ -97,7 +96,7 @@ const Mypages = ({navigation}) => {
                         <Image source={require('../../../images/png/albums.png')} style={{ height: 100, width: 100, alignSelf: 'center' }}></Image>
                     </View>
                     <View>
-                        <Text>No groups to show </Text>
+                      
                     </View>
                     <TouchableOpacity onPress={()=>createPage()}>
                         <View style={{ backgroundColor: '#b9424d', margin: wp('5%'), padding: 10, alignItems: 'center', borderRadius: 10 }}>
@@ -105,20 +104,7 @@ const Mypages = ({navigation}) => {
                         </View>
                     </TouchableOpacity>
                 </View>
-                {pagelist.length>1?
-                <View style={{alignSelf:'center',margin:wp('5%')}}>
-                    <Text style={{fontWeight:'bold',fontSize:22}}>Page list </Text>
-                    {pagelist.map((item,index)=>(
-                        <TouchableOpacity onPress={()=>sowpageinfo(item)} key={index}>
-                    <View >
-                        {/* <Text>{item.page_id}</Text> */}
-                        <Text style={{fontSize:18,fontWeight:'bold'}}>{item.page_name }</Text>
-                        {/* <Text>{item.}</Text> */}
-
-                    </View>
-                    </TouchableOpacity>
-                    ))}
-                </View>:null}
+              
             </ScrollView>
 
         </View>

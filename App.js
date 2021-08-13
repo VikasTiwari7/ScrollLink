@@ -1,5 +1,4 @@
 import React,{useEffect, useState} from 'react';
-// import {View,Text} from 'react-native';
 import { NavigationContainer,DefaultTheme,DarkTheme } from '@react-navigation/native';
 import Mainstcak from './app/navigation/stack';
 import { EventRegister } from 'react-native-event-listeners'

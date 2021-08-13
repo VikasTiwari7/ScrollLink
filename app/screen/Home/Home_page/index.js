@@ -456,7 +456,7 @@ const HomePage = ({ navigation }) => {
                         </View>
                         <View style={{ margin: wp('4%') }}>
                             <Text>{item.caption} </Text>
-                            <TouchableOpacity onPress={()=>doublelikepost(item)}>
+                            <TouchableOpacity >
                             <Image source={{uri:item.post_upload_url}} style={{ width: wp('80%'),height:hp('40%'), borderRadius: 10 }} 
                     ></Image>
                     </TouchableOpacity>
@@ -465,11 +465,17 @@ const HomePage = ({ navigation }) => {
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', margin: wp('3%') }}>
                             <TouchableOpacity onPress={() => likeapicall(item)}>
                                 <View>
-                                    <MaterialCommunityIcons name="hand-heart" size={25} />
+                                <Image source={require('../../../images/png/like.png')} style={{ height: 30, width: 30 }}></Image>
                                 </View>
                                 <View>
                                     <Text>{item.likes.likes_count}</Text>
                                 </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => doublelikepost(item)}>
+                                <View>
+                                <Image source={require('../../../images/reaction/reactions_sad.png')} style={{ height: 30, width: 30 }}></Image>
+                                </View>
+                                
                             </TouchableOpacity>
                             <TouchableOpacity onPress={() => setChatcondition(!chatcondition)}>
                                 <View>

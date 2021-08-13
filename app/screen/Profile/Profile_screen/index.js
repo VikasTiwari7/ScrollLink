@@ -52,6 +52,11 @@ useEffect(() => {
         await Utility.removeAuthKey('email')
         await Utility.removeAuthKey('fullName')
         await Utility.removeAuthKey('imageUrl')
+        await Utility.removeAuthKey('JWT');
+        await Utility.removeAuthKey('postId');
+        await Utility.removeAuthKey('pageId');
+        await Utility.removeAuthKey('pagepostId');
+        await Utility.removeAuthKey('getpageid');
         navigation.navigate('Signin');
     }
     const  cancelbutto=()=>{
@@ -62,7 +67,6 @@ useEffect(() => {
             "",
             "Are you want to logout",
             [
-                
                 {
                 text:"cancel",onPress:()=>cancelbutto()
                 },
@@ -72,7 +76,6 @@ useEffect(() => {
         );
        
     }
-  
     return(
         <View>
             <ScrollView>

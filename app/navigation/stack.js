@@ -75,7 +75,7 @@ return (
         <Stack.Screen name="updatepagemedia" component={updatePagemedia} options={{headerShown:false}}/>
         <Stack.Screen name="showpagedetails" component={showpagedetails} options={{headerShown:false}}/>
         <Stack.Screen name="pagepost" component={Pagepost} options={{headerShown:false}}/>
-        <Stack.Screen name ="pageList" component={pageList} options={{headerStatusBarHeight:false}}/>
+        <Stack.Screen name ="pagelist" component={pageList} options={{headerShown:false}}/>
       </Stack.Navigator>
   );
 }

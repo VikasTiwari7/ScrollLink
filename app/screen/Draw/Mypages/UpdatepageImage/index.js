@@ -142,7 +142,7 @@ const UpdatepageImage=({navigation})=>{
            <Image source={{uri:filePath}} style={{height:100,width:100,borderRadius:50,alignSelf:'center'}}></Image>:
            <Image source={require('../../../../images/splashlogo.png')} style={{height:100,width:100}}></Image>}
          <TouchableOpacity onPress={() => chooseFile('photo')} style={{marginTop:hp('8%')}}>
-                    <MaterialCommunityIcons name="camera" size={25} color={'green'} style={{marginTop:hp('8%')}}/>
+                    <MaterialCommunityIcons name="camera" size={25} color={'green'} />
                     </TouchableOpacity>
        </View>
 
