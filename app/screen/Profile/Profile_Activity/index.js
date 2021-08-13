@@ -50,19 +50,11 @@ const ProfileActivity=({navigation})=>{
           } 
     }
     )
-    // var imageStr = this.arrayBufferToBase64(data.img.data.data);
         let json = await response.text();
-        // console.log(json);
         let abc=json;
-        // console.log("new abc",abc)
-
-        let def=api.BaseUrl+abc;
-        // console.log("new url",def);
-        setFilePath(def);
+        
+        setFilePath(abc);
         setLoader(false)
-       
-       
-
       //   await Utility.setInLocalStorge('songs', json.item)
     
       } catch (error) {
@@ -81,8 +73,7 @@ const ProfileActivity=({navigation})=>{
           method: "GET",
          headers: { 
           Authorization: 'Bearer '+token,
-          // 'Accept': 'application/json',
-          // 'Content-Type':'application/json'
+        
         } 
   }
   )
@@ -90,11 +81,8 @@ const ProfileActivity=({navigation})=>{
       let json = await response.text();
       // console.log(json);
       let abc=json;
-      // console.log("new abc",abc)
-
-      let def=api.BaseUrl+abc;
-      // console.log("new url",def);
-      setCoverfilepath(def);
+     
+      setCoverfilepath(abc);
      
      
 

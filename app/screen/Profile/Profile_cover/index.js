@@ -18,8 +18,7 @@ const ProfileCover = ({ navigation }) => {
   const [email, setEMail] = useState();
   const [filePath, setFilePath] = useState();
   const [coverFilepath, setCoverfilepath] = useState();
-  // const [coverurl, setCoverUrl] = useState();
-  // const [profileurl, setProfileUrl] = useState();
+
 
   useEffect(() => {
     retrieveProfile();
@@ -45,9 +44,10 @@ const ProfileCover = ({ navigation }) => {
           }
         }
       )
-      let json = await response;
-      console.log("profile cover details",json.url);
-      setFilePath(json.url);
+      let json = await response.text();
+      console.log("profile",json)
+      console.log("profile bro",json);
+      setFilePath(json);
       
     } catch (error) {
       console.error(error);
@@ -66,10 +66,9 @@ const ProfileCover = ({ navigation }) => {
           }
         }
       )
-      let json = await response;
-      console.log("cover details",json.url)
-    setCoverfilepath(json.url);
-      //   await Utility.setInLocalStorge('songs', json.item)
+      let json = await response.text();
+      console.log(json);
+    setCoverfilepath(json);
 
     } catch (error) {
       console.error(error);
@@ -111,6 +110,12 @@ const ProfileCover = ({ navigation }) => {
       )
       let json = await response;
       console.log(json);
+      if(json.status==200){
+        alert("Cover Image successfully uploaded")
+      }
+      else{
+        alert("Something Wrong happen ")
+      }
 
       }catch(error){
         console.log(error);
@@ -124,8 +129,8 @@ const ProfileCover = ({ navigation }) => {
         });
         console.log(res
         );
-        setFilePath(res.uri);
-        Imageuploadfile(res)
+        setCoverfilepath(res.uri);
+        Imageupload(res)
       } catch (err) {
         if (DocumentPicker.isCancel(err)) {
           // User cancelled the picker, exit any dialogs or menus and move on
@@ -143,8 +148,8 @@ const ProfileCover = ({ navigation }) => {
       });
       console.log(res
       );
-      setCoverfilepath(res.uri);
-      Imageupload(res)
+      setFilePath(res.uri);
+      Imageuploadfile(res)
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         // User cancelled the picker, exit any dialogs or menus and move on
@@ -174,21 +179,23 @@ const ProfileCover = ({ navigation }) => {
     console.log("token=" + token)
     try { 
       let response = await fetch(
-        // 192.168.0.101:4000/users/60cb6255633ed91264de3cc3/getProfilePicUrl
         `http://79.133.41.198:4000/users/${userId}/uploadProfilePic`, // getCoverPic
         {
           method: "POST",
           headers: {
             Authorization: 'Bearer ' + token,
-            // 'Accept': 'application/json',
-            // 'Content-Type':'application/json'
           },
           body:data
         }
       )
-      // var imageStr = this.arrayBufferToBase64(data.img.data.data);
       let json = await response;
       console.log(json);
+    if(json.status==200){
+      alert("Profile successfully uploaded");
+    }
+    else{
+      alert("Something wrong happen");
+    }
 
       }catch(error){
         console.log(error);
@@ -216,7 +223,7 @@ const ProfileCover = ({ navigation }) => {
 
 
         <View style={{ alignSelf: 'flex-end', backgroundColor: 'gray', padding: 8, marginRight: wp('5%'), width: wp('20%'), borderRadius: 10, marginTop: hp('-10%') }}>
-          <TouchableOpacity onPress={() => launchImageLibrarys('')}>
+          <TouchableOpacity onPress={() => launchImageLibrarys('photo')}>
             <Text style={{ color: 'white', alignSelf: 'center' }}>Cover</Text>
           </TouchableOpacity>
         </View>

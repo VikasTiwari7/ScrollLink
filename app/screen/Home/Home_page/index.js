@@ -18,9 +18,12 @@ import {
 import Header from '../../../components/header';
 import * as Utility from '../../../utility/index';
 import * as api from '../../../api/url';
+import { useIsFocused } from "@react-navigation/native";
+import Moment from 'moment';
 // import {d}/
 // var timeline=[];
 const HomePage = ({ navigation }) => {
+    const isFocused = useIsFocused();
     const [condition, setCondition] = useState(false);
     const [chatcondition, setChatcondition] = useState(false);
     const [filePath, setFilePath] = useState({});
@@ -32,13 +35,14 @@ const HomePage = ({ navigation }) => {
     // const [allcomment,setComment]
     var vikas = [];
     useEffect(() => {
+        navigation.addLis
         getDate1();
         retrieveProfile();
         getTimeline();
         getStatus();
 
-    }, [])
-    
+    }, [isFocused])
+
     const getStatus = async () => {
         var userId = await Utility.getFromLocalStorge("userId");
         var token = await Utility.getFromLocalStorge("JWT");
@@ -82,9 +86,7 @@ const HomePage = ({ navigation }) => {
             )
             let json = await response.text();
             let abc = json;
-
-            let def = api.BaseUrl + abc;
-            await Utility.setInLocalStorge("imageUrl", def)
+            await Utility.setInLocalStorge("imageUrl", abc)
         } catch (error) {
             console.error(error);
         }
@@ -130,43 +132,7 @@ const HomePage = ({ navigation }) => {
             console.error(error);
         }
     };
-    const requestCameraPermission = async () => {
-        if (Platform.OS === 'android') {
-            try {
-                const granted = await PermissionsAndroid.request(
-                    PermissionsAndroid.PERMISSIONS.CAMERA,
-                    {
-                        title: 'Camera Permission',
-                        message: 'App needs camera permission',
-                    },
-                );
-                // If CAMERA Permission is granted
-                return granted === PermissionsAndroid.RESULTS.GRANTED;
-            } catch (err) {
-                console.warn(err);
-                return false;
-            }
-        } else return true;
-    };
-    const requestExternalWritePermission = async () => {
-        if (Platform.OS === 'android') {
-            try {
-                const granted = await PermissionsAndroid.request(
-                    PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-                    {
-                        title: 'External Storage Write Permission',
-                        message: 'App needs write permission',
-                    },
-                );
-                // If WRITE_EXTERNAL_STORAGE Permission is granted
-                return granted === PermissionsAndroid.RESULTS.GRANTED;
-            } catch (err) {
-                console.warn(err);
-                alert('Write permission err', err);
-            }
-            return false;
-        } else return true;
-    };
+
     const openProfileCover = async() => {
         navigation.navigate('Profile_cover')
     }
@@ -224,13 +190,13 @@ const HomePage = ({ navigation }) => {
                     method: "PUT",
                     headers: {
                         Authorization: 'Bearer ' + token,
-
                     }
                 }
             )
             let json = await response;
             if(json.status==200){
-                alert(postid+"like is like")
+                // alert(postid+"like is like")
+                getTimeline();
             }
             console.log("like reply",json);
             // setTimeline(json);  
@@ -257,7 +223,10 @@ const HomePage = ({ navigation }) => {
                 }
             )
             let json = await response;
-            console.log(json);
+            console.log("double like ",json);
+            if(json.status==200){
+                getTimeline();
+            }
             // setTimeline(json);  
         } catch (error) {
             console.error(error);
@@ -333,12 +302,43 @@ const HomePage = ({ navigation }) => {
   
     const { open } = state;
     return (
+        <Provider   >
         <View style={{flex:1}}>
       
             {/* <View style={{margin:1}}> */}
             
     {/* </View> */}
             <Header navigation={navigation} />
+          
+      <Portal >
+        <FAB.Group
+        fabStyle={{position:'absolute',bottom:5,margin:0}}
+        
+          open={open}
+          icon={open ? 'plus' : 'plus'}
+          actions={[
+            { icon: 'plus', 
+            label:'Status',
+            onPress: () => openStatus() },
+            {
+                icon:'plus',
+                label:'Post',
+                onPress:()=>openPublishPost()            },
+            {
+                icon:'plus',
+                // label:'Post',
+                onPress:()=>console.log("Pressed post")
+            }
+          ]}
+          onStateChange={onStateChange}
+          onPress={() => {
+            if (open) {
+              // do something if the speed dial is open
+            }
+          }}
+        />
+      </Portal>
+
             {hidewish ?
                 <View style={{ flexDirection: "row", justifyContent: 'space-evenly' }}>
                     <View>
@@ -350,32 +350,28 @@ const HomePage = ({ navigation }) => {
                         </View>
                     </TouchableOpacity>
                 </View> : null}
-            <ScrollView>
+            <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={{ margin: hp('1%') }}>
                     <ScrollView horizontal={true}>
                         <View style={{ flexDirection: 'row' }}>
                             {statusdata.length>0? statusdata.map((item,index)=>(
                             <View key={index}>
-                                <View style={{ width: wp('30%'), margin: wp('2%'), elevation: 10, borderRadius: 10 }} >
+                                <View style={{ width: wp('30%'), margin: wp('2%'),  borderRadius: 10 }} >
                                     <TouchableOpacity>
-                                        <Image source={{uri:item.status_url}} style={{ height: 100, width: 100 }}></Image>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity onPress={() => openStatus()}>
-                                        <View style={{ alignSelf: 'center', backgroundColor: 'white', borderRadius: 20 }} >
-                                            <MaterialCommunityIcons name="plus" size={35} />
-                                        </View>
+                                        <Image source={{uri:item.status_url}} style={{ height: 100, width: 100 ,borderRadius:10}}></Image>
                                     </TouchableOpacity>
                                 </View>
-                                <Text style={{ alignSelf: 'center' }}>Create you post</Text>
                             </View>
-                            )):null}
+                            )): <View style={{ width: wp('30%'), margin: wp('2%'),  borderRadius: 10 }} >
+                            <TouchableOpacity>
+                                <Image source={{uri:'https://picsum.photos/seed/picsum/200/300'}} style={{ height: 100, width: 100 ,borderRadius:10}}></Image>
+                            </TouchableOpacity>
+                        </View>}
                         </View>
                     </ScrollView>
-
-
                 </View>
                 <View>
-                    <ScrollView horizontal={true}>
+                    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
                         <View style={{ flexDirection: 'row' }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center', width: wp('25%'), backgroundColor: '#ffcccb', borderRadius: 20, justifyContent: 'space-evenly', margin: wp('3%'), padding: 5 }}>
                                 <MaterialCommunityIcons name="note" size={25} color={'#b9424d'} />
@@ -409,36 +405,7 @@ const HomePage = ({ navigation }) => {
 
                     </ScrollView>
                 </View>
-                <Provider   >
-      <Portal >
-        <FAB.Group
-        fabStyle={{position:'absolute',bottom:5,margin:0}}
-        
-          open={open}
-          icon={open ? 'plus' : 'plus'}
-          actions={[
-            { icon: 'plus', 
-            label:'Status',
-            onPress: () => openStatus() },
-            {
-                icon:'plus',
-                label:'Post',
-                onPress:()=>openPublishPost()            },
-            {
-                icon:'plus',
-                // label:'Post',
-                onPress:()=>console.log("Pressed post")
-            }
-          ]}
-          onStateChange={onStateChange}
-          onPress={() => {
-            if (open) {
-              // do something if the speed dial is open
-            }
-          }}
-        />
-      </Portal>
-    </Provider>
+               
                 <View style={{ flexDirection: 'row', margin: wp('5%'), borderRadius: 10, padding: 10, justifyContent: 'space-evenly', alignItems: 'center' }}>
                     <TouchableOpacity onPress={() => openProfileCover()}>
                         <View >
@@ -453,11 +420,11 @@ const HomePage = ({ navigation }) => {
                             <MaterialCommunityIcons name="video" size={25} color={'#b9424d'} />
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => openPublishPost()}>
+                    {/* <TouchableOpacity onPress={() => openPublishPost()}>
                         <View >
                             <MaterialCommunityIcons name="camera" size={25} color={'#b9424d'} />
                         </View>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
                 {/* <View> */}
               
@@ -475,10 +442,9 @@ const HomePage = ({ navigation }) => {
                             </TouchableOpacity>
                             <TouchableOpacity onPress={() => openProfileCover()}>
                                 <View>
-                                    <Text>{item.username }</Text>
+                                    <Text style={{fontSize:20,fontWeight:'bold'}}>{item.username }</Text>
                                     <View style={{ flexDirection: 'row' }}>
-                                        <Text style={{ fontSize: 12 }}>6 hours ago.</Text>
-                                        <Text style={{ fontSize: 10 }}>Translate</Text>
+                                        <Text style={{ fontSize: 12 }}>{Moment(item.created).format('d MMM')}</Text>
                                     </View>
                                 </View>
                             </TouchableOpacity>
@@ -501,11 +467,17 @@ const HomePage = ({ navigation }) => {
                                 <View>
                                     <MaterialCommunityIcons name="hand-heart" size={25} />
                                 </View>
+                                <View>
+                                    <Text>{item.likes.likes_count}</Text>
+                                </View>
                             </TouchableOpacity>
                             <TouchableOpacity onPress={() => setChatcondition(!chatcondition)}>
                                 <View>
                                     <MaterialCommunityIcons name="message" size={25} />
 
+                                </View>
+                                <View>
+                                <Text>{item.comments.comments_count}</Text>
                                 </View>
                             </TouchableOpacity>
                             <TouchableOpacity>
@@ -515,33 +487,7 @@ const HomePage = ({ navigation }) => {
                                 </View>
                             </TouchableOpacity>
                         </View>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', margin: wp('2%') }}>
-                            <View style={{ flexDirection: 'row' }}>
-                                <View>
-                                    <MaterialCommunityIcons name="hand-heart" size={15} />
-                                </View>
-                                <View>
-                                    <Text>{item.likes.likes_count}reactions</Text>
-                                </View>
-                            </View>
-                            <View style={{ flexDirection: 'row' }}>
-                                <View>
-                                    <MaterialCommunityIcons name="message" size={15} />
-                                </View>
-                                <View>
-                                    <Text>{item.comments.comments_count}</Text>
-                                </View>
-                            </View>
-                            <View style={{ flexDirection: 'row' }}>
-                                <View>
-                                    <MaterialCommunityIcons name="share" size={15} />
-                                </View>
-                                <View>
-                                    <Text>0</Text>
-                                </View>
-
-                            </View>
-                        </View>
+                       
                         {chatcondition ?
                         <View>
                             <View style={{ flexDirection: 'row', marginLeft: wp('5%'), justifyContent: 'space-evenly', alignItems: 'center' }}>
@@ -581,6 +527,7 @@ const HomePage = ({ navigation }) => {
             </ScrollView>
         
        </View>
+       </Provider>
 
     )
 }
