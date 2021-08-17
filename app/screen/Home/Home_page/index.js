@@ -20,8 +20,6 @@ import * as Utility from '../../../utility/index';
 import * as api from '../../../api/url';
 import { useIsFocused } from "@react-navigation/native";
 import Moment from 'moment';
-// import {d}/
-// var timeline=[];
 const HomePage = ({ navigation }) => {
     const isFocused = useIsFocused();
     const [condition, setCondition] = useState(false);
@@ -30,9 +28,11 @@ const HomePage = ({ navigation }) => {
     const [wish, setWish] = useState('');
     const [hidewish, setHidewish] = useState(true);
     const [timeline, setTimeline] = useState([]);
-    const [statusdata,setStatusData]=useState([]);
-    const [msg,setMsg]=useState();
-    // const [allcomment,setComment]
+    const [statusdata, setStatusData] = useState([]);
+    const [suggestions, setSuggestions] = useState([]);
+    const [msg, setMsg] = useState();
+    const [chat,setchat]=useState([]);
+    const [conditionSuggestion, setConditionSuggestions] = useState(true)
     var vikas = [];
     useEffect(() => {
         navigation.addLis
@@ -40,9 +40,34 @@ const HomePage = ({ navigation }) => {
         retrieveProfile();
         getTimeline();
         getStatus();
+        getsuggestionlist();
 
     }, [isFocused])
+    const getsuggestionlist = async () => {
+        var userId = await Utility.getFromLocalStorge("userId");
+        var token = await Utility.getFromLocalStorge("JWT");
+        var username = await Utility.getFromLocalStorge("fullName");
+        var email = await Utility.getFromLocalStorge("email");
+        console.log("token=123" + token)
+        try {
+            let response = await fetch(
+                `http://79.133.41.198:4000/users/${userId}/getPeopleMayKnowList`, // getCoverPic
+                {
+                    method: "GET",
+                    headers: {
+                        Authorization: 'Bearer ' + token,
 
+                    }
+                }
+            )
+            let json = await response.json();
+            console.log("Suggestion records-", json);
+            setSuggestions(json);
+        } catch (error) {
+            console.error(error);
+        }
+
+    }
     const getStatus = async () => {
         var userId = await Utility.getFromLocalStorge("userId");
         var token = await Utility.getFromLocalStorge("JWT");
@@ -61,7 +86,7 @@ const HomePage = ({ navigation }) => {
                 }
             )
             let json = await response.json();
-            console.log("status records:-",json);
+            console.log("status records:-", json);
             setStatusData(json);
         } catch (error) {
             console.error(error);
@@ -132,14 +157,13 @@ const HomePage = ({ navigation }) => {
             console.error(error);
         }
     };
-
-    const openProfileCover = async() => {
+    const openProfileCover = async () => {
         navigation.navigate('Profile_cover')
     }
-    const openPublishPost = async() => {
+    const openPublishPost = async () => {
         navigation.navigate('publishPost');
     }
-    const chooseFile = async(type) => {
+    const chooseFile = async (type) => {
         let options = {
             mediaType: type,
             maxWidth: 300,
@@ -172,16 +196,16 @@ const HomePage = ({ navigation }) => {
             setFilePath(response);
         });
     };
-    const openStatus = async() => {
+    const openStatus = async () => {
         navigation.navigate('CreateStatus')
     }
-    const likeapicall = async(item) => {
+    const likeapicall = async (item) => {
         var userId = await Utility.getFromLocalStorge("userId");
         var token = await Utility.getFromLocalStorge("JWT");
         var username = await Utility.getFromLocalStorge("fullName");
         var email = await Utility.getFromLocalStorge("email");
         var postid = item.id;
-        console.log("upload post id",postid);
+        console.log("upload post id", postid);
         console.log("token=123" + token)
         try {
             let response = await fetch(
@@ -194,18 +218,18 @@ const HomePage = ({ navigation }) => {
                 }
             )
             let json = await response;
-            if(json.status==200){
+            if (json.status == 200) {
                 // alert(postid+"like is like")
                 getTimeline();
             }
-            console.log("like reply",json);
+            console.log("like reply", json);
             // setTimeline(json);  
         } catch (error) {
             console.error(error);
         }
 
     }
-    const doublelikepost = async(item) => {
+    const doublelikepost = async (item) => {
         var userId = await Utility.getFromLocalStorge("userId");
         var token = await Utility.getFromLocalStorge("JWT");
         var username = await Utility.getFromLocalStorge("fullName");
@@ -223,8 +247,8 @@ const HomePage = ({ navigation }) => {
                 }
             )
             let json = await response;
-            console.log("double like ",json);
-            if(json.status==200){
+            console.log("double like ", json);
+            if (json.status == 200) {
                 getTimeline();
             }
             // setTimeline(json);  
@@ -233,7 +257,7 @@ const HomePage = ({ navigation }) => {
         }
 
     }
-    const addComment=async(item)=>{
+    const addComment = async (item) => {
         var userId = await Utility.getFromLocalStorge("userId");
         var token = await Utility.getFromLocalStorge("JWT");
         var username = await Utility.getFromLocalStorge("fullName");
@@ -241,26 +265,26 @@ const HomePage = ({ navigation }) => {
         var postid = item.id;
         console.log("token=123" + postid)
         try {
-            console.log("like",`http://79.133.41.198:4000/users/${userId}/postcomment/${postid}`)
+            console.log("like", `http://79.133.41.198:4000/users/${userId}/postcomment/${postid}`)
             let response = await fetch(
                 `http://79.133.41.198:4000/users/${userId}/postcomment/${postid}`, // getCoverPic
                 {
                     method: "PUT",
                     headers: {
                         Authorization: 'Bearer ' + token,
+                        "Content-Type" : 'application/json',
                     },
-                
-                body:{
-                    user_id:userId,
-                    username:username,
-                    comment:msg
-                }
-            })
+
+                    body: JSON.stringify({
+                        user_id: userId,
+                        username: username,
+                        comment: msg
+                    })
+                })
             let json = await response;
-            console.log("Add the comments",json);
-            if(json.status==200){
-                alert("Comments is added")
-                setChatcondition(false)
+            console.log("Add the comments", json);
+            if (json.status == 200) {
+                getTimeline();
 
             }
             // setTimeline(json);  
@@ -268,7 +292,7 @@ const HomePage = ({ navigation }) => {
             console.error(error);
         }
     }
-    const deletepost=async(item)=>{
+    const deletepost = async (item) => {
         var userId = await Utility.getFromLocalStorge("userId");
         var token = await Utility.getFromLocalStorge("JWT");
         var username = await Utility.getFromLocalStorge("fullName");
@@ -284,10 +308,10 @@ const HomePage = ({ navigation }) => {
                         Authorization: 'Bearer ' + token,
                     }
                 },
-                body=JSON.stringify({
-                    user_id:userId,
-                    username:username,
-                    comment:msg
+                body = JSON.stringify({
+                    user_id: userId,
+                    username: username,
+                    comment: msg
                 })
             )
             let json = await response.json();
@@ -297,243 +321,311 @@ const HomePage = ({ navigation }) => {
         }
     }
     const [state, setState] = useState({ open: false });
-
     const onStateChange = ({ open }) => setState({ open });
-  
     const { open } = state;
+
+    const removeitem=(item)=>{
+        console.log("remove data from array ",item)
+        setSuggestions(suggestions.filter(item => item !== item))
+
+
+    }
+    const openchat=async(item)=>{
+        console.log("chat item is ",item);
+        setChatcondition(!chatcondition)
+        var userId = await Utility.getFromLocalStorge("userId");
+        var token = await Utility.getFromLocalStorge("JWT");
+        var username = await Utility.getFromLocalStorge("fullName");
+        var email = await Utility.getFromLocalStorge("email");
+        var postid = item.post_id;
+        console.log("token=123" + token)
+        console.log("url checked",`http://79.133.41.198:4000/users/${userId}/getcomments/${item}`);
+        try {
+            let response = await fetch(
+                `http://79.133.41.198:4000/users/${userId}/getcomments/${item}`, // getCoverPic
+                {
+                    method: "GET",
+                    headers: {
+                        Authorization: 'Bearer ' + token,
+                    }
+                } 
+            )
+            let json = await response.json();
+            setchat(json.by_who)
+            console.log("show comments are ",json);
+        } catch (error) {
+            console.error(error);
+        }
+
+    }
+
     return (
         <Provider   >
-        <View style={{flex:1}}>
-      
-            {/* <View style={{margin:1}}> */}
-            
-    {/* </View> */}
-            <Header navigation={navigation} />
-          
-      <Portal >
-        <FAB.Group
-        fabStyle={{position:'absolute',bottom:5,margin:0}}
-        
-          open={open}
-          icon={open ? 'plus' : 'plus'}
-          actions={[
-            { icon: 'plus', 
-            label:'Status',
-            onPress: () => openStatus() },
-            {
-                icon:'plus',
-                label:'Post',
-                onPress:()=>openPublishPost()            },
-            {
-                icon:'plus',
-                // label:'Post',
-                onPress:()=>console.log("Pressed post")
-            }
-          ]}
-          onStateChange={onStateChange}
-          onPress={() => {
-            if (open) {
-              // do something if the speed dial is open
-            }
-          }}
-        />
-      </Portal>
+            <View style={{ flex: 1 }}>
+                <Header navigation={navigation} />
+                <Portal >
+                    <FAB.Group
+                        fabStyle={{ position: 'absolute', bottom: 5, margin: 0 }}
 
-            {hidewish ?
-                <View style={{ flexDirection: "row", justifyContent: 'space-evenly' }}>
-                    <View>
-                        <Text style={{ fontWeight: '900', fontSize: 22, color: '#b9424d' }}>{wish}</Text>
-                    </View>
-                    <TouchableOpacity onPress={() => setHidewish(!hidewish)}>
-                        <View>
-                            <Text>Cancel</Text>
-                        </View>
-                    </TouchableOpacity>
-                </View> : null}
-            <ScrollView showsVerticalScrollIndicator={false}>
-                <View style={{ margin: hp('1%') }}>
-                    <ScrollView horizontal={true}>
-                        <View style={{ flexDirection: 'row' }}>
-                            {statusdata.length>0? statusdata.map((item,index)=>(
-                            <View key={index}>
-                                <View style={{ width: wp('30%'), margin: wp('2%'),  borderRadius: 10 }} >
-                                    <TouchableOpacity>
-                                        <Image source={{uri:item.status_url}} style={{ height: 100, width: 100 ,borderRadius:10}}></Image>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                            )): <View style={{ width: wp('30%'), margin: wp('2%'),  borderRadius: 10 }} >
-                            <TouchableOpacity>
-                                <Image source={{uri:'https://picsum.photos/seed/picsum/200/300'}} style={{ height: 100, width: 100 ,borderRadius:10}}></Image>
-                            </TouchableOpacity>
-                        </View>}
-                        </View>
-                    </ScrollView>
-                </View>
-                <View>
-                    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-                        <View style={{ flexDirection: 'row' }}>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', width: wp('25%'), backgroundColor: '#ffcccb', borderRadius: 20, justifyContent: 'space-evenly', margin: wp('3%'), padding: 5 }}>
-                                <MaterialCommunityIcons name="note" size={25} color={'#b9424d'} />
-                                <Text style={{ color: '#b9424d', fontSize: 16, fontWeight: 'bold' }}> All</Text>
-                            </View>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', width: wp('25%'), backgroundColor: '#ffcccb', borderRadius: 20, justifyContent: 'space-evenly', margin: wp('3%') }}>
-                                <MaterialCommunityIcons name="format-text" size={25} color={'#b9424d'} />
-                                <Text style={{ color: '#b9424d', fontSize: 16, fontWeight: 'bold' }}> Text</Text>
-                            </View>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', width: wp('25%'), backgroundColor: '#ffcccb', borderRadius: 20, justifyContent: 'space-evenly', margin: wp('3%') }}>
-                                <MaterialCommunityIcons name="camera" size={25} color={'#b9424d'} />
-                                <Text style={{ color: '#b9424d', fontSize: 16, fontWeight: 'bold' }}> Photos</Text>
-                            </View>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', width: wp('25%'), backgroundColor: '#ffcccb', borderRadius: 20, justifyContent: 'space-evenly', margin: wp('3%') }}>
-                                <MaterialCommunityIcons name="video" size={25} color={'#b9424d'} />
-                                <Text style={{ color: '#b9424d', fontSize: 16, fontWeight: 'bold' }}> Videos</Text>
-                            </View>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', width: wp('25%'), backgroundColor: '#ffcccb', borderRadius: 20, justifyContent: 'space-evenly', margin: wp('3%') }}>
-                                <MaterialCommunityIcons name="music" size={25} color={'#b9424d'} />
-                                <Text style={{ color: '#b9424d', fontSize: 16, fontWeight: 'bold' }}>Sounds</Text>
-                            </View>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', width: wp('25%'), backgroundColor: '#ffcccb', borderRadius: 20, justifyContent: 'space-evenly', margin: wp('3%') }}>
-                                <MaterialCommunityIcons name="note" size={25} color={'#b9424d'} />
-                                <Text style={{ color: '#b9424d', fontSize: 16, fontWeight: 'bold' }}>Files</Text>
-                            </View>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', width: wp('25%'), backgroundColor: '#ffcccb', borderRadius: 20, justifyContent: 'space-evenly', margin: wp('3%') }}>
-                                <MaterialCommunityIcons name="map" size={25} color={'#b9424d'} />
-                                <Text style={{ color: '#b9424d', fontSize: 16, fontWeight: 'bold' }}>Maps</Text>
-                            </View>
-                        </View>
-
-                    </ScrollView>
-                </View>
-               
-                <View style={{ flexDirection: 'row', margin: wp('5%'), borderRadius: 10, padding: 10, justifyContent: 'space-evenly', alignItems: 'center' }}>
-                    <TouchableOpacity onPress={() => openProfileCover()}>
-                        <View >
-                            <Image source={require('../../../images/splashlogo.png')} style={{ height: 50, width: 50 }}></Image>
-                        </View>
-                    </TouchableOpacity>
-                    <View style={{ backgroundColor: 'white', padding: 10, borderRadius: 10, width: wp('50%') }}>
-                        <Text style={{ alignSelf: 'center', color: 'red' }}>What's going on ?</Text>
-                    </View>
-                    <TouchableOpacity>
-                        <View >
-                            <MaterialCommunityIcons name="video" size={25} color={'#b9424d'} />
-                        </View>
-                    </TouchableOpacity>
-                    {/* <TouchableOpacity onPress={() => openPublishPost()}>
-                        <View >
-                            <MaterialCommunityIcons name="camera" size={25} color={'#b9424d'} />
-                        </View>
-                    </TouchableOpacity> */}
-                </View>
-                {/* <View> */}
-              
-    {/* </View> */}
-   
-                {timeline.length > 0?
-                timeline.map((item, index) => (
-
-                    <View style={{ padding: 5, margin: wp('4%'), backgroundColor: 'white', borderRadius: 10, elevation: 10, opacity: 10, marginBottom: hp('5%') }} key={index}>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', padding: 10 }}>
-                            <TouchableOpacity onPress={() => openProfileCover()}>
-                                <View>
-                                    <Image source={require('../../../images/splashlogo.png')} style={{ height: 40, width: 40, borderRadius: 50 }}></Image>
-                                </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={() => openProfileCover()}>
-                                <View>
-                                    <Text style={{fontSize:20,fontWeight:'bold'}}>{item.username }</Text>
-                                    <View style={{ flexDirection: 'row' }}>
-                                        <Text style={{ fontSize: 12 }}>{Moment(item.created).format('d MMM')}</Text>
-                                    </View>
-                                </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={() => setCondition(true)}>
-                                <View>
-                                    <MaterialCommunityIcons name="menu-down" size={35} />
-                                </View>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={{ margin: wp('4%') }}>
-                            <Text>{item.caption} </Text>
-                            <TouchableOpacity >
-                            <Image source={{uri:item.post_upload_url}} style={{ width: wp('80%'),height:hp('40%'), borderRadius: 10 }} 
-                    ></Image>
-                    </TouchableOpacity>
-
-                        </View>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', margin: wp('3%') }}>
-                            <TouchableOpacity onPress={() => likeapicall(item)}>
-                                <View>
-                                <Image source={require('../../../images/png/like.png')} style={{ height: 30, width: 30 }}></Image>
-                                </View>
-                                <View>
-                                    <Text>{item.likes.likes_count}</Text>
-                                </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={() => doublelikepost(item)}>
-                                <View>
-                                <Image source={require('../../../images/reaction/reactions_sad.png')} style={{ height: 30, width: 30 }}></Image>
-                                </View>
-                                
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={() => setChatcondition(!chatcondition)}>
-                                <View>
-                                    <MaterialCommunityIcons name="message" size={25} />
-
-                                </View>
-                                <View>
-                                <Text>{item.comments.comments_count}</Text>
-                                </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity>
-                                <View>
-                                    <MaterialCommunityIcons name="share" size={25} />
-
-                                </View>
-                            </TouchableOpacity>
-                        </View>
-                       
-                        {chatcondition ?
-                        <View>
-                            <View style={{ flexDirection: 'row', marginLeft: wp('5%'), justifyContent: 'space-evenly', alignItems: 'center' }}>
-                                <TouchableOpacity onPress={() => openProfileCover()}>
-                                    <View>
-                                        <Image source={require('../../../images/splashlogo.png')} style={{ height: 40, width: 40, borderRadius: 50 }}></Image>
-                                    </View>
-                                </TouchableOpacity>
-                                <View>
-                                    <TextInput placeholder="Write a comment ...." placeholderTextColor='red' style={{ borderRadius: 10, borderWidth: 1 }} onChangeText={(e)=>setMsg(e)}> </TextInput>
-                                </View>
-                                <TouchableOpacity onPress={()=>addComment(item)}>
-                                    <View>
-                                        <MaterialCommunityIcons name="email-send-outline" size={35} />
-                                    </View>
-                                </TouchableOpacity>
-                                </View>
-                                <View>
-                                    <Text>Show chat list </Text>
-                                    <TouchableOpacity onPress={()=>deletepost(item)}>
-                                    <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', margin: hp('5%') }} >
-                                        <Image source={require('../../../images/splashlogo.png')} style={{ height: 20, width: 20 }}>
-                                        </Image>
-                                        <Text>Helllo vikas </Text>
-                                    </View>
-                                    </TouchableOpacity>
-
-                                </View>
-                            </View> 
+                        open={open}
+                        icon={open ? 'plus' : 'plus'}
+                        actions={[
+                            {
+                                icon: 'plus',
+                                label: 'Status',
+                                onPress: () => openStatus()
+                            },
+                            {
+                                icon: 'plus',
+                                label: 'Post',
+                                onPress: () => openPublishPost()
+                            },
+                            {
+                                icon: 'plus',
+                                // label:'Post',
+                                onPress: () => console.log("Pressed post")
+                            }
+                        ]}
+                        onStateChange={onStateChange}
+                        onPress={() => {
+                            if (open) {
                             
-                            : null}
+                            }
+                        }}
+                    />
+                </Portal>
+
+                {hidewish ?
+                    <View style={{ flexDirection: "row", justifyContent: 'space-evenly' }}>
+                        <View>
+                            <Text style={{ fontWeight: '900', fontSize: 22, color: '#b9424d' }}>{wish}</Text>
+                        </View>
+                        <TouchableOpacity onPress={() => setHidewish(!hidewish)}>
+                            <View>
+                                <Image source={require('../../../images/cross.png')} style={{ height: 20, width: 20 }}></Image>
+                            </View>
+                        </TouchableOpacity>
+                    </View> : null}
+                <ScrollView showsVerticalScrollIndicator={false}>
+                    <View style={{ margin: hp('1%') }}>
+                        <ScrollView horizontal={true}>
+                            <View style={{ flexDirection: 'row' }}>
+                                {statusdata.length > 0 ? statusdata.map((item, index) => (
+                                    <View key={index}>
+                                        <View style={{ width: wp('30%'), margin: wp('2%'), borderRadius: 10 }} >
+                                            <TouchableOpacity>
+                                                <Image source={{ uri: item.status_url }} style={{ height: 100, width: 100, borderRadius: 10 }}></Image>
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
+                                )) : <View style={{ width: wp('30%'), margin: wp('2%'), borderRadius: 10 }} >
+                                    <TouchableOpacity>
+                                        <Image source={{ uri: 'https://picsum.photos/seed/picsum/200/300' }} style={{ height: 100, width: 100, borderRadius: 10 }}></Image>
+                                    </TouchableOpacity>
+                                </View>}
+                            </View>
+                        </ScrollView>
                     </View>
-                )):null}
+                    <View>
+                        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+                            <View style={{ flexDirection: 'row' }}>
+                                <View style={{ flexDirection: 'row', alignItems: 'center', width: wp('25%'), backgroundColor: '#ffcccb', borderRadius: 20, justifyContent: 'space-evenly', margin: wp('3%'), padding: 5 }}>
+                                    <MaterialCommunityIcons name="note" size={25} color={'#b9424d'} />
+                                    <Text style={{ color: '#b9424d', fontSize: 16, fontWeight: 'bold' }}> All</Text>
+                                </View>
+                                <View style={{ flexDirection: 'row', alignItems: 'center', width: wp('25%'), backgroundColor: '#ffcccb', borderRadius: 20, justifyContent: 'space-evenly', margin: wp('3%') }}>
+                                    <MaterialCommunityIcons name="format-text" size={25} color={'#b9424d'} />
+                                    <Text style={{ color: '#b9424d', fontSize: 16, fontWeight: 'bold' }}> Text</Text>
+                                </View>
+                                <View style={{ flexDirection: 'row', alignItems: 'center', width: wp('25%'), backgroundColor: '#ffcccb', borderRadius: 20, justifyContent: 'space-evenly', margin: wp('3%') }}>
+                                    <MaterialCommunityIcons name="camera" size={25} color={'#b9424d'} />
+                                    <Text style={{ color: '#b9424d', fontSize: 16, fontWeight: 'bold' }}> Photos</Text>
+                                </View>
+                                <View style={{ flexDirection: 'row', alignItems: 'center', width: wp('25%'), backgroundColor: '#ffcccb', borderRadius: 20, justifyContent: 'space-evenly', margin: wp('3%') }}>
+                                    <MaterialCommunityIcons name="video" size={25} color={'#b9424d'} />
+                                    <Text style={{ color: '#b9424d', fontSize: 16, fontWeight: 'bold' }}> Videos</Text>
+                                </View>
+                                <View style={{ flexDirection: 'row', alignItems: 'center', width: wp('25%'), backgroundColor: '#ffcccb', borderRadius: 20, justifyContent: 'space-evenly', margin: wp('3%') }}>
+                                    <MaterialCommunityIcons name="music" size={25} color={'#b9424d'} />
+                                    <Text style={{ color: '#b9424d', fontSize: 16, fontWeight: 'bold' }}>Sounds</Text>
+                                </View>
+                                <View style={{ flexDirection: 'row', alignItems: 'center', width: wp('25%'), backgroundColor: '#ffcccb', borderRadius: 20, justifyContent: 'space-evenly', margin: wp('3%') }}>
+                                    <MaterialCommunityIcons name="note" size={25} color={'#b9424d'} />
+                                    <Text style={{ color: '#b9424d', fontSize: 16, fontWeight: 'bold' }}>Files</Text>
+                                </View>
+                                <View style={{ flexDirection: 'row', alignItems: 'center', width: wp('25%'), backgroundColor: '#ffcccb', borderRadius: 20, justifyContent: 'space-evenly', margin: wp('3%') }}>
+                                    <MaterialCommunityIcons name="map" size={25} color={'#b9424d'} />
+                                    <Text style={{ color: '#b9424d', fontSize: 16, fontWeight: 'bold' }}>Maps</Text>
+                                </View>
+                            </View>
 
-               
+                        </ScrollView>
+                    </View>
 
-            </ScrollView>
-        
-       </View>
-       </Provider>
+                    <View style={{ flexDirection: 'row', margin: wp('5%'), borderRadius: 10, padding: 10, justifyContent: 'space-evenly', alignItems: 'center' }}>
+                        <TouchableOpacity onPress={() => openProfileCover()}>
+                            <View >
+                                <Image source={require('../../../images/splashlogo.png')} style={{ height: 50, width: 50 }}></Image>
+                            </View>
+                        </TouchableOpacity>
+                        <View style={{ backgroundColor: 'white', padding: 10, borderRadius: 10, width: wp('50%') }}>
+                            <Text style={{ alignSelf: 'center', color: 'red' }}>What's going on ?</Text>
+                        </View>
+                        <TouchableOpacity>
+                            <View >
+                                <MaterialCommunityIcons name="video" size={25} color={'#b9424d'} />
+                            </View>
+                        </TouchableOpacity>
+
+                    </View>
+                   
+                           
+                                {suggestions.length>0 ?
+                                    <View>
+                                         <View style={{flexDirection:'row',justifyContent:'space-between'}}>
+                                    <View>
+                                        <Text style={{fontSize:15,fontWeight:'bold'}}>
+                                        Suggestions
+                                        </Text>
+                                    </View>
+                                    <TouchableOpacity onPress={()=>navigation.navigate('suggestion')}>
+                                    <View>
+                                    <Text style={{marginRight:10}}>See All</Text>
+                                    </View>
+                                    </TouchableOpacity>
+                                </View>
+                              
+                                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}> 
+                                {suggestions.map((item,index)=>(
+                                    <View style={{ padding: 10, width: wp('40%'), backgroundColor: 'white', elevation: 10, opacity: 10, borderRadius: 10, margin: wp('3%') }} key={index}>
+                                        <TouchableOpacity onPress={()=>removeitem(item.id)}>
+                                        <View style={{alignSelf:'flex-end'}}>
+                                        <Image source={require('../../../images/cross.png')} style={{ height: 10, width: 10 }}></Image>
+                                        </View>
+                                        </TouchableOpacity>
+                                    <View>
+                                        <Image source={{uri:item.user_profile.profile_photo_url}} style={{ borderRadius: 40, height: 100, width: 100, alignSelf: 'center' }}></Image>
+                                    </View>
+                                    <View style={{ alignSelf: 'center', margin: wp('3%') }}>
+                                        <Text >{item.user_info.username}</Text>
+                                    </View>
+                                    <TouchableOpacity>
+                                    <View style={{ alignSelf: 'center', backgroundColor: '#b9424d', padding: 10, borderRadius: 10 }}>
+                                        <Text style={{ color: 'white' }}>Following</Text>
+                                    </View>
+                                    </TouchableOpacity>
+                                </View>
+                                ))}
+                                </ScrollView>
+                                </View>
+                            :null}
+                          
+
+                    {timeline.length > 0 ?
+                        timeline.map((item, index) => (
+
+                            <View style={{ padding: 5, margin: wp('4%'), backgroundColor: 'white', borderRadius: 10, elevation: 10, opacity: 10, marginBottom: hp('5%') }} key={index}>
+                                <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', padding: 10 }}>
+                                    <TouchableOpacity onPress={() => openProfileCover()}>
+                                        <View>
+                                            <Image source={require('../../../images/splashlogo.png')} style={{ height: 40, width: 40, borderRadius: 50 }}></Image>
+                                        </View>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => openProfileCover()}>
+                                        <View>
+                                            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{item.username}</Text>
+                                            <View style={{ flexDirection: 'row' }}>
+                                                <Text style={{ fontSize: 12 }}>{Moment(item.created).format('YYYY MMM D')}</Text>
+                                            </View>
+                                        </View>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => setCondition(true)}>
+                                        <View>
+                                            <MaterialCommunityIcons name="menu-down" size={35} />
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={{ margin: wp('4%') }}>
+                                    <Text>{item.caption} </Text>
+                                    <TouchableOpacity >
+                                        <Image source={{ uri: item.post_upload_url }} style={{ width: wp('80%'), height: hp('40%'), borderRadius: 10 }}
+                                        ></Image>
+                                    </TouchableOpacity>
+
+                                </View>
+                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', margin: wp('3%') }}>
+                                    <TouchableOpacity onPress={() => likeapicall(item)}>
+                                        <View>
+                                            <Image source={require('../../../images/png/like.png')} style={{ height: 30, width: 30 }}></Image>
+                                        </View>
+                                        <View>
+                                            <Text>{item.likes.likes_count}</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => doublelikepost(item)}>
+                                        <View>
+                                            <Image source={require('../../../images/reaction/reactions_sad.png')} style={{ height: 30, width: 30 }}></Image>
+                                        </View>
+
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => openchat(item.id)}>
+                                        <View>
+                                            <MaterialCommunityIcons name="message" size={25} />
+
+                                        </View>
+                                        <View>
+                                            <Text>{item.comments.comments_count}</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity>
+                                        <View>
+                                            <MaterialCommunityIcons name="share" size={25} />
+
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+
+                                {chatcondition ?
+                                    <View>
+                                        <View style={{ flexDirection: 'row', marginLeft: wp('5%'), justifyContent: 'space-evenly', alignItems: 'center' }}>
+                                            <TouchableOpacity onPress={() => openProfileCover()}>
+                                                <View>
+                                                    <Image source={require('../../../images/splashlogo.png')} style={{ height: 40, width: 40, borderRadius: 50 }}></Image>
+                                                </View>
+                                            </TouchableOpacity>
+                                            <View>
+                                                <TextInput placeholder="Write a comment ...." placeholderTextColor='red' style={{ borderRadius: 10, borderWidth: 1 }} onChangeText={(e) => setMsg(e)}> </TextInput>
+                                            </View>
+                                            <TouchableOpacity onPress={() => addComment(item)}>
+                                                <View>
+                                                    <MaterialCommunityIcons name="email-send-outline" size={35} />
+                                                </View>
+                                            </TouchableOpacity>
+                                        </View>
+                                        <View>
+                                            <Text style={{alignSelf:'center'}}>Show chat list </Text>
+                                           
+                                               
+                                                   {chat.length > 0 ? chat.map((i,n)=>(
+                                                       <View key={n} style={{alignItems:'center',margin:10}}>
+                                                    <Text style={{alignSelf:'center'}}>{i.comments}</Text>
+                                                    </View>
+                                                    )):null}
+                                                </View>
+                                          
+                                       
+                                    </View>
+
+                                    : null}
+                            </View>
+                        )) : null}
+
+
+
+                </ScrollView>
+
+            </View>
+        </Provider>
 
     )
 }

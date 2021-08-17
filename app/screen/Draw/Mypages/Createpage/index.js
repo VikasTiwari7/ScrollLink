@@ -56,7 +56,7 @@ const CreatePage = ({navigation}) => {
       let json = await response;
       console.log(json);
       if (json.status == 200) {
-        navigation.navigate('drawer');
+        navigation.navigate('Mypages');
       } else {
         Alert.alert('Something wrong');
       }

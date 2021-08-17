@@ -10,7 +10,7 @@ import * as Utility from '../../../../utility/index';
 const showPage = ({navigation}) => {
   // const [postid,setPostid]=useState();
 
-  const [pagepostfile, setPagepostfile] = useState();
+  const [pagepostfile, setPagepostfile] = useState([]);
   const [coverimage,setCoverImage]=useState();
   const [profileImage,setProfileImage]=useState();
   const [name,setName]=useState();
@@ -47,7 +47,7 @@ const showPage = ({navigation}) => {
     let pageId = await Utility.getFromLocalStorge('getpageid');
     try {
       let response = await fetch(
-        `http://79.133.41.198:4000/users/${userId}/getpageid/${pageId}`, // getCoverPic
+        `http://79.133.41.198:4000/users/${userId}/${pageId}/getallpagepost`, // getCoverPic
         {
           method: 'GET',
           headers: {
@@ -56,10 +56,11 @@ const showPage = ({navigation}) => {
         },
       );
       let json = await response.json();
-      console.log(json);
-      setCoverImage(json.page_cover_pic_url)
-      setProfileImage(json.page_profile_pic_url)
-      setName(json.pagename)
+      console.log("particukar page post details",json);
+      setPagepostfile(json);
+      // setCoverImage(json.page_cover_pic_url)
+      // setProfileImage(json.page_profile_pic_url)
+      // setName(json.pagename)
     } catch (error) {
       console.log(error);
     }
@@ -96,19 +97,12 @@ const showPage = ({navigation}) => {
   return (
     <View style={{height:'80%'}}>
       <Text style={{fontSize:25,fontWeight:'bold'}}> {name}</Text>
-      <View style={{flexDirection: 'row', justifyContent: 'space-evenly'}}>
-        <View style={{backgroundColor: 'white'}}>
-          <Text>Overvieww</Text>
-        </View>
-
-        <View style={{backgroundColor: 'white'}}>
-          <Text>Overview</Text>
-        </View>
-
-        <View style={{backgroundColor: 'white'}}>
-          <Text>Overview</Text>
-        </View>
+      <TouchableOpacity onPress={()=>navigation.navigate('createPage')}>
+      <View style={{alignSelf:'flex-end'}}>
+        <Image source={require('../../../../images/png/edit-1.png')} style={{height:30,width:30,marginRight:10}}></Image>
+        
       </View>
+      </TouchableOpacity>
       {/* <ScrollView> */}
         <View>
           <View>
@@ -151,6 +145,14 @@ const showPage = ({navigation}) => {
       <View style={{alignSelf:'center'}}>
         <Text style={{fontWeight:'bold',fontSize:20}}> Show Page Post</Text>
        <ScrollView>
+         {pagepostfile.length>0 ?pagepostfile.map((item, index)=>(
+           <View>
+            <Text>vikassss</Text>
+
+           </View>
+
+         )):null}
+
          
        </ScrollView>
       </View>

@@ -120,11 +120,11 @@ const Pagepost = ({navigation}) => {
     console.log('token= in page ' + token);
     try {
       console.log(
-        `http://79.133.41.198:4000/users/${userId}/pageid/${pageId}/updatePageProfilePic`,
+        `http://79.133.41.198:4000/users/${userId}/pageid/${pageId}/updatePostMedia`,
       );
       console.log(data);
       let response = await fetch(
-        `http://79.133.41.198:4000/users/${userId}/pageid/${pageId}/updatePageProfilePic`, // getCoverPic
+        `http://79.133.41.198:4000/users/${userId}/pageid/${pageId}/updatePostMedia`, // getCoverPic
         {
           method: 'POST',
           headers: {
