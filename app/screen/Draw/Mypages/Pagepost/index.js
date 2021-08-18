@@ -108,7 +108,7 @@ const Pagepost = ({navigation}) => {
     console.log('vikkkkkassss');
     const data = new FormData();
 
-    data.append('pageProfileImg', {
+    data.append('postData', {
       name: photo.name,
       type: 'image/jpeg',
       uri: photo.uri,
@@ -116,6 +116,8 @@ const Pagepost = ({navigation}) => {
     var userId = await Utility.getFromLocalStorge('userId');
     var token = await Utility.getFromLocalStorge('JWT');
     let pageId = await Utility.getFromLocalStorge('pageId');
+    let pagepostid=await Utility.getFromLocalStorge('pagepostId');
+
 
     console.log('token= in page ' + token);
     try {
@@ -124,7 +126,7 @@ const Pagepost = ({navigation}) => {
       );
       console.log(data);
       let response = await fetch(
-        `http://79.133.41.198:4000/users/${userId}/pageid/${pageId}/updatePostMedia`, // getCoverPic
+        `http://79.133.41.198:4000/users/${userId}/${pageId}/updatepost/${pagepostid}/updatePostMedia`, // getCoverPic
         {
           method: 'POST',
           headers: {

@@ -106,10 +106,6 @@ const ProfileActivity=({navigation})=>{
       }
     return(
     <View>
-      <ScrollView>
-     
-     
-       <View>
        <View style={{flexDirection:'row',width:wp('100%'),justifyContent:'space-evenly',backgroundColor:'#a19495'}}>
                     <TouchableOpacity onPress={()=>backarrow()}>
                   <MaterialCommunityIcons name="keyboard-backspace" size={35} color={'white'}
@@ -117,12 +113,13 @@ const ProfileActivity=({navigation})=>{
                    </TouchableOpacity>
             <Text style={{fontSize:22,fontWeight:'bold'}}>Profile Activity Screen</Text>
             </View>
+            <ScrollView>
             {loader == true ? (
           <ActivityIndicator style={{marginTop: 10}} size="large" color="red" />
         ) : null}
            {coverFilepath?
            <Image source={{uri:coverFilepath}} style={{width:wp('100%'),height:hp('20%')}}  onError={()=>setCoverfilepath('https://picsum.photos/seed/picsum/200/300')}></Image>:null}
-       </View>
+     
       
      
        <View style={{alignSelf:'flex-end',backgroundColor:'gray',padding:8,marginRight:wp('5%'),width:wp('20%'),borderRadius:10,marginTop:hp('-10%')}}>

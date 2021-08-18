@@ -10,7 +10,7 @@ import * as Utility from '../../../utility/index';
 const Mypages = ({navigation}) => {
     const [pagelist,setPagelist]=useState([]);
     useEffect(()=>{
-        getpageList()
+        // getpageList()
     },[]);
     
     const createPage= async()=>{
@@ -40,26 +40,26 @@ const Mypages = ({navigation}) => {
             console.log(error);
           }
         }
-     const  getpageList = async()=>{
-            var userId = await Utility.getFromLocalStorge("userId");
-            var token = await Utility.getFromLocalStorge("JWT");
-                try {
-                  let response = await fetch(
-                    `http://79.133.41.198:4000/users/${userId}/getallpage`, // getCoverPic
-                    {
-                      method: "GET",
-                      headers: {
-                        Authorization: 'Bearer ' + token,
-                      }
-                    }
-                  )
-                  let json = await response.json();
-                  setPagelist(json);
-                  console.log(json);
-                }catch(error){
-                    console.log(error);
-                }
-            }  
+    //  const  getpageList = async()=>{
+    //         var userId = await Utility.getFromLocalStorge("userId");
+    //         var token = await Utility.getFromLocalStorge("JWT");
+    //             try {
+    //               let response = await fetch(
+    //                 `http://79.133.41.198:4000/users/${userId}/getallpage`, // getCoverPic
+    //                 {
+    //                   method: "GET",
+    //                   headers: {
+    //                     Authorization: 'Bearer ' + token,
+    //                   }
+    //                 }
+    //               )
+    //               let json = await response.json();
+    //               setPagelist(json);
+    //               console.log(json);
+    //             }catch(error){
+    //                 console.log(error);
+    //             }
+    //         }  
           
 
             const openMypageList=()=>{

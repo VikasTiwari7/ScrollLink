@@ -68,7 +68,7 @@ useEffect(() => {
             "Are you want to logout",
             [
                 {
-                text:"cancel",onPress:()=>cancelbutto()
+                text:"cancel",
                 },
                 { text: "Ok", onPress: () => deleteAccount() },
             ],
@@ -151,15 +151,7 @@ useEffect(() => {
                         <Text style={{fontSize:18,fontWeight:'900'}}>Night mode</Text>
                     </View>
                     </View>
-                    <View>
-                        <Checkbox 
-                         status={!dark}
-                         color="#b9424d"
-                        
-                        onPress={(v1)=> EventRegister.emit('myCustomEvent', v1)}>
-
-                        </Checkbox>
-                    </View>
+                   
                 </View>
                 <TouchableOpacity onPress={()=>logout()}>
                 <View style={{margin:wp('5%'),flexDirection:'row',alignContent:'center',justifyContent:'space-evenly',width:wp('30%')}}>

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Text, View, FlatList, TouchableOpacity, Image } from 'react-native';
+import { Text, View, FlatList, TouchableOpacity, Image ,ActivityIndicator} from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useState } from 'react/cjs/react.development';
 import * as Utility from '../../../utility/index';
@@ -10,16 +10,19 @@ import {
 
 const Suggestion = () => {
     const [suggestion, setSuggestions] = useState()
+    const [loader,setLoader]=useState(false)
     useEffect(() => {
         getsuggestionlist();
     }, [])
     const getsuggestionlist = async () => {
+
         var userId = await Utility.getFromLocalStorge("userId");
         var token = await Utility.getFromLocalStorge("JWT");
         var username = await Utility.getFromLocalStorge("fullName");
         var email = await Utility.getFromLocalStorge("email");
         console.log("token=123" + token)
         try {
+            setLoader(true);
             let response = await fetch(
                 `http://79.133.41.198:4000/users/${userId}/getPeopleMayKnowList`, // getCoverPic
                 {
@@ -33,6 +36,7 @@ const Suggestion = () => {
             let json = await response.json();
             console.log("Suggestion records-", json);
             setSuggestions(json);
+            setLoader(false);
         } catch (error) {
             console.error(error);
         }
@@ -45,17 +49,20 @@ const Suggestion = () => {
         console.log(item)
     }
     return (
-        <View>
+        <View style={{marginBottom:hp('10%')}}>
+            
             <View style={{ alignSelf: 'center', backgroundColor: '#b9424d', width: '100%', padding: 10 }}>
                 <Text style={{ fontSize: 20, fontWeight: 'bold', alignSelf: 'center', color: 'white' }}>Suggestion List</Text>
             </View>
-
-            <View>
+            {loader == true ? (
+          <ActivityIndicator style={{marginTop: 10}} size="large" color="red" />
+        ) : null}
                 <FlatList
                     data={suggestion}
                     keyExtractor={item => item.id}
                     renderItem={({ item, id }) => (
-                        <View style={{ width: wp('90%') }}>
+                        <View >
+                        <View style={{ padding:10, margin: wp('4%'), backgroundColor: 'white', borderRadius: 10, elevation: 10, opacity: 10, marginBottom: hp('2%')}}>
                             <View style={{ flexDirection: 'row', margin: '5%' }}>
                                 <Image source={{ uri: item.user_profile.profile_photo_url }} style={{ height: 100, width: 100, borderRadius: 20 }}></Image>
 
@@ -74,12 +81,13 @@ const Suggestion = () => {
                                 </TouchableOpacity>
                             </View>
                         </View>
+                        </View>
                     )
                     }
                 />
             </View>
 
-        </View>
+       
     )
 }
 export default Suggestion

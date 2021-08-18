@@ -471,7 +471,7 @@ const HomePage = ({ navigation }) => {
                         <View style={{ backgroundColor: 'white', padding: 10, borderRadius: 10, width: wp('50%') }}>
                             <Text style={{ alignSelf: 'center', color: 'red' }}>What's going on ?</Text>
                         </View>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={()=>navigation.navigate('videoscreen')}>
                             <View >
                                 <MaterialCommunityIcons name="video" size={25} color={'#b9424d'} />
                             </View>

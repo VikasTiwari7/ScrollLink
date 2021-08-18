@@ -19,7 +19,7 @@ const Profile_Privacy_setting=({navigation})=>{
     const [location,setLocation]=useState();
     const [indexProfile,setIndexProfile]=useState();
     const backarrow=()=>{
-        navigation.navigate('Bottom')
+        navigation.navigate('drawer')
 
     }
     return(

@@ -29,7 +29,7 @@ const Profile_General_Setting=({navigation})=>{
         try {
             // console.log(`http://192.168.43.39:4000/users/${userId}/getprofiledata`);
             let response = await fetch(
-              `${api.BaseUrl}users/${userId}/getprofiledata`,
+              `${api.BaseUrl}/users/${userId}/getprofiledata`,
               {
                 method: "GET",
                headers: { 
@@ -45,16 +45,14 @@ const Profile_General_Setting=({navigation})=>{
           setDob(json.user_profile.birthdata);
           setGender(json.user_profile.gender);
           setCountry(json.user_profile.location)
-          
-
-          
+        
           
           } catch (error) {
             console.error(error);
           }
     }
     const backarrow=()=>{
-        navigation.navigate('Bottom')
+        navigation.navigate('drawer')
     }
     return(
         <View>
