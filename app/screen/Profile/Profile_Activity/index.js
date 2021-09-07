@@ -40,7 +40,7 @@ const ProfileActivity=({navigation})=>{
     try {
         let response = await fetch(
           // 192.168.0.101:4000/users/60cb6255633ed91264de3cc3/getProfilePicUrl
-          `http://79.133.41.198:4000/users/${userId}/getProfilePicUrl`, // getCoverPic
+          `http://79.133.41.198:81/users/${userId}/getProfilePicUrl`, // getCoverPic
           {
             method: "GET",
            headers: { 
@@ -68,7 +68,7 @@ const ProfileActivity=({navigation})=>{
     try {
       let response = await fetch(
         // 192.168.0.101:4000/users/60cb6255633ed91264de3cc3/getProfilePicUrl
-        `http://79.133.41.198:4000/users/${userId}/getCoverPicUrl`, // getCoverPic
+        `http://79.133.41.198:81/users/${userId}/getCoverPicUrl`, // getCoverPic
         {
           method: "GET",
          headers: { 

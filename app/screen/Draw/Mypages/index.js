@@ -19,7 +19,7 @@ const Mypages = ({navigation}) => {
             var token = await Utility.getFromLocalStorge("JWT");
             try {
               let response = await fetch(
-                `http://79.133.41.198:4000/users/${userId}/createpage`, // getCoverPic
+                `http://79.133.41.198:81/users/${userId}/createpage`, // getCoverPic
                 {
                   method: "GET",
                   headers: {
@@ -45,7 +45,7 @@ const Mypages = ({navigation}) => {
     //         var token = await Utility.getFromLocalStorge("JWT");
     //             try {
     //               let response = await fetch(
-    //                 `http://79.133.41.198:4000/users/${userId}/getallpage`, // getCoverPic
+    //                 `http://79.133.41.198:81/users/${userId}/getallpage`, // getCoverPic
     //                 {
     //                   method: "GET",
     //                   headers: {

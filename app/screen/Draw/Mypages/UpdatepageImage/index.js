@@ -65,10 +65,10 @@ const UpdatepageImage=({navigation})=>{
      
       console.log("token= in page " + token)
       try {
-        console.log(`http://79.133.41.198:4000/users/${userId}/pageid/${pageId}/updatePageCoverPic`,);
+        console.log(`http://79.133.41.198:81/users/${userId}/pageid/${pageId}/updatePageCoverPic`,);
         console.log(data); 
         let response = await fetch(
-          `http://79.133.41.198:4000/users/${userId}/pageid/${pageId}/updatePageCoverPic`, // getCoverPic
+          `http://79.133.41.198:81/users/${userId}/pageid/${pageId}/updatePageCoverPic`, // getCoverPic
           {
             method: "POST",
             headers: {
@@ -100,10 +100,10 @@ const UpdatepageImage=({navigation})=>{
      
       console.log("token= in page " + token)
       try {
-        console.log(`http://79.133.41.198:4000/users/${userId}/pageid/${pageId}/updatePageProfilePic`,);
+        console.log(`http://79.133.41.198:81/users/${userId}/pageid/${pageId}/updatePageProfilePic`,);
         console.log(data); 
         let response = await fetch(
-          `http://79.133.41.198:4000/users/${userId}/pageid/${pageId}/updatePageProfilePic`, // getCoverPic
+          `http://79.133.41.198:81/users/${userId}/pageid/${pageId}/updatePageProfilePic`, // getCoverPic
           {
             method: "POST",
             headers: {

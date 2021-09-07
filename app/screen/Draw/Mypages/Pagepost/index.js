@@ -27,7 +27,7 @@ const Pagepost = ({navigation}) => {
     let pageId = await Utility.getFromLocalStorge('getpageid');
     try {
       let response = await fetch(
-        `http://79.133.41.198:4000/users/${userId}/getpageid/${pageId}`, // getCoverPic
+        `http://79.133.41.198:81/users/${userId}/getpageid/${pageId}`, // getCoverPic
         {
           method: 'GET',
           headers: {
@@ -52,12 +52,12 @@ const Pagepost = ({navigation}) => {
     let pagepostId=await Utility.getFromLocalStorge('pagepostId');
 
     console.log(
-      `http://79.133.41.198:4000/users/${userId}/${pageId}/uppdatepost/${pagepostId}/updatePostInfo`,
+      `http://79.133.41.198:81/users/${userId}/${pageId}/uppdatepost/${pagepostId}/updatePostInfo`,
     );
     http://localhost:4000/users/60ca30e507b36fd953c418be/60eff4eaf994f420ca513ed5/updatepost/60f54fcde45d50e5f1d2cee0/updatePostInfo
     try {
       let response = await fetch(
-        `http://79.133.41.198:4000/users/${userId}/${pageId}/updatepost/${pagepostId}/updatePostInfo`,
+        `http://79.133.41.198:81/users/${userId}/${pageId}/updatepost/${pagepostId}/updatePostInfo`,
         {
           method: 'POST',
           headers: {
@@ -122,11 +122,11 @@ const Pagepost = ({navigation}) => {
     console.log('token= in page ' + token);
     try {
       console.log(
-        `http://79.133.41.198:4000/users/${userId}/pageid/${pageId}/updatePostMedia`,
+        `http://79.133.41.198:81/users/${userId}/pageid/${pageId}/updatePostMedia`,
       );
       console.log(data);
       let response = await fetch(
-        `http://79.133.41.198:4000/users/${userId}/${pageId}/updatepost/${pagepostid}/updatePostMedia`, // getCoverPic
+        `http://79.133.41.198:81/users/${userId}/${pageId}/updatepost/${pagepostid}/updatePostMedia`, // getCoverPic
         {
           method: 'POST',
           headers: {

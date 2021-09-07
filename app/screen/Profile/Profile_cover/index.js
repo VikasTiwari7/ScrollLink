@@ -36,7 +36,7 @@ const ProfileCover = ({ navigation }) => {
     console.log("token=" + token)
     try {
       let response = await fetch(
-        `http://79.133.41.198:4000/users/${userId}/getProfilePicUrl`, // getCoverPic
+        `http://79.133.41.198:81/users/${userId}/getProfilePicUrl`, // getCoverPic
         {
           method: "GET",
           headers: {
@@ -58,7 +58,7 @@ const ProfileCover = ({ navigation }) => {
     var token = await Utility.getFromLocalStorge("JWT");
     try {
       let response = await fetch(
-        `http://79.133.41.198:4000/users/${userId}/getCoverPicUrl`, // getCoverPic
+        `http://79.133.41.198:81/users/${userId}/getCoverPicUrl`, // getCoverPic
         {
           method: "GET",
           headers: {
@@ -98,7 +98,7 @@ const ProfileCover = ({ navigation }) => {
     console.log("token=" + token)
     try { 
       let response = await fetch(
-        `http://79.133.41.198:4000/users/${userId}/uploadCoverPic`, // getCoverPic
+        `http://79.133.41.198:81/users/${userId}/uploadCoverPic`, // getCoverPic
         {
           method: "POST",
           headers: {
@@ -179,7 +179,7 @@ const ProfileCover = ({ navigation }) => {
     console.log("token=" + token)
     try { 
       let response = await fetch(
-        `http://79.133.41.198:4000/users/${userId}/uploadProfilePic`, // getCoverPic
+        `http://79.133.41.198:81/users/${userId}/uploadProfilePic`, // getCoverPic
         {
           method: "POST",
           headers: {

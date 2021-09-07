@@ -24,7 +24,7 @@ const Suggestion = () => {
         try {
             setLoader(true);
             let response = await fetch(
-                `http://79.133.41.198:4000/users/${userId}/getPeopleMayKnowList`, // getCoverPic
+                `http://79.133.41.198:81/users/${userId}/getPeopleMayKnowList`, // getCoverPic
                 {
                     method: "GET",
                     headers: {

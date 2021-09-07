@@ -26,12 +26,12 @@ const CreatePage = ({navigation}) => {
     // console.log(userId);
 
     console.log(
-      `http://79.133.41.198:4000/users/${userId}/updatepage/${pageId}/updatePageInfo`,
+      `http://79.133.41.198:81/users/${userId}/updatepage/${pageId}/updatePageInfo`,
     );
 
     try {
       let response = await fetch(
-        `http://79.133.41.198:4000/users/${userId}/updatepage/${pageId}/updatePageInfo`,
+        `http://79.133.41.198:81/users/${userId}/updatepage/${pageId}/updatePageInfo`,
         {
           method: 'POST',
           headers: {

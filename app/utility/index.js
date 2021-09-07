@@ -129,4 +129,4 @@ export const AuthToken = async (key: String) => {
   } catch (err) {
     console.log('authToken Error', err);
   }
-};
+};    

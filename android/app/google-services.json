@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "453342997420",
+    "project_id": "scrolllink-29ab9",
+    "storage_bucket": "scrolllink-29ab9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:453342997420:android:c0274c1f1fe73ad8582809",
+        "android_client_info": {
+          "package_name": "com.scroll_link"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "453342997420-sj4qv0hlek702tnttevb4fetqtnjlpgg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCC-AfKqJvonSYHS-hfVzI0FuhruL1yzrg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "453342997420-sj4qv0hlek702tnttevb4fetqtnjlpgg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

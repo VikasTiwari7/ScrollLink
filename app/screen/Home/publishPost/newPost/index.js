@@ -20,6 +20,7 @@ const Newpost = ({navigation}) => {
   const [isEnabled1, setIsEnabled1] = useState(false);
   const [isEnabled2, setIsEnabled2] = useState(false);
   const [isEnabled3, setIsEnabled3] = useState(false);
+  const [caption,setCaption]=useState();
   useEffect(() => {
     // retrivedata()
   }, []);
@@ -36,13 +37,13 @@ const Newpost = ({navigation}) => {
     console.log('token=' + token);
     console.log(userId);
     console.log(
-      `http://79.133.41.198:4000/users/${userId}/updatepost/${postId}/updatePostInfo`,
+      `http://79.133.41.198:81/users/${userId}/updatepost/${postId}/updatePostInfo`,
     );
 
     try {
       let response = await fetch(
-        // http://79.133.41.198:4000/users/60d97dd575d2e590a94188a5/createpost
-        `http://79.133.41.198:4000/users/${userId}/updatepost/${postId}/updatePostInfo`,
+        // http://79.133.41.198:81/users/60d97dd575d2e590a94188a5/createpost
+        `http://79.133.41.198:81/users/${userId}/updatepost/${postId}/updatePostInfo`,
         {
           method: 'POST',
           headers: {
@@ -55,7 +56,7 @@ const Newpost = ({navigation}) => {
             post_type: 'image',
             tag_people: 'Something is better then people',
             location: 'delhi',
-            description: 'bla bla',
+            description: caption || "This is beautiful post",
           }),
         },
       );
@@ -118,14 +119,18 @@ const Newpost = ({navigation}) => {
       <View
         style={{
           flexDirection: 'row',
-          justifyContent: 'space-evenly',
+          // justifyContent: 'space-between',
           padding: 10,
         }}>
         <Image source={require('../../../../images/splashlogo.png')}></Image>
         <TextInput
           placeholder="Write a caption "
-          placeholderTextColor="#b9424d"></TextInput>
-        <Image source={require('../../../../images/splashlogo.png')}></Image>
+          placeholderTextColor="#b9424d"
+          value={caption}
+          onChangeText={(text)=>setCaption(text)}
+          style={{marginLeft:10}}
+          ></TextInput>
+       
       </View>
       <View
         style={{

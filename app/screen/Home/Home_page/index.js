@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
-    Image, ScrollView, Text, View, Button, TextInput, Platform,
-    PermissionsAndroid
+    Image, ScrollView, Text, View, Button, Platform,
+    PermissionsAndroid, BackHandler, Alert,TextInput
 } from 'react-native';
 import {
     widthPercentageToDP as wp,
@@ -17,13 +17,20 @@ import {
 } from 'react-native-image-picker';
 import Header from '../../../components/header';
 import * as Utility from '../../../utility/index';
-import * as api from '../../../api/url';
+// import * as api from '../../../api/url';
 import { useIsFocused } from "@react-navigation/native";
+// import RBSheet from "react-native-raw-bottom-sheet";
+import Story from 'react-native-story'
+
+import Share from 'react-native-share';
 import Moment from 'moment';
+
 const HomePage = ({ navigation }) => {
+    const refRBSheet = useRef();
     const isFocused = useIsFocused();
     const [condition, setCondition] = useState(false);
-    const [chatcondition, setChatcondition] = useState(false);
+    const [chatcondition, setChatcondition] = useState();
+    const [chatstatus, setChatStatus] = useState(false);
     const [filePath, setFilePath] = useState({});
     const [wish, setWish] = useState('');
     const [hidewish, setHidewish] = useState(true);
@@ -31,7 +38,7 @@ const HomePage = ({ navigation }) => {
     const [statusdata, setStatusData] = useState([]);
     const [suggestions, setSuggestions] = useState([]);
     const [msg, setMsg] = useState();
-    const [chat,setchat]=useState([]);
+    const [chat, setchat] = useState([]);
     const [conditionSuggestion, setConditionSuggestions] = useState(true)
     var vikas = [];
     useEffect(() => {
@@ -42,7 +49,53 @@ const HomePage = ({ navigation }) => {
         getStatus();
         getsuggestionlist();
 
+        // const backAction = () => {
+        //     Alert.alert("Hold on!", "Are you sure you want to go back?", [
+        //       {
+        //         text: "Cancel",
+        //         onPress: () => null,
+        //         style: "cancel"
+        //       },
+        //       { text: "YES", onPress: () => BackHandler.exitApp() }
+        //     ]);
+        //     return true;
+        //   };
+
+        //   const backHandler = BackHandler.addEventListener(
+        //     "hardwareBackPress",
+        //     backAction
+        //   );
+
+        //   return () => backHandler.remove();
+
     }, [isFocused])
+
+    const stories = [
+        {
+          id: "4",
+          source: require("../../../images/cross.png"),
+          user: "Ugur Erdal",
+          avatar: require("../../../images/cross.png")
+        },
+        {
+          id: "2",
+          source: require("../../../images/cross.png"),
+          user: "Mustafa",
+          avatar: require("../../../images/cross.png")
+        },
+        {
+          id: "5",
+          source: require("../../../images/cross.png"),
+          user: "Emre Yilmaz",
+          avatar: require("../../../images/cross.png")
+        },
+        {
+          id: "3",
+          source: require("../../../images/cross.png"),
+          user: "Cenk Gun",
+          avatar: require("../../../images/cross.png")
+        },
+      ];
     const getsuggestionlist = async () => {
         var userId = await Utility.getFromLocalStorge("userId");
         var token = await Utility.getFromLocalStorge("JWT");
@@ -51,12 +104,11 @@ const HomePage = ({ navigation }) => {
         console.log("token=123" + token)
         try {
             let response = await fetch(
-                `http://79.133.41.198:4000/users/${userId}/getPeopleMayKnowList`, // getCoverPic
+                `http://79.133.41.198:81/users/${userId}/getPeopleMayKnowList`, // getCoverPic
                 {
                     method: "GET",
                     headers: {
                         Authorization: 'Bearer ' + token,
-
                     }
                 }
             )
@@ -76,7 +128,7 @@ const HomePage = ({ navigation }) => {
         console.log("token=123" + token)
         try {
             let response = await fetch(
-                `http://79.133.41.198:4000/users/${userId}/getstatus`, // getCoverPic
+                `http://79.133.41.198:81/users/${userId}/getstatus`, // getCoverPic
                 {
                     method: "GET",
                     headers: {
@@ -100,7 +152,7 @@ const HomePage = ({ navigation }) => {
         console.log("token=" + token)
         try {
             let response = await fetch(
-                `http://79.133.41.198:4000/users/${userId}/getProfilePicUrl`, // getCoverPic
+                `http://79.133.41.198:81/users/${userId}/getProfilePicUrl`, // getCoverPic
                 {
                     method: "GET",
                     headers: {
@@ -141,7 +193,7 @@ const HomePage = ({ navigation }) => {
         console.log("token=123" + token)
         try {
             let response = await fetch(
-                `http://79.133.41.198:4000/users/${userId}/timelinefeed`, // getCoverPic
+                `http://79.133.41.198:81/users/${userId}/timelinefeed`, // getCoverPic
                 {
                     method: "GET",
                     headers: {
@@ -209,7 +261,7 @@ const HomePage = ({ navigation }) => {
         console.log("token=123" + token)
         try {
             let response = await fetch(
-                `http://79.133.41.198:4000/users/${userId}/postlike/${postid}`, // getCoverPic
+                `http://79.133.41.198:81/users/${userId}/postlike/${postid}`, // getCoverPic
                 {
                     method: "PUT",
                     headers: {
@@ -238,7 +290,7 @@ const HomePage = ({ navigation }) => {
         console.log("token=123" + token)
         try {
             let response = await fetch(
-                `http://79.133.41.198:4000/users/${userId}/doublelike/${postid}`, // getCoverPic
+                `http://79.133.41.198:81/users/${userId}/doublelike/${postid}`, // getCoverPic
                 {
                     method: "PUT",
                     headers: {
@@ -265,14 +317,14 @@ const HomePage = ({ navigation }) => {
         var postid = item.id;
         console.log("token=123" + postid)
         try {
-            console.log("like", `http://79.133.41.198:4000/users/${userId}/postcomment/${postid}`)
+            console.log("like", `http://79.133.41.198:81/users/${userId}/postcomment/${postid}`)
             let response = await fetch(
-                `http://79.133.41.198:4000/users/${userId}/postcomment/${postid}`, // getCoverPic
+                `http://79.133.41.198:81/users/${userId}/postcomment/${postid}`, // getCoverPic
                 {
                     method: "PUT",
                     headers: {
                         Authorization: 'Bearer ' + token,
-                        "Content-Type" : 'application/json',
+                        "Content-Type": 'application/json',
                     },
 
                     body: JSON.stringify({
@@ -301,7 +353,7 @@ const HomePage = ({ navigation }) => {
         console.log("token=123" + token)
         try {
             let response = await fetch(
-                `http://79.133.41.198:4000/users/${userId}/deletecomment/${postid}`, // getCoverPic
+                `http://79.133.41.198:81/users/${userId}/deletecomment/${postid}`, // getCoverPic
                 {
                     method: "PUT",
                     headers: {
@@ -324,41 +376,83 @@ const HomePage = ({ navigation }) => {
     const onStateChange = ({ open }) => setState({ open });
     const { open } = state;
 
-    const removeitem=(item)=>{
-        console.log("remove data from array ",item)
+    const removeitem = (item) => {
+        console.log("remove data from array ", item)
         setSuggestions(suggestions.filter(item => item !== item))
 
 
     }
-    const openchat=async(item)=>{
-        console.log("chat item is ",item);
-        setChatcondition(!chatcondition)
+    const openchat = async (item) => {
+        console.log("chat item is ", item);
+        setChatcondition(item)
+        setChatStatus(!chatstatus)
         var userId = await Utility.getFromLocalStorge("userId");
         var token = await Utility.getFromLocalStorge("JWT");
         var username = await Utility.getFromLocalStorge("fullName");
         var email = await Utility.getFromLocalStorge("email");
         var postid = item.post_id;
         console.log("token=123" + token)
-        console.log("url checked",`http://79.133.41.198:4000/users/${userId}/getcomments/${item}`);
+        console.log("url checked", `http://79.133.41.198:81/users/${userId}/getcomments/${item}`);
         try {
             let response = await fetch(
-                `http://79.133.41.198:4000/users/${userId}/getcomments/${item}`, // getCoverPic
+                `http://79.133.41.198:81/users/${userId}/getcomments/${item}`, // getCoverPic
                 {
                     method: "GET",
                     headers: {
                         Authorization: 'Bearer ' + token,
                     }
-                } 
+                }
             )
             let json = await response.json();
             setchat(json.by_who)
-            console.log("show comments are ",json);
+            console.log("show comments are ", json);
         } catch (error) {
             console.error(error);
         }
 
     }
+    const openshare = (options) => {
+        Share.open(options)
+            .then((res) => {
+                console.log("share is ", res);
+            })
+            .catch((err) => {
+                err && console.log(err);
+            });
+    }
+    const following = async (item) => {
+        console.log("following items are", item)
 
+        var userId = await Utility.getFromLocalStorge("userId");
+        var token = await Utility.getFromLocalStorge("JWT");
+        var username = await Utility.getFromLocalStorge("fullName");
+        var email = await Utility.getFromLocalStorge("email");
+        console.log("token=123" + token)
+        try {
+            let response = await fetch(
+                `http://79.133.41.198:81/users/${userId}/addfollowers/${item.id}`, // getCoverPic
+                {
+                    method: "PUT",
+                    headers: {
+                        Authorization: 'Bearer ' + token,
+                    }
+                }
+            )
+            let json = await response;
+            console.log("Follow Records records-", json);
+            if (json.status == 200) {
+                alert("Successfully follow")
+                getTimeline();
+            } else {
+                alert("Something went wrong");
+            }
+
+            // setSuggestions(json);
+        } catch (error) {
+            console.error(error);
+        }
+
+    }
     return (
         <Provider   >
             <View style={{ flex: 1 }}>
@@ -366,7 +460,6 @@ const HomePage = ({ navigation }) => {
                 <Portal >
                     <FAB.Group
                         fabStyle={{ position: 'absolute', bottom: 5, margin: 0 }}
-
                         open={open}
                         icon={open ? 'plus' : 'plus'}
                         actions={[
@@ -389,7 +482,7 @@ const HomePage = ({ navigation }) => {
                         onStateChange={onStateChange}
                         onPress={() => {
                             if (open) {
-                            
+
                             }
                         }}
                     />
@@ -406,6 +499,15 @@ const HomePage = ({ navigation }) => {
                             </View>
                         </TouchableOpacity>
                     </View> : null}
+
+{/* <View style={{marginTop:wp('-10%')}}>
+                    <Story
+            unPressedBorderColor="#e95950"
+            pressedBorderColor="#ebebeb"
+            stories={statusdata}
+           
+        />
+</View> */}
                 <ScrollView showsVerticalScrollIndicator={false}>
                     <View style={{ margin: hp('1%') }}>
                         <ScrollView horizontal={true}>
@@ -414,7 +516,7 @@ const HomePage = ({ navigation }) => {
                                     <View key={index}>
                                         <View style={{ width: wp('30%'), margin: wp('2%'), borderRadius: 10 }} >
                                             <TouchableOpacity>
-                                                <Image source={{ uri: item.status_url }} style={{ height: 100, width: 100, borderRadius: 10 }}></Image>
+                                                <Image source={{ uri: item.source }} style={{ height: 100, width: 100, borderRadius: 10 }}></Image>
                                             </TouchableOpacity>
                                         </View>
                                     </View>
@@ -471,55 +573,53 @@ const HomePage = ({ navigation }) => {
                         <View style={{ backgroundColor: 'white', padding: 10, borderRadius: 10, width: wp('50%') }}>
                             <Text style={{ alignSelf: 'center', color: 'red' }}>What's going on ?</Text>
                         </View>
-                        <TouchableOpacity onPress={()=>navigation.navigate('videoscreen')}>
+                        <TouchableOpacity onPress={() => navigation.navigate('videoscreen')}>
                             <View >
                                 <MaterialCommunityIcons name="video" size={25} color={'#b9424d'} />
                             </View>
                         </TouchableOpacity>
 
                     </View>
-                   
-                           
-                                {suggestions.length>0 ?
-                                    <View>
-                                         <View style={{flexDirection:'row',justifyContent:'space-between'}}>
-                                    <View>
-                                        <Text style={{fontSize:15,fontWeight:'bold'}}>
+                    {suggestions.length > 0 ?
+                        <View style={{margin:wp('3%')}}>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                <View>
+                                    <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
                                         Suggestions
-                                        </Text>
-                                    </View>
-                                    <TouchableOpacity onPress={()=>navigation.navigate('suggestion')}>
-                                    <View>
-                                    <Text style={{marginRight:10}}>See All</Text>
-                                    </View>
-                                    </TouchableOpacity>
+                                    </Text>
                                 </View>
-                              
-                                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}> 
-                                {suggestions.map((item,index)=>(
+                                <TouchableOpacity onPress={() => navigation.navigate('suggestion')}>
+                                    <View>
+                                        <Text style={{ marginRight: 10 }}>See All</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+
+                            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+                                {suggestions.map((item, index) => (
                                     <View style={{ padding: 10, width: wp('40%'), backgroundColor: 'white', elevation: 10, opacity: 10, borderRadius: 10, margin: wp('3%') }} key={index}>
-                                        <TouchableOpacity onPress={()=>removeitem(item.id)}>
-                                        <View style={{alignSelf:'flex-end'}}>
-                                        <Image source={require('../../../images/cross.png')} style={{ height: 10, width: 10 }}></Image>
-                                        </View>
+                                        <TouchableOpacity onPress={() => removeitem(item.id)}>
+                                            <View style={{ alignSelf: 'flex-end' }}>
+                                                <Image source={require('../../../images/cross.png')} style={{ height: 10, width: 10 }}></Image>
+                                            </View>
                                         </TouchableOpacity>
-                                    <View>
-                                        <Image source={{uri:item.user_profile.profile_photo_url}} style={{ borderRadius: 40, height: 100, width: 100, alignSelf: 'center' }}></Image>
+                                        <View>
+                                            <Image source={{ uri: item.user_profile.profile_photo_url }} style={{ borderRadius: 40, height: 100, width: 100, alignSelf: 'center' }}></Image>
+                                        </View>
+                                        <View style={{ alignSelf: 'center', margin: wp('3%') }}>
+                                            <Text >{item.user_info.username}</Text>
+                                        </View>
+                                        <TouchableOpacity onPress={() => following(item)}>
+                                            <View style={{ alignSelf: 'center', backgroundColor: '#b9424d', padding: 10, borderRadius: 10 }}>
+                                                <Text style={{ color: 'white' }}>Following</Text>
+                                            </View>
+                                        </TouchableOpacity>
                                     </View>
-                                    <View style={{ alignSelf: 'center', margin: wp('3%') }}>
-                                        <Text >{item.user_info.username}</Text>
-                                    </View>
-                                    <TouchableOpacity>
-                                    <View style={{ alignSelf: 'center', backgroundColor: '#b9424d', padding: 10, borderRadius: 10 }}>
-                                        <Text style={{ color: 'white' }}>Following</Text>
-                                    </View>
-                                    </TouchableOpacity>
-                                </View>
                                 ))}
-                                </ScrollView>
-                                </View>
-                            :null}
-                          
+                            </ScrollView>
+                        </View>
+                        : null}
+
 
                     {timeline.length > 0 ?
                         timeline.map((item, index) => (
@@ -535,7 +635,7 @@ const HomePage = ({ navigation }) => {
                                         <View>
                                             <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{item.username}</Text>
                                             <View style={{ flexDirection: 'row' }}>
-                                                <Text style={{ fontSize: 12 }}>{Moment(item.created).format('YYYY MMM D')}</Text>
+                                                <Text style={{ fontSize: 12 }} >{Moment(item.created).format('DD MMM YYYY')}</Text>
                                             </View>
                                         </View>
                                     </TouchableOpacity>
@@ -547,7 +647,7 @@ const HomePage = ({ navigation }) => {
                                 </View>
                                 <View style={{ margin: wp('4%') }}>
                                     <Text>{item.caption} </Text>
-                                    <TouchableOpacity >
+                                    <TouchableOpacity activeOpacity={0.8}>
                                         <Image source={{ uri: item.post_upload_url }} style={{ width: wp('80%'), height: hp('40%'), borderRadius: 10 }}
                                         ></Image>
                                     </TouchableOpacity>
@@ -559,12 +659,12 @@ const HomePage = ({ navigation }) => {
                                             <Image source={require('../../../images/png/like.png')} style={{ height: 30, width: 30 }}></Image>
                                         </View>
                                         <View>
-                                            <Text>{item.likes.likes_count}</Text>
+                                            <Text>Likes {item.likes.likes_count}</Text>
                                         </View>
                                     </TouchableOpacity>
                                     <TouchableOpacity onPress={() => doublelikepost(item)}>
                                         <View>
-                                            <Image source={require('../../../images/reaction/reactions_sad.png')} style={{ height: 30, width: 30 }}></Image>
+                                            <Image source={require('../../../images/reaction/reactions_sad.png')} style={{ height: 50, width: 50 }}></Image>
                                         </View>
 
                                     </TouchableOpacity>
@@ -577,24 +677,36 @@ const HomePage = ({ navigation }) => {
                                             <Text>{item.comments.comments_count}</Text>
                                         </View>
                                     </TouchableOpacity>
-                                    <TouchableOpacity>
+                                    <TouchableOpacity onPress={() => openshare(item)} >
                                         <View>
                                             <MaterialCommunityIcons name="share" size={25} />
 
                                         </View>
                                     </TouchableOpacity>
                                 </View>
+                                <View style={{ padding: 10 }}>
+                                    <Text>{item.description}............</Text>
+                                </View>
 
-                                {chatcondition ?
+                                {chatcondition == item.id && chatstatus ?
                                     <View>
-                                        <View style={{ flexDirection: 'row', marginLeft: wp('5%'), justifyContent: 'space-evenly', alignItems: 'center' }}>
+                                        <View style={{ flexDirection: 'row', marginLeft: wp('5%'), justifyContent: 'space-between' }}>
                                             <TouchableOpacity onPress={() => openProfileCover()}>
                                                 <View>
                                                     <Image source={require('../../../images/splashlogo.png')} style={{ height: 40, width: 40, borderRadius: 50 }}></Image>
                                                 </View>
                                             </TouchableOpacity>
                                             <View>
-                                                <TextInput placeholder="Write a comment ...." placeholderTextColor='red' style={{ borderRadius: 10, borderWidth: 1 }} onChangeText={(e) => setMsg(e)}> </TextInput>
+
+                                                <TextInput
+                                                    // style={styles.input}
+                                                    onChangeText={(e) => setMsg(e)}
+                                                    value={msg}
+                                                    placeholder="Enter a comments..."
+                                                    // keyboardType="numeric"
+                                                />
+                                                {/* <TextInput
+                                                    style={{ borderRadius: 10 }} > </TextInput> */}
                                             </View>
                                             <TouchableOpacity onPress={() => addComment(item)}>
                                                 <View>
@@ -603,17 +715,17 @@ const HomePage = ({ navigation }) => {
                                             </TouchableOpacity>
                                         </View>
                                         <View>
-                                            <Text style={{alignSelf:'center'}}>Show chat list </Text>
-                                           
-                                               
-                                                   {chat.length > 0 ? chat.map((i,n)=>(
-                                                       <View key={n} style={{alignItems:'center',margin:10}}>
-                                                    <Text style={{alignSelf:'center'}}>{i.comments}</Text>
-                                                    </View>
-                                                    )):null}
+                                            <Text style={{ alignSelf: 'center' }}>Show chat list </Text>
+
+
+                                            {chat.length > 0 ? chat.map((i, n) => (
+                                                <View key={n} style={{ alignItems: 'center', margin: 10 }}>
+                                                    <Text style={{ alignSelf: 'center' }}>{i.comments}</Text>
                                                 </View>
-                                          
-                                       
+                                            )) : null}
+                                        </View>
+
+
                                     </View>
 
                                     : null}

@@ -113,7 +113,7 @@ export default function TabViewExample() {
     console.log("token=123" + token)
     try {
         let response = await fetch(
-            `http://79.133.41.198:4000/users/${userId}/getallpost`, // getCoverPic
+            `http://79.133.41.198:81/users/${userId}/getallpost`, // getCoverPic
             {
                 method: "GET",
                 headers: {

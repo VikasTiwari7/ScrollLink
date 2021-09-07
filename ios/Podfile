@@ -24,6 +24,8 @@ target 'scroll_link' do
 
   pod 'ReactNativeGetLocation', :path => '../node_modules/react-native-get-location'
 
+  pod 'RNGoogleSignin', :path => '../node_modules/react-native-google-signin'
+
   target 'scroll_linkTests' do
     inherit! :complete
     # Pods for testing

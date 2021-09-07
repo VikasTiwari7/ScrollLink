@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useRef } from 'react';
 import { Text, View, Image, TouchableOpacity,ActivityIndicator } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { heightPercentageToDP } from '../../../../utility';
@@ -8,18 +8,22 @@ import {
 } from '../../../../utility/index';
 import * as Utility from '../../../../utility/index';
 import { Alert } from 'react-native';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useIsFocused } from "@react-navigation/native";
 const showPage = ({ navigation }) => {
   // const [postid,setPostid]=useState();
+  const isFocused = useIsFocused();
 
   const [pagepostfile, setPagepostfile] = useState([]);
   const [coverimage, setCoverImage] = useState();
   const [profileImage, setProfileImage] = useState();
   const [name, setName] = useState();
-  const [loader,setLoader]=useState()
+  const [loader,setLoader]=useState();
+  const [countlike,setcountlike]=useState(1);
   useEffect(() => {
     getpageinfo();
     getPostinfo();
-  }, [])
+  }, [isFocused])
   const getpageinfo = async () => {
     var userId = await Utility.getFromLocalStorge('userId');
     var token = await Utility.getFromLocalStorge('JWT');
@@ -27,7 +31,7 @@ const showPage = ({ navigation }) => {
     try {
       setLoader(true)
       let response = await fetch(
-        `http://79.133.41.198:4000/users/${userId}/getpageid/${pageId}`, // getCoverPic
+        `http://79.133.41.198:81/users/${userId}/getpageid/${pageId}`, // getCoverPic
         {
           method: 'GET',
           headers: {
@@ -51,7 +55,7 @@ const showPage = ({ navigation }) => {
     let pageId = await Utility.getFromLocalStorge('getpageid');
     try {
       let response = await fetch(
-        `http://79.133.41.198:4000/users/${userId}/${pageId}/getallpagepost`, // getCoverPic
+        `http://79.133.41.198:81/users/${userId}/${pageId}/getallpagepost`, // getCoverPic
         {
           method: 'GET',
           headers: {
@@ -77,7 +81,7 @@ const showPage = ({ navigation }) => {
     let pageId = await Utility.getFromLocalStorge('pageId');
     try {
       let response = await fetch(
-        `http://79.133.41.198:4000/users/${userId}/${pageId}/createpost`, // getCoverPic
+        `http://79.133.41.198:81/users/${userId}/${pageId}/createpost`, // getCoverPic
         {
           method: 'GET',
           headers: {
@@ -108,7 +112,7 @@ const showPage = ({ navigation }) => {
 
     // try {
     //   let response = await fetch(
-    //     `http://79.133.41.198:4000/users/${userId}/${pageId}/deletepost/${item.id}`, // getCoverPic
+    //     `http://79.133.41.198:81/users/${userId}/${pageId}/deletepost/${item.id}`, // getCoverPic
     //     {
     //       method: 'PUT',
     //       headers: {
@@ -124,6 +128,12 @@ const showPage = ({ navigation }) => {
     // }
 
   }
+ const  likeapicall=async()=>{
+   setcountlike(countlike+1);
+ }
+ const doublelikepost=()=>{
+   setcountlike(countlike-1)
+ }
   return (
     <View>
       <Text style={{ fontSize: 25, fontWeight: 'bold' }}> {name}</Text>
@@ -180,17 +190,73 @@ const showPage = ({ navigation }) => {
 
           <View style={{ marginBottom: hp('5%') }}>
 
-            {pagepostfile.length > 0 ? pagepostfile.map((item, index) => (
-                <TouchableOpacity onPress={()=>deletePost(item)}>
-              <View key={index} style={{ padding: 5, margin: wp('5%'), backgroundColor: 'white', borderRadius: 10, elevation: 10, opacity: 10, padding: 10, marginBottom: hp('10%') }}>
-                <Image source={{ uri: item.post_upload_url }} style={{ height: 100, width: 100, alignSelf: 'center' }}>
+{pagepostfile.length > 0 ? pagepostfile.map((item, index) => (
 
-                </Image>
-                <Text style={{ alignSelf: 'center', fontSize: 15, fontWeight: '900' }}> Post Upload by Kush </Text>
-              </View>
-              </TouchableOpacity>
-            )) : null}
+                            <View style={{ padding: 5, margin: wp('4%'), backgroundColor: 'white', borderRadius: 10, elevation: 10, opacity: 10, marginBottom: hp('10%') }} key={index}>
+                                <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', padding: 10 }}>
+                                    <TouchableOpacity onPress={() => openProfileCover()}>
+                                        <View>
+                                            <Image source={require('../../../../images/splashlogo.png')} style={{ height: 40, width: 40, borderRadius: 50 }}></Image>
+                                        </View>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => openProfileCover()}>
+                                        <View>
+                                            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{item.location}</Text>
+                                            <View style={{ flexDirection: 'row' }}>
+                                               
+                                            </View>
+                                        </View>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => setCondition(true)}>
+                                        <View>
+                                            <MaterialCommunityIcons name="menu-down" size={35} />
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={{ margin: wp('4%') }}>
+                                    <Text style>{item.caption} </Text>
+                                    <TouchableOpacity activeOpacity={0.8}>
+                                        <Image source={{ uri: item.post_upload_url }} style={{ width: wp('80%'), height: hp('40%'), borderRadius: 10 }}
+                                        ></Image>
+                                    </TouchableOpacity>
 
+                                </View>
+                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', margin: wp('3%') }}>
+                                    <TouchableOpacity onPress={() => likeapicall(item)}>
+                                        <View>
+                                            <Image source={require('../../../../images/png/like.png')} style={{ height: 30, width: 30 }}></Image>
+                                        </View>
+                                        <View>
+                                            <Text>Likes {countlike}</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => doublelikepost(item)}>
+                                        <View>
+                                            <Image source={require('../../../../images/reaction/reactions_sad.png')} style={{ height: 50, width: 50 }}></Image>
+                                        </View>
+
+                                    </TouchableOpacity>
+                                    <TouchableOpacity >
+                                        <View>
+                                            <MaterialCommunityIcons name="message" size={25} />
+
+                                        </View>
+                                        <View>
+                                            <Text>{item.comments.comments_count}</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity >
+                                        <View>
+                                            <MaterialCommunityIcons name="share" size={25} />
+
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={{padding:10}}>
+                                    <Text>{item.description}...</Text>
+                                </View>
+                            </View>
+                        )) : null}
           </View>
         </ScrollView>
       </View>

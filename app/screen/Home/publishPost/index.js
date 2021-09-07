@@ -35,7 +35,7 @@ const publishPost = ({navigation}) => {
     var token = await Utility.getFromLocalStorge('JWT');
     try {
       let response = await fetch(
-        `http://79.133.41.198:4000/users/${userId}/createpost`, // getCoverPic
+        `http://79.133.41.198:81/users/${userId}/createpost`, // getCoverPic
         {
           method: 'GET',
           headers: {
@@ -90,14 +90,14 @@ const publishPost = ({navigation}) => {
       Alert.alert('Please Choose any post ');
     } else {
       console.log(
-        `http://79.133.41.198:4000/users/${userId}/updatepost/${postId}/updatePostMedia`,
+        `http://79.133.41.198:81/users/${userId}/updatepost/${postId}/updatePostMedia`,
       );
       console.log('fprm data result', data);
 
       try {
         let response = await fetch(
-          // http://79.133.41.198:4000/users/60d97dd575d2e590a94188a5/createpost
-          `http://79.133.41.198:4000/users/${userId}/updatepost/${postId}/updatePostMedia`,
+          // http://79.133.41.198:81/users/60d97dd575d2e590a94188a5/createpost
+          `http://79.133.41.198:81/users/${userId}/updatepost/${postId}/updatePostMedia`,
           {
             method: 'POST',
             headers: {

@@ -43,7 +43,7 @@ const CreateStatus=({navigation})=>{
       try { 
         let response = await fetch(
           // 192.168.0.101:4000/users/60cb6255633ed91264de3cc3/getProfilePicUrl
-          `http://79.133.41.198:4000/users/${userId}/createstatus`, // getCoverPic
+          `http://79.133.41.198:81/users/${userId}/createstatus`, // getCoverPic
           {
             method: "POST",
             headers: {

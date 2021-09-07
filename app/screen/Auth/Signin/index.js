@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useEffect, useState} from 'react';
 import {View,Text, Image, TouchableOpacity,ActivityIndicator,Alert} from 'react-native';
 import {
     widthPercentageToDP as wp,
@@ -8,24 +8,31 @@ import {
   import { TextInput } from 'react-native-paper';
 import { ScrollView } from 'react-native-gesture-handler';
 import * as api from '../../../api/url';
+import { GoogleSignin, GoogleSigninButton, statusCodes } from 'react-native-google-signin';
 
 const Signin =({navigation})=>{
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [loader,setLoader]=useState(false)
+    const [users,setusers]=useState();
     const openRegister=()=>{
         navigation.navigate('Signup')
     }
+    useEffect(()=>{
+        GoogleSignin.configure({
+            webClientId: '453342997420-sj4qv0hlek702tnttevb4fetqtnjlpgg.apps.googleusercontent.com', 
+            offlineAccess: true, 
+            hostedDomain: '', 
+            forceConsentPrompt: true, 
+          });
+    })
   
 
     const onLogin= async()=>{
-        // console.log("vikasss",api.BaseUrl);
         try{
             if (Utility.isFieldEmpty(email && password )) {
                 Alert.alert('Please Fill the all field');
               }  else {
-                //   console.log( BaseUrl+'users/authenticate');
-                // navigation.navigate('Bottom')
                 setLoader(true);
                 let response = await fetch(
                   api.BaseUrl+'/users/authenticate',
@@ -62,8 +69,26 @@ const Signin =({navigation})=>{
 
         }
     }
+    const _signIn=async()=>{
+        try {
+            await GoogleSignin.hasPlayServices();
+            const userInfo = await GoogleSignin.signIn();
+            // this.setState();
+            setusers(userInfo);
+            console.log("user data",userInfo);
+          } catch (error) {
+            if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+            } else if (error.code === statusCodes.IN_PROGRESS) {
+            } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+            } else {
+            }
+          }
+    }
+    const openForgot=()=>{
+        navigation.navigate('forgotscreen');
+    }
     return(
-        <View>
+        <View style={{flex:1}}>
             <ScrollView>
             {loader == true ? (
           <ActivityIndicator style={{marginTop: 10}} size="large" color="red" />
@@ -102,6 +127,7 @@ const Signin =({navigation})=>{
                 label="Password"
                 value={password}
                 secureTextEntry={true}
+                right={<TextInput.Icon name="quora"   onPress={()=>openForgot()}/>}
                 onChangeText={text => setPassword(text)}
                 />
                 </View>
@@ -113,9 +139,19 @@ const Signin =({navigation})=>{
                 <View style={{alignItems:'center'}}>
                     <Text>OR</Text>
                 </View>
+
+                <View style={{alignSelf:'center'}}>
+                <GoogleSigninButton
+                  style={{ width: 192, height: 48 }}
+                  size={GoogleSigninButton.Size.Wide}
+                  color={GoogleSigninButton.Color.Dark}
+                  onPress={_signIn}
+                //   disabled={this.state.isSigninInProgress} 
+                  />
+                </View>
                 
            </View>
-           <View style={{flexDirection:'row',justifyContent:'center'}}>
+           <View style={{flexDirection:'row',justifyContent:'center',marginBottom:hp('5%')}}>
                <View>
                    <Text>Don't have an account? </Text>
                </View>
