@@ -1,11 +1,12 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { Image, ScrollView, Text, View, StyleSheet,ActivityIndicator } from 'react-native';
+import { Image, ScrollView, Text, View, StyleSheet,ActivityIndicator,FlatList } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from '../../../utility/index';
+import Video from 'react-native-video';
 import * as Utility from '../../../utility/index';
 import TabViewExample from './tab';
 import * as api from '../../../api/url';
@@ -16,7 +17,6 @@ var RNFS = require('react-native-fs');
 const ProfileCover = ({ route, navigation }) => {
   const { userId } = route.params.user_id;
   console.log("vikas khan ",userId)
-
   const [userName, setUserName] = useState();
   const [email, setEMail] = useState();
   const [filePath, setFilePath] = useState();
@@ -263,23 +263,24 @@ const ProfileCover = ({ route, navigation }) => {
           <Text>Gallary</Text>
           </View>
           {userpost.length > 0 ?
-          userpost.map(()=>(
-
-          
-            <View>
-              <View style={styles.showImage}>
+         <FlatList
+             data={userpost}
+             keyExtractor={item => item.page_id}
+             numColumns={3}
+             renderItem={({ item, id }) => (
                 <View style={styles.imageCover}>
-                  <Image source={{uri:filePath}} style={styles.image}></Image>
+                  {item.post_type=='image'?
+                  <Image source={{uri:item.post_upload_url}} style={styles.image}></Image>:null}
+                  {item.post_type=='video'?
+                   <Video source={{ uri:  item.post_upload_url }}
+                   style={{width: wp('80%'), height: hp('40%'), borderRadius: 10}}
+                      />
+                  :
+                  null}
                 </View>
-                <View style={styles.imageCover}>
-                  <Image source={{uri:filePath}} style={styles.image}></Image>
-                </View>
-                <View style={styles.imageCover}>
-                  <Image source={{uri:filePath}} style={styles.image}></Image>
-                </View>
-              </View>
-            </View>
-            )) : null}
+            )} />
+            
+            : null}
       </View>
       </ScrollView>
 
@@ -312,7 +313,8 @@ const styles = StyleSheet.create({
     borderWidth:.5,
     borderColor:'#b9424d',
     padding:10,
-    borderRadius:5
+    borderRadius:5,
+    margin:10
   }
 })
 export default ProfileCover;

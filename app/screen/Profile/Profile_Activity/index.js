@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState,useEffect } from 'react';
-import { Image, ScrollView, Text,View ,ActivityIndicator} from 'react-native';
+import { Image, ScrollView, Text,View ,ActivityIndicator,StyleSheet} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import {
     widthPercentageToDP as wp,
@@ -141,14 +141,83 @@ const ProfileActivity=({navigation})=>{
        </View>
        </View>
      
-       <View style={{height:hp('50%')}}>
-        
-       <TabViewExample/>
-       </View>
+       <View style={{marginBottom:hp('10%')}}>
+        <View style={styles.gallaryView}>
+          <Text>Activity</Text>
+          </View>
+          <View style={{margin:wp('4%'),backgroundColor:"white",padding:10,borderRadius:10,elevation:10,opacity:10,marginBottom:hp('5%')}}>
+    <View >
+      <Text style={{fontSize:20,fontWeight:'bold',marginLeft:wp('10%')}}>Activities</Text>
+    </View>
+
+    <View style={{flexDirection:'row',justifyContent:'space-evenly',margin:wp('4%')}}>
+     <View>
+         <Image source={{uri:filePath}} style={{height:50,width:50,}}></Image>
+     </View>
+     <View style={{width:wp('50%')}}>
+         <Text>Vikas Tiwari reacted to indian post</Text>
+     </View>
+     <View>
+         <Image source={{uri:filePath}} style={{height:20,width:20}}></Image>
+     </View>
+    </View>
+    <View style={{flexDirection:'row',justifyContent:'space-evenly',margin:wp('4%')}}>
+     <View>
+         <Image source={{uri:filePath}} style={{height:50,width:50}}></Image>
+     </View>
+     <View style={{width:wp('50%')}}>
+         <Text>Vikas Tiwari reacted to indian post</Text>
+     </View>
+     <View>
+         <Image source={{uri:filePath}} style={{height:20,width:20}}></Image>
+     </View>
+    </View>
+    <View style={{flexDirection:'row',justifyContent:'space-evenly',margin:wp('4%')}}>
+     <View>
+         <Image source={{uri:filePath}} style={{height:50,width:50}}></Image>
+     </View>
+     <View style={{width:wp('50%')}}>
+         <Text>Vikas Tiwari reacted to indian post</Text>
+     </View>
+     <View>
+         <Image source={{uri:filePath}} style={{height:20,width:20}}></Image>
+     </View>
+    </View>
+    
+    </View>
+   
+      </View>
        </ScrollView>
      
     </View>
     )
 
 }
+const styles = StyleSheet.create({
+  gallaryView: {
+    alignItems: 'center',
+    margin: '3%',
+    borderWidth: .5,
+    borderColor: '#b9424d',
+    width: wp('95%'),
+    padding: 10,
+    alignSelf: 'center',
+    borderRadius: 10
+  },
+  showImage:{
+    justifyContent:'space-evenly',
+    flexDirection:'row'
+  },
+  image:{
+    height:80,
+    width:80
+  },
+  imageCover:{
+    borderWidth:.5,
+    borderColor:'#b9424d',
+    padding:10,
+    borderRadius:5,
+    margin:10
+  }
+})
 export default ProfileActivity;

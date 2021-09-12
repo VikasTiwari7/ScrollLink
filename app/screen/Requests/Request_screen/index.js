@@ -1,17 +1,25 @@
-import React from 'react';
-import { ScrollView, Text, View,Image } from 'react-native';
+import React,{useState} from 'react';
+import { ScrollView, Text, View,Image,RefreshControl } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from '../../../utility/index';
 const Request_screen =({navigation})=>{
+    const [loader,setLoader]=useState(false);
     const openWallet =()=>{
         navigation.navigate('Profile_cover')
     }
+    const getPageList=()=>{
+        console.log("vikas");
+    }
+    const onRefresh = React.useCallback(() => {
+        setLoader(true);
+        getPageList(2000).then(() => setLoader(false));
+      }, []);
     return(
         <View>
-            <ScrollView>
+            <ScrollView refreshControl={<RefreshControl refreshing={loader} onRefresh={()=>onRefresh()}></RefreshControl>}>
             <Text style={{fontWeight:'bold',fontSize:22,margin:wp('5%')}}>Requests</Text>
             <View style={{margin:wp('5%')}}>
             <View style={{flexDirection:'row',justifyContent:'space-around'}}>

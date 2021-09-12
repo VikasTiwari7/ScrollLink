@@ -33,7 +33,7 @@ const Signin =({navigation})=>{
             hostedDomain: '', 
             forceConsentPrompt: true, 
           });
-          getDataAsync();
+          // getDataAsync();
     })
   
     const getDataAsync = async () => {
@@ -62,9 +62,9 @@ const Signin =({navigation})=>{
             await DeviceInfo.getSerialNumber();
           deviceJSON.androidId = await DeviceInfo.getAndroidId();
           deviceJSON.IpAddress = await DeviceInfo.getIpAddress();
-          // For MacAddress add android.permission.ACCESS_WIFI_STATE
+       
           deviceJSON.MacAddress = await DeviceInfo.getMacAddress();
-          // For phoneNumber add android.permission.READ_PHONE_STATE
+      
           deviceJSON.phoneNumber = await DeviceInfo.getPhoneNumber();
           deviceJSON.ApiLevel = await DeviceInfo.getApiLevel();
           deviceJSON.carrier = await DeviceInfo.getCarrier();
@@ -120,7 +120,7 @@ const Signin =({navigation})=>{
                     body: JSON.stringify({
                         username: email,
                         password: password,
-                        basicinfo:devicebasicinfo
+                        // basicinfo:devicebasicinfo
                     }),
                   },
                 );

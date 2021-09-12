@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Image,ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, Image,ActivityIndicator,RefreshControl } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 // import {
 //     widthPercentageToDP as wp,
@@ -7,9 +7,10 @@ import { ScrollView } from 'react-native-gesture-handler';
 // } from '../../../utility/index';
 import * as Utility from '../../../../utility/index';
 
-const pageList = ({ navigation }) => {
+const pageList = ({ navigation }) => {getTimeline
     const [page, setPagelist] = useState([]);
     const [loader,setLoader]=useState(false)
+    // const 
     useEffect(() => {
         getPageList();
     }, [])
@@ -45,7 +46,10 @@ const pageList = ({ navigation }) => {
             }})
 
     }
-
+    const onRefresh = React.useCallback(() => {
+        setLoader(true);
+        getPageList(2000).then(() => setLoader(false));
+      }, []);
     return (
         <View>
             <View style={{ alignSelf: 'center', backgroundColor: '#b9424d', width: '100%', padding: 10 }}>
@@ -59,6 +63,7 @@ const pageList = ({ navigation }) => {
                 <View>
                     {page.length > 0 ?
                         <FlatList
+                        refreshControl={<RefreshControl refreshing={loader} onRefresh={()=>onRefresh()}/>}
                             //   horizontal
                             data={page}
                             keyExtractor={item => item.page_id}
