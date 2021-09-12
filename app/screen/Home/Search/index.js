@@ -53,7 +53,7 @@ const Search = ({navigation}) => {
                     ></TextInput>
                 </View>
                 <View style={{ margin: '3%' }}>
-                    <TouchableOpacity activeOpacity={1} onPress={() => searchValue()}>
+                    <TouchableOpacity  onPress={() => searchValue()}>
                         <Image source={require('../../../images/tickBlue.png')} style={{ height: 30, width: 30 }}></Image>
                     </TouchableOpacity>
                 </View>
@@ -76,9 +76,10 @@ const Search = ({navigation}) => {
                     ))
                  
                     :
-                <View style={{margin:wp('5%'),alignSelf:'center'}}>
-                        <Text>Sorry this user not present</Text>
-                    </View>
+                    null
+                // <View style={{margin:wp('5%'),alignSelf:'center'}}>
+                //         <Text>Sorry this user not present</Text>
+                //     </View>
 
                 }
             </View>

@@ -1,14 +1,14 @@
 import React, { useEffect, useState, useRef } from 'react';
 import {
     Image, ScrollView, Text, View, Button, Platform,
-    PermissionsAndroid, BackHandler, Alert, TextInput,StyleSheet
+    PermissionsAndroid, BackHandler, Alert, TextInput, StyleSheet,TouchableOpacity,RefreshControl
 } from 'react-native';
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from '../../../utility/index';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+// import { TouchableOpacity } from 'react-native-gesture-handler';
 import { FAB, Portal, Provider } from 'react-native-paper';
 import { } from '@react-navigation/drawer'
 import {
@@ -20,10 +20,11 @@ import * as Utility from '../../../utility/index';
 // import * as api from '../../../api/url';
 import { useIsFocused } from "@react-navigation/native";
 import RBSheet from "react-native-raw-bottom-sheet";
-import Story from 'react-native-story'
+// import Story from 'react-native-story'
 
 import Share from 'react-native-share';
 import Moment from 'moment';
+import Video from 'react-native-video';
 
 const HomePage = ({ navigation }) => {
     const refRBSheet = useRef();
@@ -39,8 +40,9 @@ const HomePage = ({ navigation }) => {
     const [suggestions, setSuggestions] = useState([]);
     const [msg, setMsg] = useState();
     const [chat, setchat] = useState([]);
-    const [profileData,setProfiledata]=useState();
+    const [profileData, setProfiledata] = useState();
     const [conditionSuggestion, setConditionSuggestions] = useState(true)
+    const [refreshing, setRefreshing] = useState(false);
     var vikas = [];
     useEffect(() => {
         navigation.addLis
@@ -71,7 +73,7 @@ const HomePage = ({ navigation }) => {
 
     }, [isFocused])
 
-  
+
     const getsuggestionlist = async () => {
         var userId = await Utility.getFromLocalStorge("userId");
         var token = await Utility.getFromLocalStorge("JWT");
@@ -430,6 +432,16 @@ const HomePage = ({ navigation }) => {
         }
 
     }
+    const openBottomsheet=(item)=>{
+        console.log("select post id ",item.id)
+        // setSelectPostid(item)
+        refRBSheet.current.open()
+    }
+
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        getTimeline(2000).then(() => setRefreshing(false));
+      }, []);
     return (
         <Provider   >
             <View style={{ flex: 1 }}>
@@ -478,7 +490,12 @@ const HomePage = ({ navigation }) => {
                     </View> : null}
 
 
-                <ScrollView showsVerticalScrollIndicator={false}>
+                <ScrollView showsVerticalScrollIndicator={false} refreshControl={
+                    <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={()=>onRefresh()}
+                    ></RefreshControl>
+                }>
                     <View style={{ margin: hp('1%') }}>
                         <ScrollView horizontal={true}>
                             <View style={{ flexDirection: 'row' }}>
@@ -537,8 +554,8 @@ const HomePage = ({ navigation }) => {
                     <View style={{ flexDirection: 'row', margin: wp('5%'), borderRadius: 10, padding: 10, justifyContent: 'space-evenly', alignItems: 'center' }}>
                         <TouchableOpacity onPress={() => openProfileCover()}>
                             <View >
-                                {profileData?<Image source={{uri:profileData}} style={{height:50,width:50,borderRadius:50}}></Image>:
-                                <Image source={require('../../../images/splashlogo.png')} style={{ height: 50, width: 50 }}></Image>}
+                                {profileData ? <Image source={{ uri: profileData }} style={{ height: 50, width: 50, borderRadius: 50 }}></Image> :
+                                    <Image source={require('../../../images/splashlogo.png')} style={{ height: 50, width: 50 }}></Image>}
                             </View>
                         </TouchableOpacity>
                         <View style={{ backgroundColor: 'white', padding: 10, borderRadius: 10, width: wp('50%') }}>
@@ -610,7 +627,7 @@ const HomePage = ({ navigation }) => {
                                             </View>
                                         </View>
                                     </TouchableOpacity>
-                                    <TouchableOpacity onPress={() => refRBSheet.current.open()}>
+                                    <TouchableOpacity onPress={() =>openBottomsheet(item)}>
                                         <View>
                                             <MaterialCommunityIcons name="menu-down" size={35} />
                                         </View>
@@ -618,10 +635,17 @@ const HomePage = ({ navigation }) => {
                                 </View>
                                 <View style={{ margin: wp('4%') }}>
                                     <Text>{item.caption} </Text>
-                                    <TouchableOpacity activeOpacity={0.8}>
-                                        <Image source={{ uri: item.post_upload_url }} style={{ width: wp('80%'), height: hp('40%'), borderRadius: 10 }}
-                                        ></Image>
-                                    </TouchableOpacity>
+                                    {item.post_type == 'image' ?
+                                        <TouchableOpacity activeOpacity={0.8}>
+                                            <Image source={{ uri: item.post_upload_url }} style={{ width: wp('80%'), height: hp('40%'), borderRadius: 10 }}
+                                            ></Image>
+                                        </TouchableOpacity> : null}
+                                    {item.post_type == 'video' ?
+                                        <Video source={{ uri:  item.post_upload_url }}
+                                        style={{width: wp('30%'), height: hp('20%'), borderRadius: 10}}
+                                           />
+
+                                        : null}
 
                                 </View>
                                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', margin: wp('3%') }}>
@@ -723,39 +747,39 @@ const HomePage = ({ navigation }) => {
             >
                 <View>
                     <ScrollView>
-                    <View style={styles.sheet}>
+                        <View style={styles.sheet}>
 
-                    <TouchableOpacity onPress={()=>alert("hello")}>
-                        <View style={styles.sheetdetail}>
-                            <View>
-                        <MaterialCommunityIcons name="note" size={25} color={'#b9424d'} />
-                        </View>
+                            <TouchableOpacity onPress={() => alert("Post  succesfully deleted")}>
+                                <View style={styles.sheetdetail}>
+                                    <View>
+                                        <MaterialCommunityIcons name="note" size={25} color={'#b9424d'} />
+                                    </View>
 
-                        <View>
-                            <Text>Delete</Text>
+                                    <View>
+                                        <Text>Delete</Text>
+                                    </View>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity >
+                                <View style={styles.sheetdetail}>
+                                    <MaterialCommunityIcons name="note" size={25} color={'#b9424d'} />
+                                    <Text>Edit</Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity>
+                                <View style={styles.sheetdetail}>
+                                    <MaterialCommunityIcons name="note" size={25} color={'#b9424d'} />
+                                    <Text>HidePost</Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity>
+                                <View style={styles.sheetdetail}>
+                                    <MaterialCommunityIcons name="note" size={25} color={'#b9424d'} />
+                                    <Text>Hide Caption</Text>
+                                </View>
+                            </TouchableOpacity>
+
                         </View>
-                        </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity>
-                        <View style={styles.sheetdetail}>
-                        <MaterialCommunityIcons name="note" size={25} color={'#b9424d'} />
-                            <Text>Edit</Text>
-                        </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity>
-                        <View style={styles.sheetdetail}>
-                        <MaterialCommunityIcons name="note" size={25} color={'#b9424d'} />
-                            <Text>HidePost</Text>
-                        </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity>
-                        <View style={styles.sheetdetail}>
-                        <MaterialCommunityIcons name="note" size={25} color={'#b9424d'} />
-                            <Text>Hide Caption</Text>
-                        </View>
-                        </TouchableOpacity>
-                        
-                    </View>
                     </ScrollView>
                 </View>
             </RBSheet>
@@ -763,14 +787,14 @@ const HomePage = ({ navigation }) => {
 
     )
 }
-const styles=StyleSheet.create({
-    sheet:{
-        margin:hp('5%'),width:wp('40%')
+const styles = StyleSheet.create({
+    sheet: {
+        margin: hp('5%'), width: wp('40%')
     },
-    sheetdetail:{
-        flexDirection:'row',
-        justifyContent:'space-around',
-        margin:wp('3%')
+    sheetdetail: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        margin: wp('3%')
     }
 
 })
