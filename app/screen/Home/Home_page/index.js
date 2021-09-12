@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import {
     Image, ScrollView, Text, View, Button, Platform,
-    PermissionsAndroid, BackHandler, Alert,TextInput
+    PermissionsAndroid, BackHandler, Alert, TextInput,StyleSheet
 } from 'react-native';
 import {
     widthPercentageToDP as wp,
@@ -19,7 +19,7 @@ import Header from '../../../components/header';
 import * as Utility from '../../../utility/index';
 // import * as api from '../../../api/url';
 import { useIsFocused } from "@react-navigation/native";
-// import RBSheet from "react-native-raw-bottom-sheet";
+import RBSheet from "react-native-raw-bottom-sheet";
 import Story from 'react-native-story'
 
 import Share from 'react-native-share';
@@ -72,30 +72,30 @@ const HomePage = ({ navigation }) => {
 
     const stories = [
         {
-          id: "4",
-          source: require("../../../images/cross.png"),
-          user: "Ugur Erdal",
-          avatar: require("../../../images/cross.png")
+            id: "4",
+            source: require("../../../images/cross.png"),
+            user: "Ugur Erdal",
+            avatar: require("../../../images/cross.png")
         },
         {
-          id: "2",
-          source: require("../../../images/cross.png"),
-          user: "Mustafa",
-          avatar: require("../../../images/cross.png")
+            id: "2",
+            source: require("../../../images/cross.png"),
+            user: "Mustafa",
+            avatar: require("../../../images/cross.png")
         },
         {
-          id: "5",
-          source: require("../../../images/cross.png"),
-          user: "Emre Yilmaz",
-          avatar: require("../../../images/cross.png")
+            id: "5",
+            source: require("../../../images/cross.png"),
+            user: "Emre Yilmaz",
+            avatar: require("../../../images/cross.png")
         },
         {
-          id: "3",
-          source: require("../../../images/cross.png"),
-          user: "Cenk Gun",
-          avatar: require("../../../images/cross.png")
+            id: "3",
+            source: require("../../../images/cross.png"),
+            user: "Cenk Gun",
+            avatar: require("../../../images/cross.png")
         },
-      ];
+    ];
     const getsuggestionlist = async () => {
         var userId = await Utility.getFromLocalStorge("userId");
         var token = await Utility.getFromLocalStorge("JWT");
@@ -500,14 +500,7 @@ const HomePage = ({ navigation }) => {
                         </TouchableOpacity>
                     </View> : null}
 
-{/* <View style={{marginTop:wp('-10%')}}>
-                    <Story
-            unPressedBorderColor="#e95950"
-            pressedBorderColor="#ebebeb"
-            stories={statusdata}
-           
-        />
-</View> */}
+
                 <ScrollView showsVerticalScrollIndicator={false}>
                     <View style={{ margin: hp('1%') }}>
                         <ScrollView horizontal={true}>
@@ -581,7 +574,7 @@ const HomePage = ({ navigation }) => {
 
                     </View>
                     {suggestions.length > 0 ?
-                        <View style={{margin:wp('3%')}}>
+                        <View style={{ margin: wp('3%') }}>
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                                 <View>
                                     <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
@@ -639,7 +632,7 @@ const HomePage = ({ navigation }) => {
                                             </View>
                                         </View>
                                     </TouchableOpacity>
-                                    <TouchableOpacity onPress={() => setCondition(true)}>
+                                    <TouchableOpacity onPress={() => refRBSheet.current.open()}>
                                         <View>
                                             <MaterialCommunityIcons name="menu-down" size={35} />
                                         </View>
@@ -703,7 +696,7 @@ const HomePage = ({ navigation }) => {
                                                     onChangeText={(e) => setMsg(e)}
                                                     value={msg}
                                                     placeholder="Enter a comments..."
-                                                    // keyboardType="numeric"
+                                                // keyboardType="numeric"
                                                 />
                                                 {/* <TextInput
                                                     style={{ borderRadius: 10 }} > </TextInput> */}
@@ -737,8 +730,60 @@ const HomePage = ({ navigation }) => {
                 </ScrollView>
 
             </View>
+            <RBSheet
+                ref={refRBSheet}
+                closeOnDragDown={true}
+                closeOnPressMask={false}
+                customStyles={{
+                    wrapper: {
+                        backgroundColor: "transparent"
+                    },
+                    draggableIcon: {
+                        backgroundColor: "#000"
+                    }
+                }}
+            >
+                <View>
+                    <ScrollView>
+                    <View style={styles.sheet}>
+                        <View style={styles.sheetdetail}>
+                            <View>
+                        <MaterialCommunityIcons name="note" size={25} color={'#b9424d'} />
+                        </View>
+                        <View>
+                            <Text>Delete</Text>
+                        </View>
+                        </View>
+                        <View style={styles.sheetdetail}>
+                        <MaterialCommunityIcons name="note" size={25} color={'#b9424d'} />
+                            <Text>Edit</Text>
+                        </View>
+                        <View style={styles.sheetdetail}>
+                        <MaterialCommunityIcons name="note" size={25} color={'#b9424d'} />
+                            <Text>HidePost</Text>
+                        </View>
+                        <View style={styles.sheetdetail}>
+                        <MaterialCommunityIcons name="note" size={25} color={'#b9424d'} />
+                            <Text>Hide Caption</Text>
+                        </View>
+                        
+                    </View>
+                    </ScrollView>
+                </View>
+            </RBSheet>
         </Provider>
 
     )
 }
+const styles=StyleSheet.create({
+    sheet:{
+        margin:hp('5%'),width:wp('40%')
+    },
+    sheetdetail:{
+        flexDirection:'row',
+        justifyContent:'space-around',
+        margin:wp('3%')
+    }
+
+})
 export default HomePage;

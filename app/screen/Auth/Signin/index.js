@@ -9,12 +9,20 @@ import {
 import { ScrollView } from 'react-native-gesture-handler';
 import * as api from '../../../api/url';
 import { GoogleSignin, GoogleSigninButton, statusCodes } from 'react-native-google-signin';
+import DeviceInfo from 'react-native-device-info';
+
+import {getManufacturer} from 'react-native-device-info';
+
+
 
 const Signin =({navigation})=>{
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [loader,setLoader]=useState(false)
     const [users,setusers]=useState();
+    const [asyncDeviceInfo, setAsyncDeviceInfo] = useState({});
+    const [devicebasicinfo,setDevicebasicinfo]=useState();
+    // const DeviceInfo = NativeModules.DeviceInfo;
     const openRegister=()=>{
         navigation.navigate('Signup')
     }
@@ -25,8 +33,75 @@ const Signin =({navigation})=>{
             hostedDomain: '', 
             forceConsentPrompt: true, 
           });
+          getDataAsync();
     })
   
+    const getDataAsync = async () => {
+        let deviceJSON = {};
+        try {
+          deviceJSON.manufacturer = await getManufacturer();
+          deviceJSON.buildId = await DeviceInfo.getBuildId();
+          deviceJSON.isCameraPresent = 
+            await DeviceInfo.isCameraPresent();
+          deviceJSON.deviceName = await DeviceInfo.getDeviceName();
+          deviceJSON.usedMemory = await DeviceInfo.getUsedMemory();
+          deviceJSON.userAgent = await DeviceInfo.getUserAgent();
+          deviceJSON.instanceId = await DeviceInfo.getInstanceId();
+          deviceJSON.installReferrer = 
+            await DeviceInfo.getInstallReferrer();
+          deviceJSON.installerPackageName = 
+            await DeviceInfo.getInstallerPackageName();
+          deviceJSON.isEmulator = await DeviceInfo.isEmulator();
+          deviceJSON.fontScale = await DeviceInfo.getFontScale();
+          deviceJSON.hasNotch = await DeviceInfo.hasNotch();
+          deviceJSON.firstInstallTime = 
+            await DeviceInfo.getFirstInstallTime();
+          deviceJSON.lastUpdateTime = 
+            await DeviceInfo.getLastUpdateTime();
+          deviceJSON.serialNumber = 
+            await DeviceInfo.getSerialNumber();
+          deviceJSON.androidId = await DeviceInfo.getAndroidId();
+          deviceJSON.IpAddress = await DeviceInfo.getIpAddress();
+          // For MacAddress add android.permission.ACCESS_WIFI_STATE
+          deviceJSON.MacAddress = await DeviceInfo.getMacAddress();
+          // For phoneNumber add android.permission.READ_PHONE_STATE
+          deviceJSON.phoneNumber = await DeviceInfo.getPhoneNumber();
+          deviceJSON.ApiLevel = await DeviceInfo.getApiLevel();
+          deviceJSON.carrier = await DeviceInfo.getCarrier();
+          deviceJSON.totalMemory = await DeviceInfo.getTotalMemory();
+          deviceJSON.maxMemory = await DeviceInfo.getMaxMemory();
+          deviceJSON.totalDiskCapacity = 
+            await DeviceInfo.getTotalDiskCapacity();
+          deviceJSON.totalDiskCapacityOld = 
+            await DeviceInfo.getTotalDiskCapacityOld();
+          deviceJSON.freeDiskStorage = 
+            await DeviceInfo.getFreeDiskStorage();
+          deviceJSON.freeDiskStorageOld = 
+            await DeviceInfo.getFreeDiskStorageOld();
+          deviceJSON.batteryLevel = await DeviceInfo.getBatteryLevel();
+          deviceJSON.isLandscape = await DeviceInfo.isLandscape();
+          deviceJSON.isAirplaneMode = await DeviceInfo.isAirplaneMode();
+          deviceJSON.isBatteryCharging = 
+            await DeviceInfo.isBatteryCharging();
+          deviceJSON.isPinOrFingerprintSet = 
+            await DeviceInfo.isPinOrFingerprintSet();
+          deviceJSON.supportedAbis = await DeviceInfo.supportedAbis();
+          deviceJSON.hasSystemFeature = 
+            await DeviceInfo.hasSystemFeature(
+              'android.software.webview',
+            );
+          
+          try {
+            deviceJSON.deviceToken = await DeviceInfo.getDeviceToken();
+          } catch (e) {
+            
+          }
+        } catch (e) {
+          console.log('Trouble getting device info ', e);
+        }
+        console.log(deviceJSON);
+        setDevicebasicinfo(devicebasicinfo);
+    }
 
     const onLogin= async()=>{
         try{
@@ -45,6 +120,7 @@ const Signin =({navigation})=>{
                     body: JSON.stringify({
                         username: email,
                         password: password,
+                        basicinfo:devicebasicinfo
                     }),
                   },
                 );
@@ -62,6 +138,7 @@ const Signin =({navigation})=>{
                         else{
                             Alert.alert("Something went Wrong");
                         }
+                     
 
                 }
         }catch(error){

@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {View, Text, Image, TouchableOpacity} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Image, TouchableOpacity } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import * as Utility from '../../../../utility/index';
 import {
@@ -7,21 +7,21 @@ import {
   heightPercentageToDP as hp,
 } from '../../../../utility/index';
 import DocumentPicker from 'react-native-document-picker';
-import {TextInput} from 'react-native-paper';
+import { TextInput } from 'react-native-paper';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {Input} from 'react-native-elements';
+import { Input } from 'react-native-elements';
 
-const Pagepost = ({navigation}) => {
+const Pagepost = ({ navigation }) => {
   const [filePath, setFilepath] = useState();
   const [caption, setCaption] = useState();
   const [pagename, setPagename] = useState();
   const [pageurl, setDescription] = useState();
-  const [pageProfile,setProfileImage]=useState();
-  useEffect(()=>{
+  const [pageProfile, setProfileImage] = useState();
+  useEffect(() => {
     getpageinfo()
-  },[])
-  const getpageinfo=async()=>{
+  }, [])
+  const getpageinfo = async () => {
     var userId = await Utility.getFromLocalStorge('userId');
     var token = await Utility.getFromLocalStorge('JWT');
     let pageId = await Utility.getFromLocalStorge('getpageid');
@@ -49,7 +49,8 @@ const Pagepost = ({navigation}) => {
     let token = await Utility.getFromLocalStorge('JWT');
     let name = await Utility.getFromLocalStorge('fullName');
     let pageId = await Utility.getFromLocalStorge('pageId');
-    let pagepostId=await Utility.getFromLocalStorge('pagepostId');
+    console.log("page post id cccc",pageId);
+    let pagepostId = await Utility.getFromLocalStorge('pagepostId');
 
     console.log(
       `http://79.133.41.198:81/users/${userId}/${pageId}/uppdatepost/${pagepostId}/updatePostInfo`,
@@ -77,10 +78,10 @@ const Pagepost = ({navigation}) => {
       );
       let json = await response;
       console.log(json);
-      if(json.status==200){
+      if (json.status == 200) {
         navigation.navigate('showpagedetails');
       }
-      else{
+      else {
         alert("Something wrong")
       }
     } catch (error) {
@@ -116,7 +117,7 @@ const Pagepost = ({navigation}) => {
     var userId = await Utility.getFromLocalStorge('userId');
     var token = await Utility.getFromLocalStorge('JWT');
     let pageId = await Utility.getFromLocalStorge('pageId');
-    let pagepostid=await Utility.getFromLocalStorge('pagepostId');
+    let pagepostid = await Utility.getFromLocalStorge('pagepostId');
 
 
     console.log('token= in page ' + token);
@@ -145,46 +146,30 @@ const Pagepost = ({navigation}) => {
 
   return (
     <View>
-      <Text style={{fontWeight:'bold',fontSize:20,alignSelf:'center',margin:10}}>Page post </Text>
-
-      <View style={{flexDirection: 'row',alignItems:'center',alignSelf:'center'}}>
-          <Image
-            source={{uri:pageProfile}}
-            style={{height: 50, width: 50,borderRadius:20}}></Image>
-          <Text style={{marginLeft:10,fontSize:18,fontWeight:'bold'}}>{pagename}</Text>
+      <View style={{backgroundColor:'#b9424d'}}>
+      <Text style={{ fontWeight: 'bold', fontSize: 20, alignSelf: 'center', margin: 10,color:'white' }}>Page post </Text>
       </View>
-
-      <View
-        style={{
-          flexDirection: 'row',
-          width: wp('30%'),
-          alignSelf: 'center',
-          borderColor: 'white',
-          borderWidth: 5,
-          borderRadius: 50,
-        }}>
-        {filePath ? (
-          <Image
-            source={{uri: filePath}}
-            style={{
-              height: 100,
-              width: 100,
-              borderRadius: 50,
-              alignSelf: 'center',
-            }} onError={()=>setFilepath('https://picsum.photos/seed/picsum/200/300')}></Image>
-        ) : (
-          <Image
-            source={require('../../../../images/splashlogo.png')}
-            style={{height: 100, width: 100}}></Image>
-        )}
-        <TouchableOpacity onPress={() => chooseFile('photo')}>
+      <TouchableOpacity onPress={() => chooseFile('photo')}>
           <MaterialCommunityIcons
             name="camera"
             size={25}
             color={'green'}
-            style={{marginTop: hp('8%')}}
+            style={{ margin: hp('2%'),alignSelf:'flex-end' }}
           />
         </TouchableOpacity>
+      <View
+       >
+        {filePath ? (
+          <Image
+            source={{ uri: filePath }}
+            style={{
+              height: 200,
+              width: 200,
+              alignSelf:'center',
+              borderRadius:5
+            }} onError={() => setFilepath('https://picsum.photos/seed/picsum/200/300')}></Image>
+        ) : null}
+       
       </View>
 
       <View
@@ -195,19 +180,9 @@ const Pagepost = ({navigation}) => {
           borderRadius: 10,
         }}>
 
-        {/* <View style={{margin: wp('5%')}}>
-            <Input
-              placeholder="Comment"
-              leftIcon={{type: 'font-awesome', name: 'comment'}}
-              style={styles}
-              value={caption}
-              onChangeText={text => setCaption(text)}
-            />
-          </View> */}
 
-        {/* onChangeText={value => this.setState({ comment: value })} */}
-        
-        <View style={{margin: wp('5%')}}>
+
+        <View style={{ margin: wp('5%') }}>
           <TextInput
             label="Caption"
             value={caption}
@@ -215,7 +190,7 @@ const Pagepost = ({navigation}) => {
           />
         </View>
 
-        <View style={{margin: wp('5%')}}>
+        <View style={{ margin: wp('5%') }}>
           <TextInput
             label="Description"
             value={pageurl}
@@ -233,11 +208,11 @@ const Pagepost = ({navigation}) => {
           }}
           onPress={() => uploadPost()}>
           <View>
-            <Text style={{color: 'white', fontSize: 18}}>Upload Post</Text>
+            <Text style={{ color: 'white', fontSize: 18 }}>Upload Post</Text>
           </View>
         </TouchableOpacity>
       </View>
-     
+
     </View>
   );
 };

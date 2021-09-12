@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import DocumentPicker from 'react-native-document-picker';
-import {View, Text, TextInput, Alert, Image} from 'react-native';
+import {View, Text, TextInput, Alert, Image,ActivityIndicator} from 'react-native';
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {
@@ -16,6 +16,7 @@ var postId;
 const publishPost = ({navigation}) => {
   const [Status, setStatus] = useState();
   const [filePath, setFilePath] = useState();
+  const [loader,setLoader]=useState(false)
   // const [imageName,setImageName]=useState();
   const backHome = () => {
     navigation.navigate('drawer');
@@ -26,7 +27,7 @@ const publishPost = ({navigation}) => {
     }
     const timeoutHandle = setTimeout(() => {
       if (!filePath) {
-        chooseFile('photo');
+        chooseFile1('photo');
       }
     }, 1000);
   });
@@ -34,6 +35,7 @@ const publishPost = ({navigation}) => {
     var userId = await Utility.getFromLocalStorge('userId');
     var token = await Utility.getFromLocalStorge('JWT');
     try {
+     
       let response = await fetch(
         `http://79.133.41.198:81/users/${userId}/createpost`, // getCoverPic
         {
@@ -56,11 +58,11 @@ const publishPost = ({navigation}) => {
   const chooseFile = async type => {
     try {
       const res = await DocumentPicker.pick({
-        type: [DocumentPicker.types.images],
+        type: [DocumentPicker.types.video],
       });
       console.log(res);
       setFilePath(res.uri);
-      Imageupload(res);
+      Imageupload1(res);
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         // User cancelled the picker, exit any dialogs or menus and move on
@@ -83,8 +85,7 @@ const publishPost = ({navigation}) => {
     let token = await Utility.getFromLocalStorge('JWT');
     let name = await Utility.getFromLocalStorge('fullName');
     console.log(userId);
-    //  console.log("token=" +token)
-    // Alert.alert("its working");
+ 
     console.log(userId);
     if (Utility.isFieldEmpty(filePath)) {
       Alert.alert('Please Choose any post ');
@@ -95,8 +96,9 @@ const publishPost = ({navigation}) => {
       console.log('fprm data result', data);
 
       try {
+        setLoader(true);
         let response = await fetch(
-          // http://79.133.41.198:81/users/60d97dd575d2e590a94188a5/createpost
+        
           `http://79.133.41.198:81/users/${userId}/updatepost/${postId}/updatePostMedia`,
           {
             method: 'POST',
@@ -108,16 +110,87 @@ const publishPost = ({navigation}) => {
         );
         let json = await response;
         console.log(json);
-        // const json=response.json();
-        // console.log("Post id is ",json)
+      
         if (json.status == 200) {
-          navigation.navigate('Newpost');
-          // Alert.alert("Success Fully Uploaded ");
+       
+          setLoader(false);
+       
         } else {
           Alert.alert('failed');
         }
       } catch (error) {
         console.log(error);
+      }
+    }
+  };
+  const Imageupload1 = async photo => {
+    // navigation.navigate('Newpost');
+    console.log('vikkkkkassss');
+    const data = new FormData();
+
+    data.append('postData', {
+      name: photo.name,
+      type: 'video/mp4',
+      uri: photo.uri,
+    });
+    let userId = await Utility.getFromLocalStorge('userId');
+    let token = await Utility.getFromLocalStorge('JWT');
+    let name = await Utility.getFromLocalStorge('fullName');
+    console.log(userId);
+ 
+    console.log(userId);
+    if (Utility.isFieldEmpty(filePath)) {
+      Alert.alert('Please Choose any post ');
+    } else {
+      console.log(
+        `http://79.133.41.198:81/users/${userId}/updatepost/${postId}/updatePostMedia`,
+      );
+      console.log('fprm data result', data);
+
+      try {
+        setLoader(true);
+        let response = await fetch(
+        
+          `http://79.133.41.198:81/users/${userId}/updatepost/${postId}/updatePostMedia`,
+          {
+            method: 'POST',
+            headers: {
+              Authorization: 'Bearer ' + token,
+            },
+            body: data,
+          },
+        );
+        let json = await response;
+        console.log(json);
+      
+        if (json.status == 200) {
+       
+          setLoader(false);
+       
+        } else {
+          Alert.alert('failed');
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+  const afterUploadImage=()=>{
+    navigation.navigate('Newpost');
+  }
+  const chooseFile1 = async type => {
+    try {
+      const res = await DocumentPicker.pick({
+        type: [DocumentPicker.types.images],
+      });
+      console.log(res);
+      setFilePath(res.uri);
+      Imageupload(res);
+    } catch (err) {
+      if (DocumentPicker.isCancel(err)) {
+        // User cancelled the picker, exit any dialogs or menus and move on
+      } else {
+        throw err;
       }
     }
   };
@@ -130,16 +203,27 @@ const publishPost = ({navigation}) => {
             justifyContent: 'space-between',
             margin: wp('5%'),
           }}>
-          <TouchableOpacity onPress={() => backHome()}>
-            <View>
-              <MaterialCommunityIcons
-                name="bolnisi-cross"
-                size={25}
-                color={'#b9424d'}
-              />
+          <TouchableOpacity onPress={() => chooseFile1('photo')}>
+            <View
+              style={{
+                backgroundColor: '#b9424d',
+                padding: 10,
+                borderRadius: 5,
+              }}>
+              <Text style={{color: 'white'}}>Upload Image</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => Imageupload('photo')}>
+          <TouchableOpacity onPress={() => chooseFile('photo')}>
+            <View
+              style={{
+                backgroundColor: '#b9424d',
+                padding: 10,
+                borderRadius: 5,
+              }}>
+              <Text style={{color: 'white'}}>Upload video</Text>
+            </View>
+          </TouchableOpacity>
+           <TouchableOpacity onPress={() => afterUploadImage()}>
             <View
               style={{
                 backgroundColor: '#b9424d',
@@ -150,20 +234,10 @@ const publishPost = ({navigation}) => {
             </View>
           </TouchableOpacity>
         </View>
-        <View style={{margin: wp('5%')}}>
-          <TextInput
-            style={{
-              width: wp('90%'),
-              borderBottomColor: '#b9424d',
-              borderBottomWidth: 1,
-            }}
-            value={Status}
-            placeholder="What's happening ?"
-            onChangeText={text => setStatus(text)}
-            multiline={true}
-            underlineColorAndroid="transparent"
-          />
-        </View>
+        {loader == true ? (
+          <ActivityIndicator style={{marginTop: 10}} size="large" color="red" />
+        ) : null}
+        
         <View
           style={{
             height: hp('60%'),
@@ -175,7 +249,7 @@ const publishPost = ({navigation}) => {
           <View>
             <Image
               source={{uri: filePath}}
-              style={{height: 100, width: 100, borderRadius: 10}}></Image>
+              style={{height: '100%', width: '100%', borderRadius: 10,alignSelf:'center'}}></Image>
           </View>
         </View>
 

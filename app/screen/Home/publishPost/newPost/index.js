@@ -175,50 +175,7 @@ const Newpost = ({navigation}) => {
           value={isEnabled}
         />
       </View>
-      <View
-        style={{
-          borderBottomColor: 'black',
-          borderBottomWidth: 0.5,
-        }}
-      />
-
-      <View style={{padding: 10}}>
-        <Text style={{fontSize: 18, padding: 5}}>Also post to </Text>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <Image source={require('../../../../images/splashlogo.png')}></Image>
-          <View style={{alignSelf: 'center'}}>
-            <Text style={{color: 'gray'}}>Facebook</Text>
-            <Text style={{color: 'gray'}}>username</Text>
-          </View>
-          <Switch
-            trackColor={{false: '#767577', true: '#b9424d'}}
-            thumbColor={isEnabled1 ? '#b9424d' : '#f4f3f4'}
-            // ios_backgroundColor="#3e3e3e"
-            onValueChange={toggleSwitch1}
-            value={isEnabled}
-          />
-        </View>
-        <View>
-          <Text>Twitter </Text>
-          <Switch
-            trackColor={{false: '#767577', true: '#b9424d'}}
-            thumbColor={isEnabled2 ? '#b9424d' : '#f4f3f4'}
-            // ios_backgroundColor="#3e3e3e"
-            onValueChange={toggleSwitch2}
-            value={isEnabled}
-          />
-        </View>
-        <View>
-          <Text>Tumblr </Text>
-          <Switch
-            trackColor={{false: '#767577', true: '#b9424d'}}
-            thumbColor={isEnabled3 ? '#b9424d' : '#f4f3f4'}
-            // ios_backgroundColor="#3e3e3e"
-            onValueChange={toggleSwitch3}
-            value={isEnabled}
-          />
-        </View>
-      </View>
+     
       <View
         style={{
           borderBottomColor: 'black',

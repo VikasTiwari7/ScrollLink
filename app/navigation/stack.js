@@ -37,6 +37,7 @@ import pageList from '../screen/Draw/Mypages/pageList';
 import suggestion from '../screen/Home/Suggestion';
 import Videoscreen  from '../screen/Home/Videoscreen';
 import Forgotscreen from '../screen/Auth/Forgotscreen';
+import SearchScreen from '../screen/Home/Search';
 const Stack = createStackNavigator();
 const Stacks=()=>{
 return (
@@ -82,6 +83,7 @@ return (
         <Stack.Screen name ="suggestion" component ={suggestion} options={{headerShown:false}}/>
         <Stack.Screen name ="forgotscreen" component={Forgotscreen} options={{headerShown:false}}/>
         <Stack.Screen name ="videoscreen" component={Videoscreen} options={{headerShown:false}}/>
+        <Stack.Screen name="searchscreen" component={SearchScreen} options={{headerShown:false}}/>
       </Stack.Navigator>
   );
 }

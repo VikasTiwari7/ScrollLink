@@ -19,10 +19,13 @@ const CreateStatus=({navigation})=>{
     const [Status,setStatus]=useState();
     const [filePath, setFilePath] = useState();
 
-    // useEffect(()=>{
-    //   getLocaldata()
-
-    // },[])
+    useEffect(()=>{
+      const timeoutHandle = setTimeout(() => {
+        if (!filePath) {
+          chooseFile('photo');
+        }
+      }, 1000);
+    },[])
 
     const Imageupload= async(photo)=>{
       console.log("Going to image upload for status");
