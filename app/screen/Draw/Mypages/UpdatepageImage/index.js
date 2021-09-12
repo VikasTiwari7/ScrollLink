@@ -8,7 +8,9 @@ import DocumentPicker from 'react-native-document-picker';
 // import { useState } from 'react/cjs/react.development';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import * as Utility from '../../../../utility/index';
-const UpdatepageImage=({navigation})=>{
+const UpdatepageImage=({route,navigation})=>{
+  const { pageId } = route.params.page_id;
+  console.log("pageId ",pageId)
   const [filePath,setFilePath]=useState();
   const [coverFilepath,setCoverFilepath]=useState();
     const chooseFile=async(photo)=>{
@@ -47,7 +49,10 @@ const UpdatepageImage=({navigation})=>{
     }
     const openpageInfo=()=>{
       if(filePath && coverFilepath){
-      navigation.navigate('createPage');
+      navigation.navigate('createPage',{
+        page_id:{
+            pageId:pageId
+        }});
       }
     } 
     const uploadcoverImage=async(photo)=>{
@@ -61,7 +66,7 @@ const UpdatepageImage=({navigation})=>{
       });
       var userId = await Utility.getFromLocalStorge("userId");
       var token = await Utility.getFromLocalStorge("JWT");
-      let pageId=await Utility.getFromLocalStorge('pageId');
+      // let pageId=await Utility.getFromLocalStorge('pageId');
      
       console.log("token= in page " + token)
       try {
@@ -96,7 +101,7 @@ const UpdatepageImage=({navigation})=>{
       });
       var userId = await Utility.getFromLocalStorge("userId");
       var token = await Utility.getFromLocalStorge("JWT");
-      let pageId=await Utility.getFromLocalStorge('pageId');
+      // let pageId=await Utility.getFromLocalStorge('pageId');
      
       console.log("token= in page " + token)
       try {

@@ -13,6 +13,7 @@ const Search = ({navigation}) => {
         var token = await Utility.getFromLocalStorge("JWT");
         console.log("token=123" + token)
         try {
+            console.log("vip");
             let response = await fetch(
                 `http://79.133.41.198:81/search/user?id=${userName}`,
                 {
@@ -24,7 +25,7 @@ const Search = ({navigation}) => {
             )
             let json = await response.json();
             setSearcharray(json)
-            console.log(json);
+            console.log("vikas serach data",json);
         } catch (error) {
             console.error(error);
         }
@@ -47,7 +48,7 @@ const Search = ({navigation}) => {
                     </TouchableOpacity>
                 </View>
                 <View>
-                    <TextInput placeholder="Search more.." placeholderTextColor="#b9424d" style={{fontSize: 15,fontWeight: 'bold' }}
+                    <TextInput placeholder="Search more.." placeholderTextColor="#b9424d" style={{fontSize: 15 }}
                         onChangeText={(data) => setUserName(data)}
                     ></TextInput>
                 </View>

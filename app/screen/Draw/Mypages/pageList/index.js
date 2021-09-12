@@ -37,10 +37,12 @@ const pageList = ({ navigation }) => {
 
     }
     const sowpageinfo = async (item) => {
-        console.log("page id is :-", item.page_id);
-        await Utility.setInLocalStorge("getpageid", item.page_id)
-
-        navigation.navigate('showpagedetails')
+        // console.log("page id is :-", item.page_id);
+        // await Utility.setInLocalStorge("getpageid", item.page_id)
+        navigation.navigate('showpagedetails',{
+            page_id:{
+                pageId:item.page_id
+            }})
 
     }
 

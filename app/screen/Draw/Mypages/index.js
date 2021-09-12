@@ -10,16 +10,16 @@ import * as Utility from '../../../utility/index';
 const Mypages = ({navigation}) => {
     const [pagelist,setPagelist]=useState([]);
     useEffect(()=>{
-        // getpageList()
     },[]);
     
     const createPage= async()=>{
-        // navigation.navigate('updatepagemedia');
             var userId = await Utility.getFromLocalStorge("userId");
+            console.log(userId);
             var token = await Utility.getFromLocalStorge("JWT");
+            console.log(token);
             try {
               let response = await fetch(
-                `http://79.133.41.198:81/users/${userId}/createpage`, // getCoverPic
+                `http://79.133.41.198:81/users/${userId}/createpage`,
                 {
                   method: "GET",
                   headers: {
@@ -28,43 +28,25 @@ const Mypages = ({navigation}) => {
                 }
               )
               let json = await response.json();
-              console.log(json);
-             var  postId=json.page_id;
-              console.log("new post id",postId)
-              await Utility.setInLocalStorge('pageId',postId);
+              console.log(json.page_id);
+              var postId=json.page_id;
+           
+            //   console.log("new post id",postId)
+            //   await Utility.setInLocalStorge('pageId',postId);
               if(postId){
-                  navigation.navigate('updatepagemedia');
+                  navigation.navigate('updatepagemedia',{
+                    page_id:{
+                        pageId:postId
+                    }});
               }
           }
           catch(error){
             console.log(error);
           }
         }
-    //  const  getpageList = async()=>{
-    //         var userId = await Utility.getFromLocalStorge("userId");
-    //         var token = await Utility.getFromLocalStorge("JWT");
-    //             try {
-    //               let response = await fetch(
-    //                 `http://79.133.41.198:81/users/${userId}/getallpage`, // getCoverPic
-    //                 {
-    //                   method: "GET",
-    //                   headers: {
-    //                     Authorization: 'Bearer ' + token,
-    //                   }
-    //                 }
-    //               )
-    //               let json = await response.json();
-    //               setPagelist(json);
-    //               console.log(json);
-    //             }catch(error){
-    //                 console.log(error);
-    //             }
-    //         }  
-          
-
+   
             const openMypageList=()=>{
                 navigation.navigate('pagelist');
-                // console.log("vikas ist fine ")
             }
     return (
         <View>

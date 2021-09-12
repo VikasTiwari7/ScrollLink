@@ -28,8 +28,13 @@ useEffect(() => {
     setuserName(username);
     setLoader(false)
   };
-    const openCoverProfile=()=>{
-    navigation.navigate('Profile_cover')
+    const openCoverProfile=async()=>{
+    let itemid=await Utility.getFromLocalStorge("userId");
+    navigation.navigate('Profile_cover',{
+        user_id:{
+            userId:itemid
+        }
+    })
     }
     const openWallet=()=>{
         navigation.navigate('ProfileWallet')

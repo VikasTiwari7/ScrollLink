@@ -10,10 +10,12 @@ import * as Utility from '../../../../utility/index';
 import { Alert } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useIsFocused } from "@react-navigation/native";
-const showPage = ({ navigation }) => {
+const showPage = ({ navigation ,route}) => {
+
   // const [postid,setPostid]=useState();
   const isFocused = useIsFocused();
-
+  const { pageId } = route.params.page_id;
+  console.log("pageId ",pageId)
   const [pagepostfile, setPagepostfile] = useState([]);
   const [coverimage, setCoverImage] = useState();
   const [profileImage, setProfileImage] = useState();
@@ -27,7 +29,7 @@ const showPage = ({ navigation }) => {
   const getpageinfo = async () => {
     var userId = await Utility.getFromLocalStorge('userId');
     var token = await Utility.getFromLocalStorge('JWT');
-    let pageId = await Utility.getFromLocalStorge('getpageid');
+    // let pageId = await Utility.getFromLocalStorge('getpageid');
     try {
       setLoader(true)
       let response = await fetch(
@@ -52,7 +54,7 @@ const showPage = ({ navigation }) => {
   const getPostinfo = async () => {
     var userId = await Utility.getFromLocalStorge('userId');
     var token = await Utility.getFromLocalStorge('JWT');
-    let pageId = await Utility.getFromLocalStorge('getpageid');
+    // let pageId = await Utility.getFromLocalStorge('getpageid');
     try {
       let response = await fetch(
         `http://79.133.41.198:81/users/${userId}/${pageId}/getallpagepost`, // getCoverPic
@@ -78,7 +80,8 @@ const showPage = ({ navigation }) => {
 
     var userId = await Utility.getFromLocalStorge('userId');
     var token = await Utility.getFromLocalStorge('JWT');
-    let pageId = await Utility.getFromLocalStorge('pageId');
+    // let pageId = await Utility.getFromLocalStorge('pageId');
+    console.log(`http://79.133.41.198:81/users/${userId}/${pageId}/createpost`);
     try {
       let response = await fetch(
         `http://79.133.41.198:81/users/${userId}/${pageId}/createpost`, // getCoverPic
@@ -95,7 +98,14 @@ const showPage = ({ navigation }) => {
       console.log('new post id', postId);
       await Utility.setInLocalStorge('pagepostId', postId);
       if (postId) {
-        navigation.navigate('pagepost');
+        navigation.navigate('pagepost',{
+          pagePost_id:{
+              pagePostId:postId
+          },
+          page_id:{
+            pageId:pageId
+        }
+        });
       }
     } catch (error) {
       console.log(error);
@@ -103,30 +113,6 @@ const showPage = ({ navigation }) => {
   };
   const deletePost=async(item)=>{
     Alert.alert("Delete Page post Successfully")
-
-    // console.log("item data gghjhgjhgjg====?",item);
-    // var userId = await Utility.getFromLocalStorge('userId');
-    // var token = await Utility.getFromLocalStorge('JWT');
-    // let pageId = await Utility.getFromLocalStorge('getpageid');
-    
-
-    // try {
-    //   let response = await fetch(
-    //     `http://79.133.41.198:81/users/${userId}/${pageId}/deletepost/${item.id}`, // getCoverPic
-    //     {
-    //       method: 'PUT',
-    //       headers: {
-    //         Authorization: 'Bearer ' + token,
-    //       },
-    //     },
-    //   );
-    //   let json = await response;
-    //   console.log(json);
-    
-    // } catch (error) {
-    //   console.log(error);
-    // }
-
   }
  const  likeapicall=async()=>{
    setcountlike(countlike+1);

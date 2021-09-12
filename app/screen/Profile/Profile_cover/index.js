@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { Image, ScrollView, Text, View, StyleSheet } from 'react-native';
+import { Image, ScrollView, Text, View, StyleSheet,ActivityIndicator } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import {
   widthPercentageToDP as wp,
@@ -14,25 +14,27 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 var RNFS = require('react-native-fs');
 
 const ProfileCover = ({ route, navigation }) => {
-  // const { userId } = route.params.user_id;
-  // console.log("vikas khan ",userId)
+  const { userId } = route.params.user_id;
+  console.log("vikas khan ",userId)
 
   const [userName, setUserName] = useState();
   const [email, setEMail] = useState();
   const [filePath, setFilePath] = useState();
   const [coverFilepath, setCoverfilepath] = useState();
   const [userpost, setUserpost] = useState([]);
+  const [loader,setLoader]=useState(false)
   useEffect(() => {
     retrieveProfile();
     retrieveCover();
   }, []);
   const retrieveProfile = async () => {
-    var userId = await Utility.getFromLocalStorge("userId");
-    userId = userId;
+    // var userId = await Utility.getFromLocalStorge("userId");
+    // userId = userId;
     var token = await Utility.getFromLocalStorge("JWT");
     token = token;
     console.log("token=" + token)
     try {
+      setLoader(true);
       let response = await fetch(
         `http://79.133.41.198:81/users/${userId}/getProfileData`, // getCoverPic
         {
@@ -48,13 +50,14 @@ const ProfileCover = ({ route, navigation }) => {
       setUserName(json.user_info.fullname)
       setEMail(json.user_info.email)
       setCoverfilepath(json.user_profile.cover_pic_upload_url)
+      setLoader(false);
 
     } catch (error) {
       console.error(error);
     }
   }
   const retrieveCover = async () => {
-    var userId = await Utility.getFromLocalStorge("userId");
+    // var userId = await Utility.getFromLocalStorge("userId");
     var token = await Utility.getFromLocalStorge("JWT");
     try {
       let response = await fetch(
@@ -204,10 +207,11 @@ const ProfileCover = ({ route, navigation }) => {
   }
 
   const backarrow = () => {
-    navigation.navigate('Bottom')
+    navigation.navigate('drawer')
   }
   return (
     <View style={{flex:1}}>
+     
       <View style={{ flexDirection: 'row', width: wp('100%'), justifyContent: 'space-evenly', backgroundColor: '#a19495' }}>
         <TouchableOpacity onPress={() => backarrow()}>
           <MaterialCommunityIcons name="keyboard-backspace" size={35} color={'white'}
@@ -215,6 +219,9 @@ const ProfileCover = ({ route, navigation }) => {
         </TouchableOpacity>
         <Text style={{ fontSize: 22, fontWeight: 'bold' }}>Profile Cover Screen</Text>
       </View>
+      {loader == true ? (
+          <ActivityIndicator style={{marginTop: 10}} size="large" color="red" />
+        ) : null}
       <ScrollView>
         {coverFilepath ?
           <Image source={{ uri: coverFilepath }} style={{ width: wp('100%'), height: hp('20%') }} onError={() => setCoverfilepath('https://picsum.photos/seed/picsum/200/300')}></Image> : null}
@@ -256,6 +263,9 @@ const ProfileCover = ({ route, navigation }) => {
           <Text>Gallary</Text>
           </View>
           {userpost.length > 0 ?
+          userpost.map(()=>(
+
+          
             <View>
               <View style={styles.showImage}>
                 <View style={styles.imageCover}>
@@ -268,7 +278,8 @@ const ProfileCover = ({ route, navigation }) => {
                   <Image source={{uri:filePath}} style={styles.image}></Image>
                 </View>
               </View>
-            </View> : null}
+            </View>
+            )) : null}
       </View>
       </ScrollView>
 

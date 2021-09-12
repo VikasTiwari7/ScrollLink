@@ -8,7 +8,9 @@ import {TextInput} from 'react-native-paper';
 import {ScrollView} from 'react-native-gesture-handler';
 import * as Utility from '../../../../utility/index';
 // import { useState } from 'react/cjs/react.development';
-const CreatePage = ({navigation}) => {
+const CreatePage = ({navigation,route}) => {
+  const { pageId } = route.params.page_id;
+  console.log("pageId ",pageId)
   const [category, setCategory] = useState();
   const [pagename, setPagename] = useState();
   const [pageurl, setPageurl] = useState();
@@ -18,17 +20,10 @@ const CreatePage = ({navigation}) => {
     let userId = await Utility.getFromLocalStorge('userId');
     let token = await Utility.getFromLocalStorge('JWT');
     let name = await Utility.getFromLocalStorge('fullName');
-    // let username = await Utility.getFromLocalStorge('userName');
-    // let postId=await Utility.getFromLocalStorge('postId');
-    let pageId = await Utility.getFromLocalStorge('pageId');
-    //  console.log(userId);
-    //  console.log("token=" +token)
-    // console.log(userId);
-
+    // let pageId = await Utility.getFromLocalStorge('pageId');
     console.log(
       `http://79.133.41.198:81/users/${userId}/updatepage/${pageId}/updatePageInfo`,
     );
-
     try {
       let response = await fetch(
         `http://79.133.41.198:81/users/${userId}/updatepage/${pageId}/updatePageInfo`,
@@ -38,7 +33,6 @@ const CreatePage = ({navigation}) => {
             Authorization: 'Bearer ' + token,
             "Content-Type" : 'application/json',
           },
-          // it is the body  i used the proper format like postman but also it show the error  that's why i use the little format
           body: JSON.stringify({
                 value :pagename,
                 username: "a",
@@ -63,7 +57,6 @@ const CreatePage = ({navigation}) => {
     } catch (error) {
       console.log(error);
     }
-    // console.log("vikasss");
   };
   return (
     <View>
@@ -109,8 +102,7 @@ const CreatePage = ({navigation}) => {
                 label="Bio"
                 value={pagebio}
                 onChangeText={text => setBio(text)}
-                // value={pageurl}
-                // onChangeText={text => setPageurl(text)}
+               
               />
              
             </View>

@@ -122,9 +122,7 @@ const ProfileActivity=({navigation})=>{
      
       
      
-       <View style={{alignSelf:'flex-end',backgroundColor:'gray',padding:8,marginRight:wp('5%'),width:wp('20%'),borderRadius:10,marginTop:hp('-10%')}}>
-          
-           </View>
+      
 
        <View style={{marginLeft:wp('4%'),flexDirection:'row',width:wp('35%'),alignItems:'center',borderColor:'white',borderWidth:5,borderRadius:50}}>
            {filePath ?
@@ -142,18 +140,7 @@ const ProfileActivity=({navigation})=>{
 
        </View>
        </View>
-       <View style={{margin:wp('5%'),flexDirection:'row',width:wp('70%'),justifyContent:'space-evenly'}}>
-           <TouchableOpacity onPress={()=>openGenralSettingPage()}>
-           <View style={{padding:10,backgroundColor:'gray',width:wp('30%'),borderRadius:10}}>
-           <Text style={{alignSelf:'center',color:'white'}}>Edit</Text>
-           </View>
-           </TouchableOpacity>
-           <TouchableOpacity onPress={()=>showActivity()}>
-           <View style={{padding:10,backgroundColor:'gray',width:wp('30%'),borderRadius:10}}>
-           <Text style={{alignSelf:'center',color:'white'}}>Activity</Text>
-           </View>
-           </TouchableOpacity>
-       </View>
+     
        <View style={{height:hp('50%')}}>
         
        <TabViewExample/>

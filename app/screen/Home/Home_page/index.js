@@ -39,6 +39,7 @@ const HomePage = ({ navigation }) => {
     const [suggestions, setSuggestions] = useState([]);
     const [msg, setMsg] = useState();
     const [chat, setchat] = useState([]);
+    const [profileData,setProfiledata]=useState();
     const [conditionSuggestion, setConditionSuggestions] = useState(true)
     var vikas = [];
     useEffect(() => {
@@ -70,32 +71,7 @@ const HomePage = ({ navigation }) => {
 
     }, [isFocused])
 
-    const stories = [
-        {
-            id: "4",
-            source: require("../../../images/cross.png"),
-            user: "Ugur Erdal",
-            avatar: require("../../../images/cross.png")
-        },
-        {
-            id: "2",
-            source: require("../../../images/cross.png"),
-            user: "Mustafa",
-            avatar: require("../../../images/cross.png")
-        },
-        {
-            id: "5",
-            source: require("../../../images/cross.png"),
-            user: "Emre Yilmaz",
-            avatar: require("../../../images/cross.png")
-        },
-        {
-            id: "3",
-            source: require("../../../images/cross.png"),
-            user: "Cenk Gun",
-            avatar: require("../../../images/cross.png")
-        },
-    ];
+  
     const getsuggestionlist = async () => {
         var userId = await Utility.getFromLocalStorge("userId");
         var token = await Utility.getFromLocalStorge("JWT");
@@ -152,7 +128,7 @@ const HomePage = ({ navigation }) => {
         console.log("token=" + token)
         try {
             let response = await fetch(
-                `http://79.133.41.198:81/users/${userId}/getProfilePicUrl`, // getCoverPic
+                `http://79.133.41.198:81/users/${userId}/getProfileData`, // getCoverPic
                 {
                     method: "GET",
                     headers: {
@@ -161,9 +137,10 @@ const HomePage = ({ navigation }) => {
                     }
                 }
             )
-            let json = await response.text();
+            let json = await response.json();
             let abc = json;
-            await Utility.setInLocalStorge("imageUrl", abc)
+            await Utility.setInLocalStorge("imageUrl", json.user_profile.profile_photo_url)
+            setProfiledata(json.user_profile.profile_photo_url);
         } catch (error) {
             console.error(error);
         }
@@ -560,7 +537,8 @@ const HomePage = ({ navigation }) => {
                     <View style={{ flexDirection: 'row', margin: wp('5%'), borderRadius: 10, padding: 10, justifyContent: 'space-evenly', alignItems: 'center' }}>
                         <TouchableOpacity onPress={() => openProfileCover()}>
                             <View >
-                                <Image source={require('../../../images/splashlogo.png')} style={{ height: 50, width: 50 }}></Image>
+                                {profileData?<Image source={{uri:profileData}} style={{height:50,width:50,borderRadius:50}}></Image>:
+                                <Image source={require('../../../images/splashlogo.png')} style={{ height: 50, width: 50 }}></Image>}
                             </View>
                         </TouchableOpacity>
                         <View style={{ backgroundColor: 'white', padding: 10, borderRadius: 10, width: wp('50%') }}>
@@ -746,26 +724,36 @@ const HomePage = ({ navigation }) => {
                 <View>
                     <ScrollView>
                     <View style={styles.sheet}>
+
+                    <TouchableOpacity onPress={()=>alert("hello")}>
                         <View style={styles.sheetdetail}>
                             <View>
                         <MaterialCommunityIcons name="note" size={25} color={'#b9424d'} />
                         </View>
+
                         <View>
                             <Text>Delete</Text>
                         </View>
                         </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity>
                         <View style={styles.sheetdetail}>
                         <MaterialCommunityIcons name="note" size={25} color={'#b9424d'} />
                             <Text>Edit</Text>
                         </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity>
                         <View style={styles.sheetdetail}>
                         <MaterialCommunityIcons name="note" size={25} color={'#b9424d'} />
                             <Text>HidePost</Text>
                         </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity>
                         <View style={styles.sheetdetail}>
                         <MaterialCommunityIcons name="note" size={25} color={'#b9424d'} />
                             <Text>Hide Caption</Text>
                         </View>
+                        </TouchableOpacity>
                         
                     </View>
                     </ScrollView>

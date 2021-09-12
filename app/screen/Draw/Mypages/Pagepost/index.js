@@ -9,10 +9,11 @@ import {
 import DocumentPicker from 'react-native-document-picker';
 import { TextInput } from 'react-native-paper';
 
-import Icon from 'react-native-vector-icons/FontAwesome';
-import { Input } from 'react-native-elements';
-
-const Pagepost = ({ navigation }) => {
+const Pagepost = ({ navigation,route }) => {
+  const { pagePostId } = route.params.pagePost_id;
+  console.log("pagePostId ",pagePostId)
+  const {pageId}=route.params.page_id;
+  console.log("real page Id",pageId);
   const [filePath, setFilepath] = useState();
   const [caption, setCaption] = useState();
   const [pagename, setPagename] = useState();
@@ -24,7 +25,7 @@ const Pagepost = ({ navigation }) => {
   const getpageinfo = async () => {
     var userId = await Utility.getFromLocalStorge('userId');
     var token = await Utility.getFromLocalStorge('JWT');
-    let pageId = await Utility.getFromLocalStorge('getpageid');
+    // let pageId = await Utility.getFromLocalStorge('getpageid');
     try {
       let response = await fetch(
         `http://79.133.41.198:81/users/${userId}/getpageid/${pageId}`, // getCoverPic
@@ -48,17 +49,17 @@ const Pagepost = ({ navigation }) => {
     let userId = await Utility.getFromLocalStorge('userId');
     let token = await Utility.getFromLocalStorge('JWT');
     let name = await Utility.getFromLocalStorge('fullName');
-    let pageId = await Utility.getFromLocalStorge('pageId');
+    // let pageId = await Utility.getFromLocalStorge('pageId');
     console.log("page post id cccc",pageId);
-    let pagepostId = await Utility.getFromLocalStorge('pagepostId');
+    // let pagepostId = await Utility.getFromLocalStorge('pagepostId');
 
     console.log(
-      `http://79.133.41.198:81/users/${userId}/${pageId}/uppdatepost/${pagepostId}/updatePostInfo`,
+      `http://79.133.41.198:81/users/${userId}/${pageId}/uppdatepost/${pagePostId}/updatePostInfo`,
     );
-    http://localhost:4000/users/60ca30e507b36fd953c418be/60eff4eaf994f420ca513ed5/updatepost/60f54fcde45d50e5f1d2cee0/updatePostInfo
+
     try {
       let response = await fetch(
-        `http://79.133.41.198:81/users/${userId}/${pageId}/updatepost/${pagepostId}/updatePostInfo`,
+        `http://79.133.41.198:81/users/${userId}/${pageId}/updatepost/${pagePostId}/updatePostInfo`,
         {
           method: 'POST',
           headers: {
@@ -87,7 +88,6 @@ const Pagepost = ({ navigation }) => {
     } catch (error) {
       console.log(error);
     }
-    //
   };
   const chooseFile = async photo => {
     try {
@@ -99,7 +99,6 @@ const Pagepost = ({ navigation }) => {
       Imageupload(res);
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
-        // User cancelled the picker, exit any dialogs or menus and move on
       } else {
         throw err;
       }
@@ -108,7 +107,6 @@ const Pagepost = ({ navigation }) => {
   const Imageupload = async photo => {
     console.log('vikkkkkassss');
     const data = new FormData();
-
     data.append('postData', {
       name: photo.name,
       type: 'image/jpeg',
@@ -116,8 +114,8 @@ const Pagepost = ({ navigation }) => {
     });
     var userId = await Utility.getFromLocalStorge('userId');
     var token = await Utility.getFromLocalStorge('JWT');
-    let pageId = await Utility.getFromLocalStorge('pageId');
-    let pagepostid = await Utility.getFromLocalStorge('pagepostId');
+    // let pageId = await Utility.getFromLocalStorge('pageId');
+    // let pagepostid = await Utility.getFromLocalStorge('pagepostId');
 
 
     console.log('token= in page ' + token);
@@ -127,7 +125,7 @@ const Pagepost = ({ navigation }) => {
       );
       console.log(data);
       let response = await fetch(
-        `http://79.133.41.198:81/users/${userId}/${pageId}/updatepost/${pagepostid}/updatePostMedia`, // getCoverPic
+        `http://79.133.41.198:81/users/${userId}/${pageId}/updatepost/${pagePostId}/updatePostMedia`, // getCoverPic
         {
           method: 'POST',
           headers: {
