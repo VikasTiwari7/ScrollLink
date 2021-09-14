@@ -30,6 +30,7 @@ const HomePage = ({ navigation }) => {
     const refRBSheet = useRef();
     const isFocused = useIsFocused();
     const [condition, setCondition] = useState(false);
+    const [pause,setPause]=useState(false);
     const [chatcondition, setChatcondition] = useState();
     const [chatstatus, setChatStatus] = useState(false);
     const [filePath, setFilePath] = useState({});
@@ -43,6 +44,7 @@ const HomePage = ({ navigation }) => {
     const [profileData, setProfiledata] = useState();
     const [conditionSuggestion, setConditionSuggestions] = useState(true)
     const [refreshing, setRefreshing] = useState(false);
+    const [selectedId,setSelectedId]=useState();
     var vikas = [];
     useEffect(() => {
         navigation.addLis
@@ -434,14 +436,45 @@ const HomePage = ({ navigation }) => {
     }
     const openBottomsheet=(item)=>{
         console.log("select post id ",item.id)
-        // setSelectPostid(item)
+        setSelectedId(item.id)
         refRBSheet.current.open()
     }
+  const  deleteSelectedPost=async()=>{
+    var userId = await Utility.getFromLocalStorge("userId");
+    var token = await Utility.getFromLocalStorge("JWT");
+    try {
+        let response = await fetch(
+            `http://79.133.41.198:81/users/${userId}/deletepost/${selectedId}`, // getCoverPic
+            {
+                method: "DELETE",
+                headers: {
+                    Authorization: 'Bearer ' + token,
+                }
+            }
+        )
+        let json = await response;
+        console.log("delete response",json);
+
+        // console.log("Follow Records records-", json);
+        // if (json.status == 200) {
+        //     alert("Successfully follow")
+        //     getTimeline();
+        // } else {
+        //     alert("Something went wrong");
+        // }
+
+        // setSuggestions(json);
+    } catch (error) {
+        console.error(error);
+    }
+
+  }
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
         getTimeline(2000).then(() => setRefreshing(false));
       }, []);
+
     return (
         <Provider   >
             <View style={{ flex: 1 }}>
@@ -621,7 +654,7 @@ const HomePage = ({ navigation }) => {
                                     </TouchableOpacity>
                                     <TouchableOpacity onPress={() => openProfileCover()}>
                                         <View>
-                                            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{item.username}</Text>
+                                            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>vikas</Text>
                                             <View style={{ flexDirection: 'row' }}>
                                                 <Text style={{ fontSize: 12 }} >{Moment(item.created).format('DD MMM YYYY')}</Text>
                                             </View>
@@ -641,9 +674,13 @@ const HomePage = ({ navigation }) => {
                                             ></Image>
                                         </TouchableOpacity> : null}
                                     {item.post_type == 'video' ?
+                                    <TouchableOpacity  onPress={()=>setPause(!pause)}>
                                         <Video source={{ uri:  item.post_upload_url }}
-                                        style={{width: wp('30%'), height: hp('20%'), borderRadius: 10}}
+                                        paused={pause}
+                                        onFullscreenPlayerWillDismiss={true}
+                                        style={{height:wp('100%'),width:wp('100%'), borderRadius: 10,marginLeft:'10%'}}
                                            />
+                                           </TouchableOpacity>
 
                                         : null}
 
@@ -749,7 +786,7 @@ const HomePage = ({ navigation }) => {
                     <ScrollView>
                         <View style={styles.sheet}>
 
-                            <TouchableOpacity onPress={() => alert("Post  succesfully deleted")}>
+                            <TouchableOpacity onPress={() =>deleteSelectedPost()}>
                                 <View style={styles.sheetdetail}>
                                     <View>
                                         <MaterialCommunityIcons name="note" size={25} color={'#b9424d'} />

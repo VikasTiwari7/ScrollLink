@@ -213,6 +213,7 @@ const publishPost = ({navigation}) => {
               <Text style={{color: 'white'}}>Upload Image</Text>
             </View>
           </TouchableOpacity>
+        
           <TouchableOpacity onPress={() => chooseFile('photo')}>
             <View
               style={{
@@ -223,6 +224,7 @@ const publishPost = ({navigation}) => {
               <Text style={{color: 'white'}}>Upload video</Text>
             </View>
           </TouchableOpacity>
+          {loader==false?
            <TouchableOpacity onPress={() => afterUploadImage()}>
             <View
               style={{
@@ -233,6 +235,7 @@ const publishPost = ({navigation}) => {
               <Text style={{color: 'white'}}>Publish</Text>
             </View>
           </TouchableOpacity>
+          :null}
         </View>
         {loader == true ? (
           <ActivityIndicator style={{marginTop: 10}} size="large" color="red" />

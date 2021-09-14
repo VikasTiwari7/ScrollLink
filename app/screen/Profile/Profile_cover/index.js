@@ -23,10 +23,11 @@ const ProfileCover = ({ route, navigation }) => {
   const [coverFilepath, setCoverfilepath] = useState();
   const [userpost, setUserpost] = useState([]);
   const [loader,setLoader]=useState(false)
+  const [pause,setPause]=useState(false);
   useEffect(() => {
     retrieveProfile();
     retrieveCover();
-  }, []);
+  }, [userId]);
   const retrieveProfile = async () => {
     // var userId = await Utility.getFromLocalStorge("userId");
     // userId = userId;
@@ -268,13 +269,17 @@ const ProfileCover = ({ route, navigation }) => {
              keyExtractor={item => item.page_id}
              numColumns={3}
              renderItem={({ item, id }) => (
-                <View style={styles.imageCover}>
+                <View style={styles.imageCover} >
                   {item.post_type=='image'?
                   <Image source={{uri:item.post_upload_url}} style={styles.image}></Image>:null}
                   {item.post_type=='video'?
+                  <TouchableOpacity onPress={()=>setPause(!pause)}>
                    <Video source={{ uri:  item.post_upload_url }}
-                   style={{width: wp('80%'), height: hp('40%'), borderRadius: 10}}
+                   paused={pause}
+                   playWhenInactive={true}
+                   style={styles.image}
                       />
+                      </TouchableOpacity>
                   :
                   null}
                 </View>
@@ -306,8 +311,8 @@ const styles = StyleSheet.create({
     flexDirection:'row'
   },
   image:{
-    height:80,
-    width:80
+    height:100,
+    width:100
   },
   imageCover:{
     borderWidth:.5,

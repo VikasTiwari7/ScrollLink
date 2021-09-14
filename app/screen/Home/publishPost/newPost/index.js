@@ -123,13 +123,19 @@ const Newpost = ({navigation}) => {
           padding: 10,
         }}>
         <Image source={require('../../../../images/splashlogo.png')}></Image>
+
+<View style={{width:'90%',alignSelf:'center'}}>
         <TextInput
           placeholder="Write a caption "
           placeholderTextColor="#b9424d"
           value={caption}
+          multiline={true}
+          maxLength={100}
+          
           onChangeText={(text)=>setCaption(text)}
-          style={{marginLeft:10}}
+          style={{marginLeft:10,borderRadius:10,width:'80%'}}
           ></TextInput>
+          </View>
        
       </View>
       <View
